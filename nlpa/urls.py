@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.conf.urls import url
 from django.urls import include, path
 from django.contrib import admin
 
@@ -28,6 +29,9 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = urlpatterns + [
+
+    url(r'', include('allauth.urls')),
+
     # For anything not caught by a more specific rule above, hand over to
     # Wagtail's page serving mechanism. This should be the last pattern in
     # the list:
