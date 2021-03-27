@@ -27,6 +27,7 @@ ALLOWED_HOSTS=["192.168.64.3"]
 INSTALLED_APPS = [
     'home',
     'search',
+    'userauth',
 
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
@@ -49,6 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    'django_countries',
 
 
     'django.contrib.sites',
@@ -77,6 +80,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(PROJECT_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'userauth/templates/userauth/'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -107,6 +111,9 @@ DATABASES = {
             'PORT': '',                      # Set to empty string for default.
     }
 }
+
+# Auth User ModelBackend
+AUTH_USER_MODEL = 'userauth.CustomUser'
 
 # Authentication Backends
 AUTHENTICATION_BACKENDS = (
@@ -201,3 +208,8 @@ ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_USERNAME_BLACKLIST = ["admin", "god"]
 ACCOUNT_USERNAME_MIN_LENGTH = 2
+
+# New Settings for UserAuth
+WAGTAIL_USER_CREATION_FORM = 'userauth.forms.WagtailUserCreationForm'
+WAGTAIL_USER_EDIT_FORM = 'userauth.forms.WagtailUserEditForm'
+WAGTAIL_USER_CUSTOM_FIELDS = ['display_name', 'date_of_birth', 'address1', 'address2', 'zip_code', 'city', 'country', 'mobile_phone', 'additional_information', 'photo',]
