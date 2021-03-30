@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'modelcluster',
     'taggit',
 
+    'storages',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -213,3 +215,8 @@ ACCOUNT_USERNAME_MIN_LENGTH = 2
 WAGTAIL_USER_CREATION_FORM = 'userauth.forms.WagtailUserCreationForm'
 WAGTAIL_USER_EDIT_FORM = 'userauth.forms.WagtailUserEditForm'
 WAGTAIL_USER_CUSTOM_FIELDS = ['display_name', 'date_of_birth', 'address1', 'address2', 'zip_code', 'city', 'country', 'mobile_phone', 'additional_information', 'photo',]
+
+AWS_STORAGE_BUCKET_NAME = 'nlpa-website-bucket'
+AWS_ACCESS_KEY_ID = '***REMOVED***'
+AWS_SECRET_ACCESS_KEY = '***REMOVED***'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
