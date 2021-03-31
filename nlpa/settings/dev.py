@@ -12,6 +12,11 @@ ALLOWED_HOSTS = ['*']
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51IUFQmIyfIE0cGLT4tEHeLbn31247AnPgB2GZllvhbZAKZ0s0vUZsTjXn9EVR4XNdlXwQh1aTlvaXCM2anDxffeF008gTb6r3y'
+STRIPE_SECRET_KEY = '***REMOVED***'
+
+
+
 try:
     from .local import *
 except ImportError:

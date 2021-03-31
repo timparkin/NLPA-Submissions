@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+
+    'payments.apps.PaymentsConfig',
 ]
 
 MIDDLEWARE = [
