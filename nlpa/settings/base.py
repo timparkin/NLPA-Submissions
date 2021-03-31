@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     'django_countries',
 
 
@@ -220,3 +220,4 @@ AWS_STORAGE_BUCKET_NAME = 'nlpa-website-bucket'
 AWS_ACCESS_KEY_ID = '***REMOVED***'
 AWS_SECRET_ACCESS_KEY = '***REMOVED***'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
