@@ -84,3 +84,5 @@ AWS_ACCESS_KEY_ID = '####'
 AWS_SECRET_ACCESS_KEY = '####'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
+looking at stripe checkout on this url
+https://testdriven.io/blog/django-stripe-tutorial/
