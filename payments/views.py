@@ -9,6 +9,10 @@ from django.http.response import JsonResponse, HttpResponse
 class HomePageView(TemplateView):
     template_name = 'home.html'
 
+
+class PurchasePageView(TemplateView):
+    template_name = 'purchase.html'
+
 class SuccessView(TemplateView):
     template_name = 'success.html'
 
