@@ -1,3 +1,4 @@
+django-widget-tweaks
 anyascii==0.1.7
 asgiref==3.3.1
 beautifulsoup4==4.8.2
@@ -46,3 +47,4 @@ Willow==1.4
 xlrd==2.0.1
 XlsxWriter==1.3.7
 xlwt==1.3.0
+
