@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 
@@ -43,6 +44,9 @@ class CustomUser(AbstractUser):
 
     class Meta:
         ordering = ['last_name']
+
+    def get_absolute_url(self):
+        return reverse('account_profile')
 
     def __str__(self):
         return f"{self.username}: {self.first_name} {self.last_name}"
