@@ -14,6 +14,9 @@
   <body>
   <section class="section">
     <div class="container">
+      <p>You have chosen the following payment option</p>
+      <p>Number of Entries = {{ request.session.number_of_entries }}</p>
+      <p>Number of Portfolios = {{ request.session.number_of_portfolios }}</p>
       <button class="button is-primary" id="submitBtn">Purchase!</button>
     </div>
   </section>
