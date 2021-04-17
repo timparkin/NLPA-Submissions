@@ -6,8 +6,9 @@ import stripe
 from django.http.response import JsonResponse, HttpResponse
 
 
-class HomePageView(TemplateView):
-    template_name = 'home.html'
+class PaymentPlanConfirmView(TemplateView):
+    template_name = 'paymentplanconfirm.html'
+
 
 
 class PurchasePageView(TemplateView):
