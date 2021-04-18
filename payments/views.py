@@ -97,5 +97,7 @@ def stripe_webhook(request):
     if event['type'] == 'checkout.session.completed':
         print("Payment was successful.")
         # TODO: run some custom code here
+        # register the payment on the customer system
+        # profile page can then show image upload info
 
     return HttpResponse(status=200)
