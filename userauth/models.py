@@ -5,22 +5,6 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 
-#
-# First Name ✔
-# Last Name ✔
-# Email Address ✔
-# Age ✔
-# Address 1 ✔
-# Address 2 ✔
-# City ✔
-# Region ✔
-# Postal Code ✔
-# Marketing Preferences ✔
-# Social Media Profiles ✔
-# Website (main url) ✔
-# Bio (limit to N words) ✔
-# Portrait (1024px long edge min) ✔
-
 
 class CustomUser(AbstractUser):
     display_name = models.CharField(verbose_name=_("Display name"), max_length=30, help_text=_("Will be shown e.g. when commenting"),default='Display Name')
