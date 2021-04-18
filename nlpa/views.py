@@ -1,4 +1,5 @@
 from django.conf import settings # new
+from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
 from django.http.response import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -13,7 +14,7 @@ class PaymentPlanConfirmView(TemplateView):
     template_name = 'paymentplanconfirm.html'
 
 
-
+@login_required
 def get_paymentplan(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
