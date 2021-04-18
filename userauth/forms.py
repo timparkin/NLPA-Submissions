@@ -19,9 +19,16 @@ class WagtailUserEditForm(UserEditForm):
         widgets = {'date_of_birth': forms.DateInput(attrs={'type':'date'})}
 
 class SignupForm(forms.Form):
-    first_name = forms.CharField(max_length=30, label=_("First name"))
-    last_name = forms.CharField(max_length=30, label=_("Last name"))
-    display_name = forms.CharField(max_length=30, label=_("Display name"), help_text=_("Will be shown e.g. when commenting"))
+
+    email=forms.EmailField(required=True)
+    display_name = forms.CharField(max_length=30)
+    password1 = forms.CharField(widget=forms.PasswordInput)
+    first_name = forms.CharField(max_length=30)
+    last_name = forms.CharField(max_length=30)
+
+    class Meta:
+        model=CustomUser
+        fields=('username','first_name','email','password1')
 
     def signup(self, request, user):
         user.first_name = self.cleaned_data['first_name']
