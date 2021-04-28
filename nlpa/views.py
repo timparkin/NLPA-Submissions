@@ -4,7 +4,8 @@ from django.views.generic.base import TemplateView
 from django.http.response import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
-from .forms import PaymentPlanForm
+from nlpa.forms import PaymentPlanForm
+from userauth.models import CustomUser as User
 
 
 class HomePageView(TemplateView):

@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'home',
     'search',
     'userauth',
+    'nlpa',
 
     'wagtail.contrib.forms',
     'wagtail.contrib.redirects',
@@ -66,6 +67,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
 
     'payments.apps.PaymentsConfig',
+    'entries.apps.EntriesConfig',
 ]
 
 MIDDLEWARE = [
