@@ -1,5 +1,35 @@
-<form action="/entries/" method="post">
+<form action="/entries/" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form }}
+    {{ formset.management_form }}
+    {{ formset.non_form_errors.as_ul }}
+    <table id="formset" class="form">
+    {% for form in formset.forms %}
+      {% if forloop.first %}
+      <thead><tr>
+        <th>Entry Number</th>
+        {% for field in form.visible_fields %}
+        <th>{{ field.label|capfirst }}</th>
+        {% endfor %}
+      </tr></thead>
+      {% endif %}
+      <tr class="{% cycle row1 row2 %}">
+        <td>{{forloop.counter}}</td>
+      {% for field in form.visible_fields %}
+        <td>
+        {# Include the hidden fields in the form #}
+        {% if forloop.first %}
+          {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+          {% endfor %}
+        {% endif %}
+          {{ field.errors.as_ul }}
+          {# THIS IS THE MAIN FIELD BLOCK #}
+          {{ field }}
+        </td>
+      {% endfor %}
+      </tr>
+    {% endfor %}
+    </table>
+
     <input type="submit" value="Submit">
 </form>
