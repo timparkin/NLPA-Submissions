@@ -1,5 +1,20 @@
-{% if widget.is_initial %} <a href="{{ widget.value.url }}"><img src="{{ widget.value.thumbnails.large.url }}" /></a>{% if not widget.required %}
+{% if widget.is_initial %} <a href="{{ widget.value.url }}"><img src="{{ widget.value.thumbnails.large.url }}" /></a>
+{{widget.value.width}}  x {{widget.value.height}} ({{widget.value.size|filesizeformat}})
+{% if not widget.required %}
 <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}"{% if widget.attrs.disabled %} disabled{% endif %}>
 <label for="{{ widget.checkbox_id }}">{{ widget.clear_checkbox_label }}</label>{% endif %}<br>
 {% endif %}
-<input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+</td><td>
+
+
+
+
+
+  <div class="form-group" x-data="{ fileName: '' }">
+    <div class="input-group shadow">
+
+      <input type="file" x-ref="file" @change="fileName = $refs.file.files[0].name" name="{{ widget.name }}" class="d-none"{% include "django/forms/widgets/attrs.html" %}>
+      <input type="text" class="form-control form-control-lg" placeholder="<image name>" x-model="fileName">
+      <button class="browse btn btn-primary px-4" type="button" x-on:click.prevent="$refs.file.click()"><i class="fas fa-image"></i> Browse</button>
+    </div>
+  </div>
