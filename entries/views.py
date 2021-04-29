@@ -3,18 +3,30 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
 from django.http.response import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django import forms
+
+
 
 from django.forms.models import inlineformset_factory
+from django.utils.safestring import mark_safe
 
 from entries.models import Entry
 from userauth.models import CustomUser as User
+
+
+
+categories=['Grand Landscape','Intimate and Abstract','Nightscape','Aerial']
+
+
+class ImageWidget(forms.widgets.ClearableFileInput):
+    template_name = 'django/forms/widgets/clearable_file_input.html'
 
 @login_required
 def get_entries(request):
     user = request.user
     entries = Entry.objects.filter(user=user.id)
     print(entries)
-    EntryInlineFormSet = inlineformset_factory(User, Entry, fields=('photo','category'))
+    EntryInlineFormSet = inlineformset_factory(User, Entry, fields=('photo','category'), can_delete=True, max_num=6, min_num=6, widgets={'photo':ImageWidget})
 
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -32,4 +44,4 @@ def get_entries(request):
     else:
         form = EntryInlineFormSet(instance=user)
 
-    return render(request, 'entries.html', {'form': form})
+    return render(request, 'entries.html', {'formset': form})

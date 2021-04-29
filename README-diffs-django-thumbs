@@ -1,0 +1,57 @@
+diff --git a/django_thumbs/db/models.py b/django_thumbs/db/models.py
+index 149dc86..d456694 100644
+--- a/django_thumbs/db/models.py
++++ b/django_thumbs/db/models.py
+@@ -6,7 +6,7 @@ https://github.com/madmw/django-thumbs
+ A fork of django-thumbs [http://code.google.com/p/django-thumbs/] by Antonio Melé [http://django.es].
+ 
+ """
+-import cStringIO
++from io import StringIO as cStringIO
+ from django.db.models import ImageField
+ from django.db.models.fields.files import ImageFieldFile
+ from django.core.files.base import ContentFile
+@@ -74,8 +74,8 @@ class ImageWithThumbsFieldFile(ImageFieldFile):
+                     except:
+                         if settings.DEBUG:
+                             import sys
+-                            print "Exception generating thumbnail"
+-                            print sys.exc_info()
++                            print("Exception generating thumbnail")
++                            print(sys.exc_info())
+             urlBase, extension = self.url.rsplit('.', 1)
+             thumb_url = self.THUMB_SUFFIX % (urlBase, size[0], size[1], extension)
+             return thumb_url
+@@ -127,8 +127,8 @@ class ImageWithThumbsFieldFile(ImageFieldFile):
+                     except:
+                         if settings.DEBUG:
+                             import sys
+-                            print "Exception generating thumbnail"
+-                            print sys.exc_info()
++                            print("Exception generating thumbnail")
++                            print(sys.exc_info())
+ 
+     def delete(self, save=True):
+         if self.name and self.field.sizes:
+@@ -140,8 +140,8 @@ class ImageWithThumbsFieldFile(ImageFieldFile):
+                 except:
+                     if settings.DEBUG:
+                         import sys
+-                        print "Exception deleting thumbnails"
+-                        print sys.exc_info()
++                        print("Exception deleting thumbnails")
++                        print(sys.exc_info())
+         super(ImageFieldFile, self).delete(save)
+ 
+     def generate_thumbnails(self):
+@@ -154,8 +154,8 @@ class ImageWithThumbsFieldFile(ImageFieldFile):
+                 except:
+                     if settings.DEBUG:
+                         import sys
+-                        print "Exception generating thumbnail"
+-                        print sys.exc_info()
++                        print("Exception generating thumbnail")
++                        print(sys.exc_info())
+ 
+     def thumbnail(self, widthOrSize, height=None):
+         """
