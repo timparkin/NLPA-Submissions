@@ -89,8 +89,8 @@ https://testdriven.io/blog/django-stripe-tutorial/
 
 pip3 install django-widget-tweaks (pythoneatstail)
 
-https://github.com/skitoo/django-thumbs
+https://pypi.org/project/django-thumbnails/
 
-
+Don't forget to install redis-server and pip install redis
 
 
