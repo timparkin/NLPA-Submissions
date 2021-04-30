@@ -19,6 +19,9 @@
 
         {# Global stylesheets #}
         <link rel="stylesheet" type="text/css" href="{% static 'css/nlpa.css' %}">
+        <script src="https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js" type="text/javascript" async=""></script>
+        <link rel="preload" href="{% static '/fonts/GrotaSansAltRd-SemiBold.woff2' %}" as="font" type="font/woff2" crossorigin="anonymous">
+        <link rel="preload" href="{% static '/fonts/GrotaSansAltRd-Bold.woff2' %}" as="font" type="font/woff2" crossorigin="anonymous">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
         {% block extra_css %}
@@ -31,6 +34,33 @@
 
     <body class="{% block body_class %}{% endblock %}">
         {% wagtailuserbar %}
+
+
+        <header id="main-header" style="width:100%;box-shadow:  0 0 5px 0 #ccc; -webkit-box-shadow:0 0 5px 0 #ccc;-moz-box-shadow:0 0 5px 0 #ccc;">
+
+        							<div class="logo_container" style="float: left; margin:20px; filter: drop-shadow(0 10px 0.75rem #666)''">
+
+        					<a href="https://naturallandscapeawards.com/" style="width:300px;float: left;">
+        						<img src="https://nlpa-website-bucket.s3.amazonaws.com/static/Logo-NLPA-Color-800.png" alt="Natural Landscape Photography Awards" id="logo" height="80">
+        					</a>
+
+        											<nav id="top-menu-nav" style="width:600px; display: block; float: left;margin-top:30px">
+        <ul id="top-menu" class="nav">
+        <li class="menu-item"><a href="/">Home</a></li>
+        <li class="menu-item"><a href="/rules">Rules</a></li>
+        <li class="menu-item"><a href="/entries">Submit</a></li>
+        <li class="menu-item"><a href="/account">Account</a></li>
+        <li class="menu-item"><a href="/help">Help</a></li>
+        </ul>						</nav>
+
+
+
+
+
+        								</div> <!-- #et-top-navigation -->
+
+
+        		</header>
 
         {% block content %}{% endblock %}
 
