@@ -15,7 +15,7 @@ class Entry(models.Model):
         aerial = 'A', _('Aerial')
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
-    filename = models.CharField(verbose_name=_("Filename"), max_length=128, default='')
+    filename = models.CharField(verbose_name=_("Filename"), max_length=128, default='', blank=True, null=True)
     photo = ImageField(verbose_name=_("Entry Photo"), upload_to='entries/', default='entries/default-entry.png', pregenerated_sizes=["small", "large"])
     datetime = models.DateTimeField(verbose_name=_("Uploaded date"), auto_now_add=True, null=True)
     description = models.CharField(verbose_name=_("Description"), max_length=2048, blank=True, null=True)
