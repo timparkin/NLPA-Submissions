@@ -59,7 +59,13 @@
 
         								</div> <!-- #et-top-navigation -->
 
-
+                        {% if request.user.is_authenticated %}
+                            Hello {{ request.user.username }},
+                            <a href="{% url 'account_logout' %}">Logout?</a>
+                        {% else %}
+                            Hi guest!
+                            <a href="{% url 'account_login' %}">Login?</a>
+                        {% endif %}
         		</header>
 
         {% block content %}{% endblock %}
