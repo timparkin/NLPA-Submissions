@@ -31,7 +31,7 @@ urlpatterns = [
     path('', include('entries.urls')),
 
     path('accounts/', include('userauth.urls')),
-
+    path('accounts/', include('allauth.urls')),
 
 ]
 
