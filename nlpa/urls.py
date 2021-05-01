@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls import url
 from django.urls import include, path
 from django.contrib import admin
+from django.views import static
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
@@ -32,6 +33,9 @@ urlpatterns = [
 
     path('accounts/', include('userauth.urls')),
     path('accounts/', include('allauth.urls')),
+    url(r'^assets/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/nlpa/static/public/assets"}),
+    url(r'^vendors/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/nlpa/static/public/vendors"}),
+    url(r'^apps/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/nlpa/static/public/apps"}),
 
 ]
 
