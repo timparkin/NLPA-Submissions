@@ -21,7 +21,6 @@ class WagtailUserEditForm(UserEditForm):
 class SignupForm(forms.Form):
 
     email=forms.EmailField(required=True)
-    display_name = forms.CharField(max_length=30)
     password1 = forms.CharField(widget=forms.PasswordInput)
     first_name = forms.CharField(max_length=30)
     last_name = forms.CharField(max_length=30)
@@ -33,7 +32,6 @@ class SignupForm(forms.Form):
     def signup(self, request, user):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
-        user.display_name = self.cleaned_data['display_name']
         user.save()
 
 class CustomUserUpdateForm(forms.ModelForm):
