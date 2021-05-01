@@ -17,7 +17,7 @@
 }
 
 @font-face {
-    font-family: 'Grota Sans Alt Rd';
+    font-family: 'Grota Sans Alt Rd Bold';
     src: url('/static/fonts/GrotaSansAltRd-Bold.woff2') format('woff2'),
         url('/static/fonts/GrotaSansAltRd-Bold.woff') format('woff');
     font-weight: bold;
@@ -25,34 +25,6 @@
     font-display: swap;
 }
 
-#top-menu {
-    height: 50px;
-    float: left;
-    padding-left: 40px;
-}
-#top-menu li {
-    display: block;
-    font-size: 20px;
-    padding-right: 22px;
-}
-#et-secondary-menu li, #top-menu li {
-    word-wrap: break-word;
-}
-.nav li {
-    position: relative;
-    line-height: 1em;
-}
-#top-menu {
-    color: #345f22;
-}
-
-#top-menu a {
-    font-family: 'Grota Sans Alt Rd',arial,sans-serif !important;
-    font-weight: bold !important;
-    color: rgba(0,0,0,.6);
-    text-decoration: none;
-    display: block;
-    position: relative;
-    -webkit-transition: all .4s ease-in-out;
-    transition: all .4s ease-in-out;
+body .font-sans-serif  {
+  font-family: 'Grota Sans Alt Rd Bold' !important;
 }

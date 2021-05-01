@@ -168,6 +168,9 @@ STATICFILES_FINDERS = [
 
 STATICFILES_DIRS = [
     os.path.join(PROJECT_DIR, 'static'),
+    os.path.join(PROJECT_DIR, 'static/public/app'),
+    os.path.join(PROJECT_DIR, 'static/public/vendors'),
+    os.path.join(PROJECT_DIR, 'static/public/assets'),
 ]
 
 # ManifestStaticFilesStorage is recommended in production, to prevent outdated
