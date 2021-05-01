@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block header %}Entries{% endblock %}
+
 {% block content %}
 
 {% load filter_extras %}
@@ -11,53 +13,74 @@
     {% csrf_token %}
     {{ formset.management_form }}
     {{ formset.non_form_errors.as_ul }}
-    <table id="formset" class="form">
+
+    <table class="table">
+
     {% for form in formset.forms %}
-      {% if forloop.first %}
-      <thead><tr>
-        <th>Number</th>
-        <th style="width:400px;">Uploaded Photo</th>
-        <th>Action</th>
-        <th>Category</th>
-        <th>Check to Delete</th>
-      </tr></thead>
-      {% endif %}
-      <tr class="{% cycle row1 row2 %}">
-        <td>{{forloop.counter}}</td>
+
+
+    <tbody>
+    <tr>
+      <td style="padding:.75 rem 0 0 0">{{forloop.counter}}</td><td>
       {% for field in form.visible_fields %}
-        <td>
+
         {# Include the hidden fields in the form #}
         {% if forloop.first %}
           {% for hidden in form.hidden_fields %}
           {{ hidden }}
           {% endfor %}
 
+<div class="container">
+<div class="row" style="padding-bottom:10px;">
 
- <div class="photolink" style="width:100px; height: 100px; float:left">
-   {% if form.photo.value.url|length > 0 %}
-  <a href="{{ form.photo.value.url }}"><img src="{{ form.photo.value.thumbnails.large.url }}" /></a>
-</div>
-<div class="photometadata" style="">
+       <div class="col-3">
 
-  filename: {{form.filename.value|limit_length_tooltip}}
+          <div class="photolink" style="width:200px">
+        {% if form.photo.value.url|length > 0 %}
+            <a href="{{ form.photo.value.url }}"><img width="180" src="{{ form.photo.value.thumbnails.xlarge.url }}"  /></a>
+          </div>
 
-  <br> dimensions: {{form.photo.value.width}} x {{form.photo.value.height}}<br>size: ({{form.photo.value.size|filesizeformat}})</div>
-{% else %}
-  <img width="80" src="https://nlpa-website-bucket.s3.amazonaws.com/entries/default-entry.png" />
-{% endif %}</div>
+        </div>
+        <div class="col-5">
 
+          <div class="photometadata" style="">
+            filename: {{form.filename.value|limit_length_tooltip}}<br>
+            dimensions: {{form.photo.value.width}} x {{form.photo.value.height}}<br>
+            size: {{form.photo.value.size|filesizeformat}}
+          </div>
+
+        {% else %}
+          <img width="180" src="https://nlpa-website-bucket.s3.amazonaws.com/entries/default-entry.png" />
+        </div>
+
+      </div>
+      <div class="col-5">
+        <div class="photometadata" style="">
+          filename: none<br>
+          dimensions: <br>
+          size:
+        </div>
         {% endif %}
+       </div>
+       <div class="col-2">
+        {% endif %}
+
           {{ field.errors.as_ul }}
-          {# THIS IS THE MAIN FIELD BLOCK #}
 
           {{ field }}
-        </td>
-      {% endfor %}
-      </tr>
-    {% endfor %}
-    </table>
 
-    <input type="submit" value="Submit">
+
+      {% endfor %}
+        </div>
+</div>
+</div>
+</td>
+</tr>
+
+    {% endfor %}
+</tbody>
+</table>
+    <input type="submit" value="Submit" class="form-control-sm">
 </form>
 
 {% endblock %}
