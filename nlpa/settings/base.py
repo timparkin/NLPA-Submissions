@@ -168,6 +168,9 @@ STATICFILES_FINDERS = [
 
 STATICFILES_DIRS = [
     os.path.join(PROJECT_DIR, 'static'),
+    os.path.join(PROJECT_DIR, 'static/public/app'),
+    os.path.join(PROJECT_DIR, 'static/public/vendors'),
+    os.path.join(PROJECT_DIR, 'static/public/assets'),
 ]
 
 # ManifestStaticFilesStorage is recommended in production, to prevent outdated
@@ -234,21 +237,14 @@ THUMBNAILS = {
         # You can also use Amazon S3 or any other Django storage backends
     },
     'SIZES': {
-        'small': {
-            'PROCESSORS': [
-                {'PATH': 'thumbnails.processors.resize', 'width': 40, 'height': 40},
-            ],
-            'POST_PROCESSORS': [
-                {
-                    'PATH': 'thumbnails.post_processors.optimize',
-                    'png_command': 'optipng -force -o7 "%(filename)s"',
-                    'jpg_command': 'jpegoptim -f --strip-all "%(filename)s"',
-                },
-            ],
-        },
         'large': {
             'PROCESSORS': [
                 {'PATH': 'thumbnails.processors.resize', 'width': 80, 'height': 100, 'method': 'fit'},
+            ],
+        },
+        'xlarge': {
+            'PROCESSORS': [
+                {'PATH': 'thumbnails.processors.resize', 'width': 200, 'height': 300, 'method': 'fit'},
             ],
         }
     }
