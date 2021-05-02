@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 
     'modelcluster',
     'taggit',
-
+    'crispy_forms',
     'django.forms',
     'widget_tweaks',
 
@@ -250,3 +250,4 @@ THUMBNAILS = {
     }
 }
 FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

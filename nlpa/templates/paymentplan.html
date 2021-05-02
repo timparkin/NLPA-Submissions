@@ -56,24 +56,26 @@
           </div>
         </div>
       </div>
+      <form action="/paymentplan/" method="post" id="form-entry">
+        <div  style="display:none">
+          {% csrf_token %}
+          {{ form }}
+          </div>
+
+
       <div class="col-12 text-center">
-        <h5 class="mt-5">All you need to do is set up an account and follow the simple guide.</h5>
-        <p class="fs-1">If you want to know more about the competition, have a look at our <a href="#">main website</a> which has lots of extra information.</p>
+        <h5 class="mt-5"><input type="submit" value="Submit"></h5>
       </div>
     </div>
   </div>
 </div>
+  </form>
 
 
 
 
 
 
-<form action="/paymentplan/" method="post" id="form-entry">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit">
-</form>
 <script>
 
   var entry_price_dict = {

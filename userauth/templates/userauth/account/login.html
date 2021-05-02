@@ -17,15 +17,12 @@
         </div>
         <div class="form-group">
             {% with field=form.password %}{% include "account/form_field.html" %}{% endwith %}
-        </div>
+        </div><br>
         <button type="submit" class="btn btn-outline-primary">{% trans "Sign In" %}</button>
     </form>
-
-{% endblock %}
-
-{% block card-footer %}
-    <p>{% trans "Don't have an account?" %} <a href="{{ signup_url }}">{% trans "Sign Up" %}</a></p>
-    <small>
-        <a class="text-muted" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-    </small>
+<br>
+<p>{% trans "Don't have an account?" %} <a href="{{ signup_url }}">{% trans "Sign Up" %}</a></p>
+<small>
+    <a class="text-muted" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+</small>
 {% endblock %}

@@ -27,7 +27,7 @@ class SignupForm(forms.Form):
 
     class Meta:
         model=CustomUser
-        fields=('username','first_name','email','password1')
+        fields=('username','first_name','last_name','email','password1')
 
     def signup(self, request, user):
         user.first_name = self.cleaned_data['first_name']
@@ -37,5 +37,6 @@ class SignupForm(forms.Form):
 class CustomUserUpdateForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'display_name', 'date_of_birth', 'address1', 'address2', 'zip_code', 'city', 'country', 'mobile_phone', 'additional_information', 'photo',]
-        widgets = {'date_of_birth': forms.DateInput(attrs={'type':'date'})}
+        #fields = ['first_name', 'last_name', 'display_name', 'date_of_birth', 'address1', 'address2', 'zip_code', 'city', 'country', 'mobile_phone', 'additional_information', 'photo',]
+        #widgets = {'date_of_birth': forms.DateInput(attrs={'type':'date'})}
+        fields = ['first_name', 'last_name', 'email']

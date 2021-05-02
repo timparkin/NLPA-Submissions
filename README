@@ -48,7 +48,7 @@ sudo -u postgres createdb nlpa
 psql> alter user nlpa with password nlpa
 
 vi settings/base.py
-  
+
   DATABASES = {
           'default': {
               'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -60,7 +60,7 @@ vi settings/base.py
               'PORT': '',                      # Set to empty string for default.
       }
   }
-  
+
 
 sudo apt-get install libpq-dev python3-dev
 pip install psycopg2
@@ -93,10 +93,5 @@ https://pypi.org/project/django-thumbnails/
 
 Don't forget to install redis-server and pip install redis
 
--========
-
-Installing theme bootstrap
-
-apt install nodejs
-npm install -g npx
-npm install -g gulp-cli
+sudo npm install
+sudo npm install -g gulp-cli

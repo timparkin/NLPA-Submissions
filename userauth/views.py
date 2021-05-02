@@ -11,6 +11,8 @@ from django.views.generic.edit import UpdateView, DeleteView
 def profile_view(request):
     return render(request, 'account/profile.html')
 
+    
+
 class CustomUserUpdateView(UpdateView):
     model = CustomUser
     form_class = CustomUserUpdateForm
