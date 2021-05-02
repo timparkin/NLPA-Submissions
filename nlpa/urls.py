@@ -14,6 +14,7 @@ from . import views
 
 urlpatterns = [
     path('', views.HomePageView.as_view(), name='home'),
+    path('faq/', views.FAQPageView.as_view(), name='faq'),
 
 
     path('django-admin/', admin.site.urls),
