@@ -67,7 +67,8 @@ def create_checkout_session(request):
                 cancel_url=domain_url + 'cancelled/',
                 payment_method_types=['card'],
                 mode='payment',
-                line_items=line_items
+                line_items=line_items,
+                allow_promotion_codes=True,
             )
             return JsonResponse({'sessionId': checkout_session['id']})
         except Exception as e:

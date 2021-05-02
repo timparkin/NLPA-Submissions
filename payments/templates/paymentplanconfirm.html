@@ -1,24 +1,30 @@
+{% extends 'base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Django + Stripe Checkout</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
-    <script src="https://js.stripe.com/v3/"></script>  <!-- new -->
-    <script src="{% static 'main.js' %}"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-  </head>
-  <body>
-  <section class="section">
-    <div class="container">
-      <p>You have chosen the following payment option</p>
-      <p>Number of Entries = {{ request.session.number_of_entries }}</p>
-      <p>Number of Portfolios = {{ request.session.number_of_portfolios }}</p>
-      <button class="button is-primary" id="submitBtn">Purchase!</button>
-    </div>
-  </section>
-  </body>
-</html>
+{% block content %}
+
+
+
+      <div class="card overflow-hidden mb-3">
+        <div class="bg-holder d-none d-lg-block bg-card" style="background-image:url(../../assets/img/illustrations/corner-4.png);">
+        </div>
+        <!--/.bg-holder-->
+
+        <div class="card-body position-relative">
+
+          <h3>Confirm Choices</h3>
+          <p>You have chosen the following payment option</p>
+          <p>Number of Entries = {{ request.session.number_of_entries }}</p>
+          <p>Number of Portfolios = {{ request.session.number_of_portfolios }}</p>
+          <button class="button is-primary" id="submitBtn">Purchase!</button>        </div>
+      </div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://js.stripe.com/v3/"></script>  <!-- new -->
+<script src="{% static 'main.js' %}"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+{% endblock %}
