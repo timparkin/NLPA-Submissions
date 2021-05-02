@@ -93,4 +93,10 @@ https://pypi.org/project/django-thumbnails/
 
 Don't forget to install redis-server and pip install redis
 
+-========
 
+Installing theme bootstrap
+
+apt install nodejs
+npm install -g npx
+npm install -g gulp-cli
