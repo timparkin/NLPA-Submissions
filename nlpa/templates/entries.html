@@ -3,6 +3,8 @@
 
 {% block content %}
 
+
+
 <div class="card">
   <div class="card-body position-relative">
  <h2>Entries</h2>
@@ -17,74 +19,87 @@
     {{ formset.management_form }}
     {{ formset.non_form_errors.as_ul }}
 
-    <table class="table">
 
+
+<div class="card-body p-0 overflow-hidden">
+  <div class="row g-0">
     {% for form in formset.forms %}
 
+    {% for field in form.visible_fields %}
 
-    <tbody>
-    <tr>
-      <td style="padding:.75 rem 0 0 0">{{forloop.counter}}</td><td>
-      {% for field in form.visible_fields %}
+      {# Include the hidden fields in the form #}
+      {% if forloop.first %}
+        {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+        {% endfor %}
 
-        {# Include the hidden fields in the form #}
-        {% if forloop.first %}
-          {% for hidden in form.hidden_fields %}
-          {{ hidden }}
-          {% endfor %}
+    <div class="col-12 p-card">
+      <div class="row">
+        <div class="col-sm-5 col-md-4">
+          <div class="position-relative h-sm-100">
 
-<div class="container">
-<div class="row" style="padding-bottom:10px;">
 
-       <div class="col-3">
 
-          <div class="photolink" style="width:200px">
-        {% if form.photo.value.url|length > 0 %}
-            <a href="{{ form.photo.value.url }}"><img width="180" src="{{ form.photo.value.thumbnails.xlarge.url }}"  /></a>
+            {% if form.photo.value.url|length > 0 %}
+            <a class="d-block h-100" href="{{ form.photo.value.url }}">
+              <img class="img-fluid fit-cover w-sm-100 h-sm-100 rounded-1 absolute-sm-centered" src="{{ form.photo.value.thumbnails.xlarge.url }}" alt="" />
+            </a>
+            {% else %}
+            <a class="d-block h-100" href="#">
+              <img class="img-fluid fit-cover w-sm-100 h-sm-100 rounded-1 absolute-sm-centered" src="https://nlpa-website-bucket.s3.amazonaws.com/entries/default-entry.png" alt="" />
+            </a>
+            {% endif %}
+
+
+
+
           </div>
-
         </div>
-        <div class="col-5">
+        <div class="col-sm-7 col-md-8">
+          <div class="row">
+            <div class="col-lg-12 d-flex justify-content-between flex-column">
 
-          <div class="photometadata" style="">
-            filename: {{form.filename.value|limit_length_tooltip}}<br>
-            dimensions: {{form.photo.value.width}} x {{form.photo.value.height}}<br>
-            size: {{form.photo.value.size|filesizeformat}}
+
+{% if form.photo.value.url|length > 0 %}
+  <h5 class="mt-3 mt-sm-0">{{forloop.parentloop.counter}}. {{form.filename.value|limit_length_tooltip}}</h5>
+
+    <span>{{form.photo.value.width}} x {{form.photo.value.height}}</span>
+    <span>{{form.photo.value.size|filesizeformat}}</span>
+
+{% else %}
+  <h5 class="mt-3 mt-sm-0">{{forloop.parentloop.counter}}. [filename]</h5>
+    <span>&nbsp;</span>
+    <span>&nbsp;</span>
+
+{% endif %}
+{% endif %}
+
+<div class="w-50 p-1">
+  {{ field.errors.as_ul }}
+  {{ field }}
+</div>
+
+{% endfor %}
+
+
+            </div>
+
           </div>
-
-        {% else %}
-          <img width="180" src="https://nlpa-website-bucket.s3.amazonaws.com/entries/default-entry.png" />
         </div>
-
       </div>
-      <div class="col-5">
-        <div class="photometadata" style="">
-          filename: none<br>
-          dimensions: <br>
-          size:
-        </div>
-        {% endif %}
-       </div>
-       <div class="col-2">
-        {% endif %}
-
-          {{ field.errors.as_ul }}
-
-          {{ field }}
-
-
-      {% endfor %}
-        </div>
-</div>
-</div>
-</td>
-</tr>
-
+    </div>
     {% endfor %}
-</tbody>
-</table>
     <input type="submit" value="Submit" class="form-control-sm">
+  </div>
+</div>
 </form>
 </div>
 </div>
+
+
+
+
+
+
+
 {% endblock %}

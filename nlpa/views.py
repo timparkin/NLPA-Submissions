@@ -11,6 +11,9 @@ from userauth.models import CustomUser as User
 class HomePageView(TemplateView):
     template_name = 'home.html'
 
+class FAQPageView(TemplateView):
+    template_name = 'faq.html'
+
 class PaymentPlanConfirmView(TemplateView):
     template_name = 'paymentplanconfirm.html'
 
