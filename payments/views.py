@@ -60,7 +60,7 @@ def create_checkout_session(request):
                     }
                 )
 
-            print(line_items)
+            
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=request.user.id if request.user.is_authenticated else None,
                 success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',

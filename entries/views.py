@@ -31,7 +31,7 @@ def get_entries(request):
     user = request.user
     entries = Entry.objects.filter(user=user.id)
 
-    EntryInlineFormSet = inlineformset_factory(User, Entry, fields=('photo','category','filename'), can_delete=True, max_num=6, min_num=6, widgets={'filename':forms.HiddenInput,'photo':ImageWidget})
+    EntryInlineFormSet = inlineformset_factory(User, Entry, fields=('photo','category','filename'), can_delete=False, max_num=6, min_num=6, widgets={'filename':forms.HiddenInput,'photo':ImageWidget})
 
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
