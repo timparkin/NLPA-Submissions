@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 
-{% block header %}Entries{% endblock %}
 
 {% block content %}
+
+<div class="card">
+  <div class="card-body position-relative">
+ <h2>Entries</h2>
 
 {% load filter_extras %}
 
@@ -82,5 +85,6 @@
 </table>
     <input type="submit" value="Submit" class="form-control-sm">
 </form>
-
+</div>
+</div>
 {% endblock %}

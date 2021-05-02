@@ -1,5 +1,74 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
 <form action="/paymentplan/" method="post">
+<div class="card mb-3">
+  <div class="card-body">
+    <div class="row g-0">
+      <div class="col-12 mb-3">
+        <div class="row justify-content-center justify-content-sm-between">
+          <div class="col-sm-auto text-center">
+            <h5 class="d-inline-block">Entry Fees</h5><span class="badge badge-soft-success rounded-pill ms-2">Youth Discount 70%</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 border-top border-bottom">
+        <div class="h-150">
+          <div class="text-center p-4">
+            <h3 class="fw-normal my-0">Budget</h3>
+            <p class="mt-3">If you just want to try things out, choose this option which lets you enter six images.</p>
+            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>40
+            </h2><a class="btn btn-outline-primary" href="../../app/e-commerce/billing.html">Purchase</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 border-top border-bottom dark__bg-1000 px-4 px-lg-0" style="background-color: rgba(115, 255, 236, 0.18);">
+        <div class="h-150">
+          <div class="text-center p-4">
+            <h3 class="fw-normal my-0">Standard</h3>
+            <p class="mt-3">Our normal plan lets you enter twelve images for five dollars an image</p>
+            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>60
+            </h2><a class="btn btn-primary" href="../../app/e-commerce/billing.html">Purchase</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 border-top border-bottom">
+        <div class="h-150">
+          <div class="text-center p-4">
+            <h3 class="fw-normal my-0">Extended</h3>
+            <p class="mt-3">If you want to enter a few extra images, this plan gives you six more for eighteen in total</p>
+            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>100
+            </h2><a class="btn btn-outline-primary" href="../../app/e-commerce/billing.html">Purchase</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 border-top border-bottom">
+        <div class="h-150">
+          <div class="text-center p-4">
+            <h3 class="fw-normal my-0">Portfolio</h3>
+            <p class="mt-3">You can also enter up to two portfolios of between 6 and 10 images</p>
+            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>30 <small class="fs--1 text-700">/ portfolio</small>
+            </h2><a class="btn btn-outline-primary" href="../../app/e-commerce/billing.html">Purchase</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 text-center">
+        <h5 class="mt-5">All you need to do is set up an account and follow the simple guide.</h5>
+        <p class="fs-1">If you want to know more about the competition, have a look at our <a href="#">main website</a> which has lots of extra information.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit">
 </form>
+
+{% endblock %}

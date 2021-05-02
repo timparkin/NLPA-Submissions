@@ -15,6 +15,7 @@ class PaymentPlanConfirmView(TemplateView):
     template_name = 'paymentplanconfirm.html'
 
 
+
 @login_required
 def get_paymentplan(request):
     # if this is a POST request we need to process the form data
