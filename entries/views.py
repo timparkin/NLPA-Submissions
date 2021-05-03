@@ -15,6 +15,7 @@ from userauth.models import CustomUser as User
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import json
+from nlpa.custom_storages import create_custom_storage, CustomS3Boto3Storage
 
 
 categories=['Grand Landscape','Intimate and Abstract','Nightscape','Aerial']
@@ -54,6 +55,7 @@ def get_entries(request):
             # process the data in form.cleaned_data as required
             myformset = form.save(commit=False)
             for f in myformset:
+                f.photo.storage.custom = {'filename': f.filename, 'user_email': request.user.email, 'category': f.category, 'is_young_entrant': request.user.is_young_entrant}
                 f.filename = f.photo.name
             form.save()
 

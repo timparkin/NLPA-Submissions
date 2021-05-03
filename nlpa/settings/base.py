@@ -219,7 +219,7 @@ ACCOUNT_SIGNUP_FORM_CLASS = 'userauth.forms.SignupForm'
 
 AWS_STORAGE_BUCKET_NAME = 'nlpa-website-bucket'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'nlpa.custom_storages.CustomS3Boto3Storage'
 
 THUMBNAILS = {
     'METADATA': {
@@ -230,7 +230,7 @@ THUMBNAILS = {
         'host': 'localhost',
     },
     'STORAGE': {
-        'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+        'BACKEND': 'nlpa.custom_storages.CustomS3Boto3Storage',
         # You can also use Amazon S3 or any other Django storage backends
     },
     'SIZES': {
