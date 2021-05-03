@@ -6,7 +6,7 @@ from django.shortcuts import render
 
 from nlpa.forms import PaymentPlanForm
 from userauth.models import CustomUser as User
-
+import json
 
 class HomePageView(TemplateView):
     template_name = 'home.html'
@@ -14,13 +14,14 @@ class HomePageView(TemplateView):
 class FAQPageView(TemplateView):
     template_name = 'faq.html'
 
-class PaymentPlanConfirmView(TemplateView):
-    template_name = 'paymentplanconfirm.html'
-
-
 
 @login_required
 def get_paymentplan(request):
+    if 'checkout.session.completed' in request.user.payment_status:
+        return HttpResponseRedirect('/entries')
+    if 'payment_pending' in request.user.payment_status:
+        return HttpResponseRedirect('/entries')
+    print('payment status: %s'%request.user.payment_status)
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:

@@ -4,7 +4,10 @@ from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 from django.http.response import JsonResponse, HttpResponse
+from django.shortcuts import render
 import stripe
+import datetime
+import json
 
 entry_products = {
 '18': {'price_id':'price_1Ib3y1IyfIE0cGLTwiEUEsDA','product_id':'prod_JDUxYgaLhmsJXu','name':'Eighteen Images','price':10000},
@@ -17,21 +20,29 @@ portfolio_products = {
 }
 
 
-class PaymentPlanConfirmView(TemplateView):
-    template_name = 'paymentplanconfirm.html'
 
 
 class PurchasePageView(TemplateView):
     template_name = 'purchase.html'
 
 
-class SuccessView(TemplateView):
-    template_name = 'success.html'
 
 
-class CancelledView(TemplateView):
-    template_name = 'cancelled.html'
+@login_required
+def cancelled(request):
+    request.user.payment_status='cancelled %s'%datetime.datetime.now()
+    request.user.save()
+    return render(request, 'cancelled.html')
 
+@login_required
+def payment_plan_confirm(request):
+    return render(request, 'paymentplanconfirm.html')
+
+@login_required
+def success(request):
+    request.user.payment_status='payment_pending %s'%datetime.datetime.now()
+    request.user.save()
+    return render(request, 'success.html')
 
 @csrf_exempt
 def stripe_config(request):
@@ -41,9 +52,10 @@ def stripe_config(request):
 
 
 @csrf_exempt
+@login_required
 def create_checkout_session(request):
     if request.method == 'GET':
-        domain_url = 'http://192.168.64.3:8000/'
+        domain_url = settings.BASE_URL
         stripe.api_key = settings.STRIPE_SECRET_KEY
         try:
             line_items=[
@@ -60,7 +72,7 @@ def create_checkout_session(request):
                     }
                 )
 
-            
+
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=request.user.id if request.user.is_authenticated else None,
                 success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
@@ -70,6 +82,9 @@ def create_checkout_session(request):
                 line_items=line_items,
                 allow_promotion_codes=True,
             )
+            request.user.payment_plan = json.dumps( {'entries': request.session['number_of_entries'], 'portfolios': request.session['number_of_portfolios'] })
+            request.user.payment_status = 'checkingout %s'%datetime.datetime.now()
+            request.user.save()
             return JsonResponse({'sessionId': checkout_session['id']})
         except Exception as e:
             return JsonResponse({'error': str(e)})
@@ -94,6 +109,7 @@ def stripe_webhook(request):
         # Invalid signature
         return HttpResponse(status=400)
 
+    request.user.payment_status='%s %s'%(event['type'],datetime.datetime.now())
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
         print("Payment was successful.")

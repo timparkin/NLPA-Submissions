@@ -26,6 +26,8 @@ class CustomUser(AbstractUser):
     marketing_prefs = models.CharField(verbose_name=_("Marketing Preferences"), max_length=4096, blank=True, null=True)
     photo = models.ImageField(verbose_name=_("Photo"), upload_to='photos/', default='photos/default-user-avatar.png')
     website = models.CharField(verbose_name=_("Main Website"), max_length=1024, blank=True, null=True)
+    payment_status = models.CharField(verbose_name=_("Payment Status"), max_length=1024, blank=True, null=True)
+    payment_plan = models.CharField(verbose_name=_("Payment Status"), max_length=1024, blank=True, null=True)
 
     class Meta:
         ordering = ['last_name']
