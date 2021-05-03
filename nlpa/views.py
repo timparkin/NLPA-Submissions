@@ -17,10 +17,12 @@ class FAQPageView(TemplateView):
 
 @login_required
 def get_paymentplan(request):
-    if 'checkout.session.completed' in request.user.payment_status:
-        return HttpResponseRedirect('/entries')
-    if 'payment_pending' in request.user.payment_status:
-        return HttpResponseRedirect('/entries')
+    payment_status = request.user.payment_status
+    if payment_status is not None:
+        if 'checkout.session.completed' in payment_status:
+            return HttpResponseRedirect('/entries')
+        if 'payment_pending' in payment_status:
+            return HttpResponseRedirect('/entries')
     print('payment status: %s'%request.user.payment_status)
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
