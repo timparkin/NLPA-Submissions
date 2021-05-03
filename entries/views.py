@@ -14,7 +14,7 @@ from entries.models import Entry
 from userauth.models import CustomUser as User
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
-
+import json
 
 
 categories=['Grand Landscape','Intimate and Abstract','Nightscape','Aerial']
@@ -28,10 +28,21 @@ class ImageWidget(forms.widgets.ClearableFileInput):
 
 @login_required
 def get_entries(request):
+    if 'checkout.session.completed' not in request.user.payment_status and 'payment_pending' not in request.user.payment_status:
+        return HttpResponseRedirect('/paymentplan')
+    print('payment status: %s'%request.user.payment_status)
     user = request.user
+    if request.user.payment_plan is not None:
+        payment_plan = json.loads(request.user.payment_plan)
+    else:
+        payment_plan = None
+    print(payment_plan)
+    request.session['payment_plan'] = payment_plan
     entries = Entry.objects.filter(user=user.id)
 
-    EntryInlineFormSet = inlineformset_factory(User, Entry, fields=('photo','filename', 'category',), can_delete=False, max_num=6, min_num=6, widgets={'filename':forms.HiddenInput,'photo':ImageWidget})
+
+
+    EntryInlineFormSet = inlineformset_factory(User, Entry, fields=('photo','filename', 'category',), can_delete=False, max_num=int(payment_plan['entries']), min_num=int(payment_plan['entries']), widgets={'filename':forms.HiddenInput,'photo':ImageWidget})
 
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
