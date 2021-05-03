@@ -28,6 +28,7 @@ class CustomUser(AbstractUser):
     website = models.CharField(verbose_name=_("Main Website"), max_length=1024, blank=True, null=True)
     payment_status = models.CharField(verbose_name=_("Payment Status"), max_length=1024, blank=True, null=True)
     payment_plan = models.CharField(verbose_name=_("Payment Status"), max_length=1024, blank=True, null=True)
+    is_young_entrant = models.CharField(verbose_name=_("Is Young Entrant"), max_length=1024, blank=True, null=False, default='False')
 
     class Meta:
         ordering = ['last_name']
