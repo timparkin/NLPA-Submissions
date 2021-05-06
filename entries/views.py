@@ -18,7 +18,8 @@ import json
 from nlpa.custom_storages import create_custom_storage, CustomS3Boto3Storage
 
 
-categories=['Grand Landscape','Intimate and Abstract','Nightscape','Aerial']
+
+category_list = ['GL', 'IA', 'N', 'A']
 
 class ImageWidget(forms.widgets.ClearableFileInput):
     template_name = 'django/forms/widgets/clearable_file_input.html'
@@ -32,13 +33,11 @@ def get_entries(request):
     payment_status = request.user.payment_status
     if payment_status is None or ('checkout.session.completed' not in payment_status and 'payment_pending' not in payment_status):
         return HttpResponseRedirect('/paymentplan')
-    print('payment status: %s'%request.user.payment_status)
     user = request.user
     if request.user.payment_plan is not None:
         payment_plan = json.loads(request.user.payment_plan)
     else:
         payment_plan = None
-    print(payment_plan)
     request.session['payment_plan'] = payment_plan
 
 
@@ -48,7 +47,7 @@ def get_entries(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        form = EntryInlineFormSet(request.POST, request.FILES, instance=user)
+        form = EntryInlineFormSet(request.POST, request.FILES, instance=user, queryset=Entry.objects.filter(category_list))
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
@@ -63,7 +62,7 @@ def get_entries(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = EntryInlineFormSet(instance=user)
+        form = EntryInlineFormSet(instance=user, queryset=Entry.objects.filter(category__in=category_list))
 
     return render(request, 'entries.html', {'formset': form})
 
@@ -99,7 +98,7 @@ class GetPortfolios(LoginRequiredMixin, View):
                                  can_delete=False,
                                  max_num=10,
                                  min_num=10,
-                                 widgets={'filename':forms.HiddenInput,'photo':ImageWidget}
+                                 widgets={'filename':forms.HiddenInput,'photo':ImageWidget, 'category':forms.HiddenInput}
                                  )
         payment_status = request.user.payment_status
         if payment_status is None or ('checkout.session.completed' not in payment_status and 'payment_pending' not in payment_status):
@@ -119,9 +118,8 @@ class GetPortfolios(LoginRequiredMixin, View):
                                  can_delete=False,
                                  max_num=10,
                                  min_num=10,
-                                 widgets={'filename':forms.HiddenInput,'photo':ImageWidget}
+                                 widgets={'filename':forms.HiddenInput,'photo':ImageWidget,'category':forms.HiddenInput}
                                  )
-        print(request.POST)
         if 'portfolio1' in request.POST:
             portfolio1 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(category='P1'))
             if portfolio1.is_valid():

@@ -23,7 +23,6 @@ def get_paymentplan(request):
             return HttpResponseRedirect('/entries')
         if 'payment_pending' in payment_status:
             return HttpResponseRedirect('/entries')
-    print('payment status: %s'%request.user.payment_status)
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
