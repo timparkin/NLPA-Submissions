@@ -126,11 +126,36 @@
                  </a>
 
 
+{% if request.get_full_path == "/entries" %}
                  <!-- Pricing-->
                  <a class="nav-link" href="/paymentplan" role="button">
                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-tags"></span></span><span class="nav-link-text ps-1">Enter</span>
                    </div>
                  </a>
+
+{% else %}
+
+                 <!-- USER -->
+                 <a class="nav-link dropdown-indicator show" href="#user" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="user">
+                   <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-user"></span></span><span class="nav-link-text ps-1">Entry System</span>
+                   </div>
+                 </a>
+                 <!-- inner pages-->
+                 <ul class="nav collapse false show" id="user">
+                   <li class="nav-item"><a class="nav-link" href="/entries">
+                       <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Main Entries</span>
+                       </div>
+                     </a>
+                     <!-- more inner pages-->
+                   </li>
+                   <li class="nav-item"><a class="nav-link" href="/portfolios">
+                       <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Portfolios</span>
+                       </div>
+                     </a>
+                     <!-- more inner pages-->
+                   </li>
+                 </ul>
+{% endif %}
 
 {% comment %}
                  <!-- AUTHENTICATION -->
