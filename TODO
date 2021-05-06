@@ -19,3 +19,5 @@ image upload - validating minimum image size... (cross mark saying "you might wa
 
 
 can we add tags to s3 uploaded images? i.e. filename, 
+
+https://stackoverflow.com/questions/17832860/backup-strategies-for-aws-s3-bucket

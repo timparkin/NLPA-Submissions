@@ -1,10 +1,10 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.views.generic.base import TemplateView
+from django.views.generic.base import View,TemplateView
 from django.http.response import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django import forms
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 from django.forms.models import inlineformset_factory
@@ -40,7 +40,6 @@ def get_entries(request):
         payment_plan = None
     print(payment_plan)
     request.session['payment_plan'] = payment_plan
-    entries = Entry.objects.filter(user=user.id)
 
 
 
@@ -55,7 +54,7 @@ def get_entries(request):
             # process the data in form.cleaned_data as required
             myformset = form.save(commit=False)
             for f in myformset:
-                f.photo.storage.custom = {'filename': f.filename, 'user_email': request.user.email, 'category': f.category, 'is_young_entrant': request.user.is_young_entrant}
+                f.photo.storage.custom = {'filename': f.photo.name, 'user_email': request.user.email, 'category': f.category, 'is_young_entrant': request.user.is_young_entrant}
                 f.filename = f.photo.name
             form.save()
 
@@ -67,3 +66,84 @@ def get_entries(request):
         form = EntryInlineFormSet(instance=user)
 
     return render(request, 'entries.html', {'formset': form})
+
+
+
+
+
+
+
+
+
+class GetPortfolios(LoginRequiredMixin, View):
+    template_name = 'portfolios.html'
+
+
+
+
+
+    def get_context_data(self, **kwargs):
+        if self.request.user.payment_plan is not None:
+            kwargs['payment_plan'] = json.loads(self.request.user.payment_plan)
+        else:
+            kwargs['payment_plan'] = None
+
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        ctxt = {}
+        EntryInlineFormSet = inlineformset_factory(
+                                 User,
+                                 Entry,
+                                 fields=('photo','filename', 'category',),
+                                 can_delete=False,
+                                 max_num=10,
+                                 min_num=10,
+                                 widgets={'filename':forms.HiddenInput,'photo':ImageWidget}
+                                 )
+        payment_status = request.user.payment_status
+        if payment_status is None or ('checkout.session.completed' not in payment_status and 'payment_pending' not in payment_status):
+            return HttpResponseRedirect('/paymentplan')
+        ctxt['portfolio1'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P1'))
+        ctxt['portfolio2'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P2'))
+
+
+        return render(request, self.template_name, self.get_context_data(**ctxt))
+
+    def post(self, request, *args, **kwargs):
+        ctxt = {}
+        EntryInlineFormSet = inlineformset_factory(
+                                 User,
+                                 Entry,
+                                 fields=('photo','filename', 'category',),
+                                 can_delete=False,
+                                 max_num=10,
+                                 min_num=10,
+                                 widgets={'filename':forms.HiddenInput,'photo':ImageWidget}
+                                 )
+        print(request.POST)
+        if 'portfolio1' in request.POST:
+            portfolio1 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(category='P1'))
+            if portfolio1.is_valid():
+                myformset = portfolio1.save(commit=False)
+                for f in myformset:
+                    f.category = 'P1'
+                    f.photo.storage.custom = {'filename': f.photo.name, 'user_email': request.user.email, 'category': f.category, 'is_young_entrant': request.user.is_young_entrant}
+                    f.filename = f.photo.name
+                portfolio1.save()
+            else:
+                ctxt['portfolio1'] = portfolio1
+
+        elif 'portfolio2' in request.POST:
+            portfolio2 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(category='P2'))
+            if portfolio2.is_valid():
+                myformset = portfolio2.save(commit=False)
+                for f in myformset:
+                    f.category = 'P2'
+                    f.photo.storage.custom = {'filename': f.photo.name, 'user_email': request.user.email, 'category': f.category, 'is_young_entrant': request.user.is_young_entrant}
+                    f.filename = f.photo.name
+                portfolio2.save()
+            else:
+                ctxt['portfolio2'] = portfolio2
+
+        return HttpResponseRedirect('/portfolios/')
