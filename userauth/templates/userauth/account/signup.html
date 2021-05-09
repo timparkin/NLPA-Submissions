@@ -1,35 +1,47 @@
 {% extends 'account/base_card.html' %}
-
+{% load crispy_forms_tags %}
 {% load i18n %}
 
-{% block head_title %}{% trans "Sign Up" %}{% endblock %}
 
-{% block card-header %}
-<h3>{% trans "Sign Up" %}</h3>
+{% block extra_css %}
+<link href="/vendors/flatpickr/flatpickr.min.css" rel="stylesheet" />
+{% endblock %}
+
+{% block extra_js %}
+<script src="/assets/js/flatpickr.js"></script>
 {% endblock %}
 
 {% block card-body %}
 
-<form method="POST" action="{% url 'account_signup' %}" class="needs-validation" novalidate>
+<h3>{% trans "Sign Up" %}</h3>
+<br>
+
+<form method="POST" action="{% url 'account_signup' %}" class="needs-validation row g-3" novalidate>
     {% csrf_token %}
-    <div class="form-row">
-           <div class="form-group col-md-6">
-               {% with field=form.email %}{% include "account/form_field.html" %}{% endwith %}
+        <div class="row">
+           <div class="col-lg-6 col-md-12">
+               {{ form.email | as_crispy_field }}
            </div>
-           <div class="form-group col-md-6">
-               {% with field=form.password1 %}{% include "account/form_field.html" %}{% endwith %}
+           <div class="col-lg-6 col-md-12">
+               {{ form.password1 | as_crispy_field }}
            </div>
-       </div>
-       <div class="form-row">
-           <div class="form-group col-md-6">
-               {% with field=form.first_name %}{% include "account/form_field.html" %}{% endwith %}
+        </div>
+        <div class="row">
+           <div class="col-lg-4 col-md-12">
+               {{ form.first_name | as_crispy_field }}
            </div>
-           <div class="form-group col-md-6">
-               {% with field=form.last_name %}{% include "account/form_field.html" %}{% endwith %}
+           <div class="col-lg-4 col-md-12">
+               {{ form.last_name | as_crispy_field }}
            </div>
-       </div><br>
-    <button type="submit" class="btn btn-outline-primary">{% trans "Sign Up" %}</button>
+           <div class="col-lg-4 col-md-12">
+               {{ form.date_of_birth | as_crispy_field }}
+           </div>
+        </div>
+
+
+    <button type="submit" class="btn btn-outline-primary mt-4">{% trans "Sign Up" %}</button>
 </form>
+<p class="small my-3">We ask for your data of birth to confirm whether you are a youth entrant or not. If you want to use the youth entrant 70% discount code, you must supply a date of birth and we will be asking for validation if your images get through to the final round.</p>
 
 {% endblock %}
 
