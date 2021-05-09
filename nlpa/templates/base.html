@@ -1,4 +1,7 @@
 {% load static wagtailuserbar %}
+{% load active_link_tags %}
+{% load filter_extras %}
+
 
 <!DOCTYPE html>
 <html lang="en-US" dir="ltr">
@@ -120,41 +123,41 @@
                      <hr class="mb-0 navbar-vertical-divider" />
                    </div>
                  </div>
-                 <!-- parent pages--><a class="nav-link" href="/" role="button">
+                 <!-- parent pages--><a class="nav-link {% active_link 'home' strict=True %}" href="/" role="button">
                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-globe"></span></span><span class="nav-link-text ps-1">Home</span>
                    </div>
                  </a>
 
+{% if request.user.payment_status == "checkout.session.completed" or request.user.payment_status == "payment_pending" %}
 
-{% if request.get_full_path == "/entries" %}
-                 <!-- Pricing-->
-                 <a class="nav-link" href="/paymentplan" role="button">
-                   <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-tags"></span></span><span class="nav-link-text ps-1">Enter</span>
-                   </div>
-                 </a>
 
-{% else %}
-
-                 <!-- USER -->
-                 <a class="nav-link dropdown-indicator show" href="#user" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="user">
+                 <!-- Entry System -->
+                 <a class="nav-link dropdown-indicator show  {% active_link 'entries || portfolios' %}" href="/entries" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="user">
                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-user"></span></span><span class="nav-link-text ps-1">Entry System</span>
                    </div>
                  </a>
-                 <!-- inner pages-->
                  <ul class="nav collapse false show" id="user">
-                   <li class="nav-item"><a class="nav-link" href="/entries">
+                   <li class="nav-item"><a class="nav-link {% active_link 'entries' %}" href="/entries">
                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Main Entries</span>
                        </div>
                      </a>
-                     <!-- more inner pages-->
+
                    </li>
-                   <li class="nav-item"><a class="nav-link" href="/portfolios">
+                   <li class="nav-item"><a class="nav-link {% active_link 'portfolios' %}" href="/portfolios">
                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Portfolios</span>
                        </div>
                      </a>
-                     <!-- more inner pages-->
                    </li>
                  </ul>
+
+{% else %}
+
+<!-- Pricing-->
+<a class="nav-link {% active_link 'paymentplan || paymentplanconfirm' %}" href="/paymentplan" role="button">
+  <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-tags"></span></span><span class="nav-link-text ps-1">Enter</span>
+  </div>
+</a>
+
 {% endif %}
 
 {% comment %}
@@ -234,7 +237,7 @@
 {% endcomment %}
 
                  <!-- FAQ -->
-                 <a class="nav-link" href="/faq" role="button">
+                 <a class="nav-link {% active_link 'faq' %}" href="/faq" role="button">
                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-question-circle"></span></span><span class="nav-link-text ps-1">Faq</span>
                    </div>
                  </a>
@@ -364,15 +367,21 @@
              </li>
            --> <li class="nav-item dropdown"><a class="nav-link pe-0" id="navbarDropdownUser" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                  <div class="avatar avatar-xl">
+
+                   {{ request.user.email | gravatar:80 }}
+
+                   {%comment%}
                    {% if request.user.is_authenticated %}
                    <img class="rounded-circle" src="/assets/img/team/3-thumb.png" alt="" />
                    {% else %}
                    <img class="rounded-circle" src="/assets/img/team/avatar.png" alt="" />
                    {% endif %}
+                   {%endcomment%}
                  </div>
                </a>
                <div class="dropdown-menu dropdown-menu-end py-0" aria-labelledby="navbarDropdownUser">
                  <div class="bg-white dark__bg-1000 rounded-2 py-2">
+
 
 
 

@@ -1,7 +1,9 @@
 from django.utils.safestring import mark_safe
-
+import hashlib
+import urllib
 from django import template
 from django.template.defaultfilters import stringfilter
+from libgravatar import Gravatar
 
 register = template.Library()
 
@@ -14,3 +16,15 @@ def limit_length_tooltip(value):
 
     else:
         return value
+
+import hashlib
+import urllib
+from django.utils.safestring import mark_safe
+
+
+# return an image tag with the gravatar
+# TEMPLATE USE:  {{ email|gravatar:150 }}
+@register.filter
+def gravatar(email, size=40):
+    url = Gravatar(email)
+    return mark_safe('<img class="rounded-circle" src="%s" height="%d" width="%d">' % (url.get_image(), size, size))

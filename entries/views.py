@@ -31,6 +31,7 @@ class ImageWidget(forms.widgets.ClearableFileInput):
 @login_required
 def get_entries(request):
     payment_status = request.user.payment_status
+    print(payment_status)
     if payment_status is None or ('checkout.session.completed' not in payment_status and 'payment_pending' not in payment_status):
         return HttpResponseRedirect('/paymentplan')
     user = request.user

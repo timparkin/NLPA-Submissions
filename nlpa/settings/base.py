@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django.forms',
     'widget_tweaks',
+    'active_link',
 
     'storages',
     'thumbnails',
