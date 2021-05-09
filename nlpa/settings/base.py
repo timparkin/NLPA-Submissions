@@ -111,7 +111,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'nlpa.wsgi.application'
 
-
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Auth User ModelBackend
 AUTH_USER_MODEL = 'userauth.CustomUser'
@@ -215,6 +215,8 @@ ACCOUNT_USERNAME_REQUIRED = False
 WAGTAIL_USER_CREATION_FORM = 'userauth.forms.WagtailUserCreationForm'
 WAGTAIL_USER_EDIT_FORM = 'userauth.forms.WagtailUserEditForm'
 WAGTAIL_USER_CUSTOM_FIELDS = ['display_name', 'date_of_birth', 'address1', 'address2', 'zip_code', 'city', 'country', 'mobile_phone', 'additional_information', 'photo',]
+
+DATE_INPUT_FORMATS = ['%d/%m/%Y']
 
 ACCOUNT_SIGNUP_FORM_CLASS = 'userauth.forms.SignupForm'
 
