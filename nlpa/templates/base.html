@@ -127,9 +127,8 @@
                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-globe"></span></span><span class="nav-link-text ps-1">Home</span>
                    </div>
                  </a>
-
-{% if request.user.payment_status == "checkout.session.completed" or request.user.payment_status == "payment_pending" %}
-
+{{ request.user.payment_status }}
+{% if "checkout.session.completed" in request.user.payment_status or "payment_pending" in request.user.payment_status %}
 
                  <!-- Entry System -->
                  <a class="nav-link dropdown-indicator show  {% active_link 'entries || portfolios' %}" href="/entries" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="user">
