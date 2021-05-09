@@ -15,6 +15,7 @@ from . import views
 urlpatterns = [
     path('', views.HomePageView.as_view(), name='home'),
     path('faq/', views.FAQPageView.as_view(), name='faq'),
+    url(r'^.well-known/pki-validation/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/nlpa/static/pki-validation"}),
 
 
     path('django-admin/', admin.site.urls),

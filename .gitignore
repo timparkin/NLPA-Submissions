@@ -145,3 +145,5 @@ passwords.txt
 
 /node_modules
 /package.json
+/static
+/static-deploy
