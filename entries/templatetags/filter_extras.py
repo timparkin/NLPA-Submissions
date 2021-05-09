@@ -28,3 +28,8 @@ from django.utils.safestring import mark_safe
 def gravatar(email, size=40):
     url = Gravatar(email)
     return mark_safe('<img class="rounded-circle" src="%s" height="%d" width="%d">' % (url.get_image(), size, size))
+
+@register.filter
+def s3toCDN(value):
+    """changes s3 links to CDN links"""
+    return value.replace('https://nlpa-website-bucket.s3.amazonaws.com', 'https://r8a7z2p5.stackpathcdn.com')

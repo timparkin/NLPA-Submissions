@@ -1,6 +1,7 @@
 {% load static wagtailuserbar %}
 {% load active_link_tags %}
 {% load filter_extras %}
+{% load static %}
 
 
 <!DOCTYPE html>
@@ -28,16 +29,16 @@
     <!-- ===============================================-->
     <!--    Favicons-->
     <!-- ===============================================-->
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/static/imgs/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/static/imgs/favicon-16x16.png">
-    <link rel="shortcut icon" type="image/x-icon" href="/static/imgs/favicon.png">
-    <link rel="manifest" href="/assets/img/favicons/manifest.json">
-    <meta name="msapplication-TileImage" content="/assets/img/favicons/mstile-150x150.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static '/assets/img/favicons/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static '/imgs/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static '/imgs/favicon-16x16.png' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static '/imgs/favicon.png' %}">
+    <link rel="manifest" href="{% static '/public/assets/img/favicons/manifest.json' %}">
+    <meta name="msapplication-TileImage" content="{% static '/assets/img/favicons/mstile-150x150.png' %}">
     <meta name="theme-color" content="#ffffff">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="/assets/js/config.js"></script>
-    <script src="/vendors/overlayscrollbars/OverlayScrollbars.min.js"></script>
+    <script src="{% static '/public/assets/js/config.js' %}"></script>
+    <script src="{% static '/vendors/overlayscrollbars/OverlayScrollbars.min.js' %}"></script>
 
 
     <!-- ===============================================-->
@@ -45,14 +46,14 @@
     <!-- ===============================================-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,500,600,700%7cPoppins:300,400,500,600,700,800,900&amp;display=swap" rel="stylesheet">
-    <link href="/vendors/overlayscrollbars/OverlayScrollbars.min.css" rel="stylesheet">
-    <link href="/assets/css/theme-rtl.min.css" rel="stylesheet" id="style-rtl">
-    <link href="/assets/css/theme.min.css" rel="stylesheet" id="style-default">
-    <link href="/assets/css/user-rtl.min.css" rel="stylesheet" id="user-style-rtl">
-    <link href="/assets/css/user.min.css" rel="stylesheet" id="user-style-default">
-    <link href="/static/css/nlpa.css" rel="stylesheet" id="user-style-default">
-    <link rel="preload" href="/static/fonts/GrotaSansAltRd-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
-    <link rel="preload" href="/static/fonts/GrotaSansAltRd-SemiBold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <link href="{% static '/vendors/overlayscrollbars/OverlayScrollbars.min.css' %}" rel="stylesheet">
+    <link href="{% static '/public/assets/css/theme-rtl.min.css' %}" rel="stylesheet" id="style-rtl">
+    <link href="{% static '/public/assets/css/theme.min.css' %}" rel="stylesheet" id="style-default">
+    <link href="{% static '/public/assets/css/user-rtl.min.css' %}" rel="stylesheet" id="user-style-rtl">
+    <link href="{% static '/public/assets/css/user.min.css' %}" rel="stylesheet" id="user-style-default">
+    <link href="{% static '/css/nlpa.css' %}" rel="stylesheet" id="user-style-default">
+    <link rel="preload" href="{% static '/public/fonts/GrotaSansAltRd-Bold.woff2' %}" as="font" type="font/woff2" crossorigin="anonymous">
+    <link rel="preload" href="{% static '/public/fonts/GrotaSansAltRd-SemiBold.woff2' %}" as="font" type="font/woff2" crossorigin="anonymous">
 
 
     <script>
@@ -106,7 +107,7 @@
              <button class="btn navbar-toggler-humburger-icon navbar-vertical-toggle" data-bs-toggle="tooltip" data-bs-placement="left" title="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
 
           </div><a class="navbar-brand" href="/">
-             <div class="d-flex align-items-center py-3"><img class="me-2" src="/static/imgs/NLPA-with-text.png" alt="" height="50" />
+             <div class="d-flex align-items-center py-3"><img class="me-2" src="{% static 'imgs/NLPA-with-text.png' %}" alt="" height="50" />
              </div>
            </a>
          </div>
@@ -127,7 +128,6 @@
                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-globe"></span></span><span class="nav-link-text ps-1">Home</span>
                    </div>
                  </a>
-{{ request.user.payment_status }}
 {% if "checkout.session.completed" in request.user.payment_status or "payment_pending" in request.user.payment_status %}
 
                  <!-- Entry System -->
@@ -253,7 +253,7 @@
 
            <button class="btn navbar-toggler-humburger-icon navbar-toggler me-1 me-sm-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
            <a class="navbar-brand me-1 me-sm-3" href="/">
-             <div class="d-flex align-items-center"><img class="me-2" src="/static/imgs/NLPA-with-text.png" alt="" height="50" />
+             <div class="d-flex align-items-center"><img class="me-2" src="{% static 'imgs/NLPA-with-text.png' %}" alt="" height="50" />
              </div>
            </a>
 
@@ -281,7 +281,7 @@
                          <a class="notification notification-flush notification-unread" href="#!">
                            <div class="notification-avatar">
                              <div class="avatar avatar-2xl me-3">
-                               <img class="rounded-circle" src="/assets/img/team/1-thumb.png" alt="" />
+                               <img class="rounded-circle" src="{% static '/assets/img/team/1-thumb.png" alt="' %}" />
 
                              </div>
                            </div>
@@ -313,7 +313,7 @@
                          <a class="notification notification-flush" href="#!">
                            <div class="notification-avatar">
                              <div class="avatar avatar-2xl me-3">
-                               <img class="rounded-circle" src="/assets/img/icons/weather-sm.jpg" alt="" />
+                               <img class="rounded-circle" src="{% static '/assets/img/icons/weather-sm.jpg" alt="' %}" />
 
                              </div>
                            </div>
@@ -329,7 +329,7 @@
                          <a class="border-bottom-0 notification-unread  notification notification-flush" href="#!">
                            <div class="notification-avatar">
                              <div class="avatar avatar-xl me-3">
-                               <img class="rounded-circle" src="/assets/img/logos/oxford.png" alt="" />
+                               <img class="rounded-circle" src="{% static '/assets/img/logos/oxford.png" alt="' %}" />
 
                              </div>
                            </div>
@@ -345,7 +345,7 @@
                          <a class="border-bottom-0 notification notification-flush" href="#!">
                            <div class="notification-avatar">
                              <div class="avatar avatar-xl me-3">
-                               <img class="rounded-circle" src="/assets/img/team/10.jpg" alt="" />
+                               <img class="rounded-circle" src="{% static '/assets/img/team/10.jpg" alt="' %}" />
 
                              </div>
                            </div>
@@ -371,9 +371,9 @@
 
                    {%comment%}
                    {% if request.user.is_authenticated %}
-                   <img class="rounded-circle" src="/assets/img/team/3-thumb.png" alt="" />
+                   <img class="rounded-circle" src="{% static '/assets/img/team/3-thumb.png" alt="' %}" />
                    {% else %}
-                   <img class="rounded-circle" src="/assets/img/team/avatar.png" alt="" />
+                   <img class="rounded-circle" src="{% static '/assets/img/team/avatar.png" alt="' %}" />
                    {% endif %}
                    {%endcomment%}
                  </div>
@@ -429,15 +429,15 @@
 
 
         <script type="text/javascript" src="{% static 'js/nlpa.js' %}"></script>
-        <script src="/vendors/popper/popper.min.js"></script>
-        <script src="/vendors/bootstrap/bootstrap.min.js"></script>
-        <script src="/vendors/anchorjs/anchor.min.js"></script>
-        <script src="/vendors/is/is.min.js"></script>
-        <script src="/vendors/fontawesome/all.min.js"></script>
-        <script src="/vendors/lodash/lodash.min.js"></script>
+        <script src="{% static '/vendors/popper/popper.min.js' %}"></script>
+        <script src="{% static '/vendors/bootstrap/bootstrap.min.js' %}"></script>
+        <script src="{% static '/vendors/anchorjs/anchor.min.js' %}"></script>
+        <script src="{% static '/vendors/is/is.min.js' %}"></script>
+        <script src="{% static '/vendors/fontawesome/all.min.js' %}"></script>
+        <script src="{% static '/vendors/lodash/lodash.min.js' %}"></script>
         <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
-        <script src="/vendors/list.js/list.min.js"></script>
-        <script src="/assets/js/theme.js"></script>
+        <script src="{% static '/vendors/list.js/list.min.js' %}"></script>
+        <script src="{% static '/public/assets/js/theme.js' %}"></script>
 
         {% block extra_js %}
             {# Override this in templates to add extra javascript #}
