@@ -95,3 +95,16 @@ Don't forget to install redis-server and pip install redis
 
 sudo npm install
 sudo npm install -g gulp-cli
+
+trying to install thumbnail sorl
+
+ 1439  sudo apt-get install libgraphicsmagick++-dev
+ 1442  sudo apt-get install libboost-python1.62-dev
+ 1525  sudo apt-get install graphicsmagick
+ 1526  sudo apt-get install libmagickwand-dev
+ 
+ 1427  pip install sorl-thumbnail
+ 1435  pip install Pillow
+ 1524  pip install pgmagick
+ 1527  pip install Wand
+
