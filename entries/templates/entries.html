@@ -42,7 +42,7 @@
 
             {% if form.photo.value.url|length > 0 %}
             <a class="d-block h-100" href="{{ form.photo.value.url | s3toCDN }}">
-              <img class="img-fluid  absolute-sm-centered" src="{{ form.photo.value.thumbnails.xlarge.url | s3toCDN }}" alt="" />
+              <img class="img-fluid  absolute-sm-centered" src="{{ form.photo.value.url | s3toCDN }}" alt="" />
             </a>
             {% else %}
             <a class="d-block h-100" href="#">
