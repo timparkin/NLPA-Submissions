@@ -13,7 +13,7 @@
 
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"></script>
 
-
+{% if payment_plan_portfolios > 0 %}
 
 <form action="/portfolios/" method="post" enctype="multipart/form-data" style="display:block;">
     {% csrf_token %}
@@ -41,9 +41,9 @@
 
 
 
-            {% if form.photo.value.url|length > 0 %}
-            <a class="d-block h-100" href="{{ form.photo.value.url | s3toCDN }}">
-              <img class="img-fluid  absolute-sm-centered" src="{{ form.photo.value.thumbnails.xlarge.url | s3toCDN }}" alt="" />
+            {% if form.photo.value %}
+            <a class="d-block h-100" href="https://r8a7z2p5.stackpathcdn.com/{{ form.photo.value }}">
+              <img class="img-fluid  absolute-sm-centered" src="https://r8a7z2p5.stackpathcdn.com/{{ form.photo.value }}" alt="" />
             </a>
             {% else %}
             <a class="d-block h-100" href="#">
@@ -61,11 +61,12 @@
             <div class="col-lg-12 d-flex justify-content-between flex-column">
 
 
-{% if form.photo.value.url|length > 0 %}
+{% if form.photo.value %}
   <h5 class="mt-3 mt-sm-0">{{forloop.parentloop.counter}}. {{form.filename.value|limit_length_tooltip}}</h5>
 
-    <span>{{form.photo.value.width}} x {{form.photo.value.height}}</span>
-    <span>{{form.photo.value.size|filesizeformat}}</span>
+    <span>{{form.photo_dimensions.value}}</span>
+    <span>{{form.photo_size.value|filesizeformat}}</span>
+
 <br><br>
 {% else %}
   <h5 class="mt-3 mt-sm-0">{{forloop.parentloop.counter}}. [filename]</h5>
@@ -97,7 +98,8 @@
 </form>
 
 
-
+{% endif %}
+{% if payment_plan_portfolios > 1 %}
 
 <form action="/portfolios/" method="post" enctype="multipart/form-data" style="display:block;">
     {% csrf_token %}
@@ -125,9 +127,9 @@
 
 
 
-            {% if form.photo.value.url|length > 0 %}
-            <a class="d-block h-100" href="{{ form.photo.value.url | s3toCDN }}">
-              <img class="img-fluid  absolute-sm-centered" src="{{ form.photo.value.thumbnails.xlarge.url | s3toCDN }}" alt="" />
+            {% if form.photo.value %}
+            <a class="d-block h-100" href="https://r8a7z2p5.stackpathcdn.com/{{ form.photo.value }}">
+              <img class="img-fluid  absolute-sm-centered" src="https://r8a7z2p5.stackpathcdn.com/{{ form.photo.value }}" alt="" />
             </a>
             {% else %}
             <a class="d-block h-100" href="#">
@@ -145,11 +147,12 @@
             <div class="col-lg-12 d-flex justify-content-between flex-column">
 
 
-{% if form.photo.value.url|length > 0 %}
+{% if form.photo.value %}
   <h5 class="mt-3 mt-sm-0">{{forloop.parentloop.counter}}. {{form.filename.value|limit_length_tooltip}}</h5>
 
-    <span>{{form.photo.value.width}} x {{form.photo.value.height}}</span>
-    <span>{{form.photo.value.size|filesizeformat}}</span>
+    <span>{{form.photo_dimensions.value}}</span>
+    <span>{{form.photo_size.value|filesizeformat}}</span>
+
 <br><br>
 {% else %}
   <h5 class="mt-3 mt-sm-0">{{forloop.parentloop.counter}}. [filename]</h5>
@@ -179,7 +182,7 @@
   </div>
 </div>
 </form>
-
+{% endif %}
 
 
 </div>
