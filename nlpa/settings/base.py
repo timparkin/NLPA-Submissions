@@ -14,8 +14,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from .config import *
 
-PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_DIR = os.path.dirname(PROJECT_DIR)
+
 
 
 
