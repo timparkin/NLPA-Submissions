@@ -113,7 +113,7 @@ class GetPortfolios(LoginRequiredMixin, View):
         ctxt = {}
         EntryInlineFormSet = inlineformset_factory(User,
                                 Entry,
-                                fields=('photo','filename', 'category','photo_size','photo_dimensions'),
+                                fields=('photo','filename','photo_size','photo_dimensions'),
                                 can_delete=False,
                                 max_num=10,
                                 min_num=10,
@@ -122,7 +122,6 @@ class GetPortfolios(LoginRequiredMixin, View):
                                     'photo_dimensions':forms.HiddenInput,
                                     'photo_size':forms.HiddenInput,
                                     'photo':ImageWidget,
-                                    'category':forms.HiddenInput,
                                     })
 
         payment_status = request.user.payment_status
@@ -131,6 +130,7 @@ class GetPortfolios(LoginRequiredMixin, View):
         ctxt['portfolio1'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P1'))
         ctxt['portfolio2'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P2'))
         ctxt['payment_plan_portfolios'] = int(json.loads(self.request.user.payment_plan)['portfolios'])
+        ctxt['payment_plan_portfolios'] = 2
 
 
         return render(request, self.template_name, self.get_context_data(**ctxt))
@@ -139,7 +139,7 @@ class GetPortfolios(LoginRequiredMixin, View):
         ctxt = {}
         EntryInlineFormSet = inlineformset_factory(User,
                                 Entry,
-                                fields=('photo','filename','category','photo_size','photo_dimensions'),
+                                fields=('photo','filename','photo_size','photo_dimensions'),
                                 can_delete=False,
                                 max_num=10,
                                 min_num=10,
@@ -148,7 +148,6 @@ class GetPortfolios(LoginRequiredMixin, View):
                                     'photo_dimensions':forms.HiddenInput,
                                     'photo_size':forms.HiddenInput,
                                     'photo':ImageWidget,
-                                    'category':forms.HiddenInput,
                                     })
         if 'portfolio1' in request.POST:
             portfolio1 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(category='P1'))
@@ -172,7 +171,7 @@ class GetPortfolios(LoginRequiredMixin, View):
         elif 'portfolio2' in request.POST:
             portfolio2 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(category='P2'))
             if portfolio2.is_valid():
-                myformset = portfolio1.save(commit=False)
+                myformset = portfolio2.save(commit=False)
                 for f in myformset:
                     f.category = 'P2'
                     f.photo.storage.custom = {
