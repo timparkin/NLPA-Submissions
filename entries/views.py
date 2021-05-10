@@ -17,23 +17,6 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 import json
 from nlpa.custom_storages import create_custom_storage, CustomS3Boto3Storage
 
-def filesizeformat(bytes):
-    """
-    Formats the value like a 'human-readable' file size (i.e. 13 KB, 4.1 MB,
-    102 bytes, etc).
-    """
-    try:
-        bytes = float(bytes)
-    except (TypeError,ValueError,UnicodeDecodeError):
-        return u"0 bytes"
-
-    if bytes < 1024:
-        return ungettext("%(size)d byte", "%(size)d bytes", bytes) % {'size': bytes}
-    if bytes < 1024 * 1024:
-        return ugettext("%.1f KB") % (bytes / 1024)
-    if bytes < 1024 * 1024 * 1024:
-        return ugettext("%.1f MB") % (bytes / (1024 * 1024))
-    return ugettext("%.1f GB") % (bytes / (1024 * 1024 * 1024))
 
 
 category_list = ['GL', 'IA', 'N', 'A']
@@ -128,42 +111,59 @@ class GetPortfolios(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         ctxt = {}
-        EntryInlineFormSet = inlineformset_factory(
-                                 User,
-                                 Entry,
-                                 fields=('photo','filename', 'category',),
-                                 can_delete=False,
-                                 max_num=10,
-                                 min_num=10,
-                                 widgets={'filename':forms.HiddenInput,'photo':ImageWidget, 'category':forms.HiddenInput}
-                                 )
+        EntryInlineFormSet = inlineformset_factory(User,
+                                Entry,
+                                fields=('photo','filename', 'category','photo_size','photo_dimensions'),
+                                can_delete=False,
+                                max_num=10,
+                                min_num=10,
+                                widgets={
+                                    'filename':forms.HiddenInput,
+                                    'photo_dimensions':forms.HiddenInput,
+                                    'photo_size':forms.HiddenInput,
+                                    'photo':ImageWidget,
+                                    'category':forms.HiddenInput,
+                                    })
+
         payment_status = request.user.payment_status
         if payment_status is None or ('checkout.session.completed' not in payment_status and 'payment_pending' not in payment_status):
             return HttpResponseRedirect('/paymentplan')
         ctxt['portfolio1'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P1'))
         ctxt['portfolio2'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P2'))
+        ctxt['payment_plan_portfolios'] = int(json.loads(self.request.user.payment_plan)['portfolios'])
 
 
         return render(request, self.template_name, self.get_context_data(**ctxt))
 
     def post(self, request, *args, **kwargs):
         ctxt = {}
-        EntryInlineFormSet = inlineformset_factory(
-                                 User,
-                                 Entry,
-                                 fields=('photo','filename', 'category',),
-                                 can_delete=False,
-                                 max_num=10,
-                                 min_num=10,
-                                 widgets={'filename':forms.HiddenInput,'photo':ImageWidget,'category':forms.HiddenInput}
-                                 )
+        EntryInlineFormSet = inlineformset_factory(User,
+                                Entry,
+                                fields=('photo','filename','category','photo_size','photo_dimensions'),
+                                can_delete=False,
+                                max_num=10,
+                                min_num=10,
+                                widgets={
+                                    'filename':forms.HiddenInput,
+                                    'photo_dimensions':forms.HiddenInput,
+                                    'photo_size':forms.HiddenInput,
+                                    'photo':ImageWidget,
+                                    'category':forms.HiddenInput,
+                                    })
         if 'portfolio1' in request.POST:
             portfolio1 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(category='P1'))
             if portfolio1.is_valid():
                 myformset = portfolio1.save(commit=False)
                 for f in myformset:
                     f.category = 'P1'
-                    f.photo.storage.custom = {'filename': f.photo.name, 'user_email': request.user.email, 'category': f.category, 'is_young_entrant': request.user.is_young_entrant}
+                    f.photo.storage.custom = {
+                                    'filename': f.photo.name,
+                                    'user_email': request.user.email,
+                                    'category': f.category,
+                                    'is_young_entrant': request.user.is_young_entrant
+                                    }
+                    f.photo_dimensions = '%s x %s'%(f.photo.width, f.photo.height)
+                    f.photo_size = f.photo.size
                     f.filename = f.photo.name
                 portfolio1.save()
             else:
@@ -172,13 +172,22 @@ class GetPortfolios(LoginRequiredMixin, View):
         elif 'portfolio2' in request.POST:
             portfolio2 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(category='P2'))
             if portfolio2.is_valid():
-                myformset = portfolio2.save(commit=False)
+                myformset = portfolio1.save(commit=False)
                 for f in myformset:
                     f.category = 'P2'
-                    f.photo.storage.custom = {'filename': f.photo.name, 'user_email': request.user.email, 'category': f.category, 'is_young_entrant': request.user.is_young_entrant}
+                    f.photo.storage.custom = {
+                                    'filename': f.photo.name,
+                                    'user_email': request.user.email,
+                                    'category': f.category,
+                                    'is_young_entrant': request.user.is_young_entrant
+                                    }
+                    f.photo_dimensions = '%s x %s'%(f.photo.width, f.photo.height)
+                    f.photo_size = f.photo.size
                     f.filename = f.photo.name
                 portfolio2.save()
             else:
                 ctxt['portfolio2'] = portfolio2
+        ctxt['payment_plan_portfolios'] = int(json.loads(self.request.user.payment_plan)['portfolios'])
+
 
         return HttpResponseRedirect('/portfolios/')
