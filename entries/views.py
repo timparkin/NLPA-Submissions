@@ -48,7 +48,7 @@ def get_entries(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        form = EntryInlineFormSet(request.POST, request.FILES, instance=user, queryset=Entry.objects.filter(category__in=category_list))
+        form = EntryInlineFormSet(request.POST, request.FILES, instance=user, queryset=Entry.objects.filter(category_list))
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required

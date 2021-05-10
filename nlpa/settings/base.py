@@ -21,6 +21,8 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 
 SITE_ID = 1
 
+DEBUG=False
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 ALLOWED_HOSTS=["submit.naturallandscapeawards.com"]
@@ -98,7 +100,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'payments/templates/'),
             os.path.join(BASE_DIR, 'entries/templates/'),
         ],
-        'APP_DIRS': True,
+        'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -106,6 +108,11 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'loaders': [
+            ('django.template.loaders.cached.Loader', [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ])],
         },
     },
 ]
@@ -186,14 +193,12 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media-deploy')
 MEDIA_URL = '/media/'
 
-STATIC_URL = 'https://t6f5e6n7.stackpathcdn.com/static'
-MEDIA_URL = 'https://t6f5e6n7.stackpathcdn.com/media'
+STATIC_URL = 'https://t6f5e6n7.stackpathcdn.com/static/'
+MEDIA_URL = 'https://t6f5e6n7.stackpathcdn.com/media/'
 
 # Wagtail settings
 
 WAGTAIL_SITE_NAME = "nlpa"
-
-
 
 # base.py
 
@@ -240,11 +245,6 @@ THUMBNAILS = {
         # You can also use Amazon S3 or any other Django storage backends
     },
     'SIZES': {
-        'large': {
-            'PROCESSORS': [
-                {'PATH': 'thumbnails.processors.resize', 'width': 80, 'height': 100, 'method': 'fit'},
-            ],
-        },
         'xlarge': {
             'PROCESSORS': [
                 {'PATH': 'thumbnails.processors.resize', 'width': 200, 'height': 300, 'method': 'fit'},
