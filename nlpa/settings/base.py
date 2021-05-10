@@ -17,7 +17,7 @@ from .config import *
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
-
+DEBUG=False
 
 SITE_ID = 1
 
@@ -98,7 +98,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'payments/templates/'),
             os.path.join(BASE_DIR, 'entries/templates/'),
         ],
-        'APP_DIRS': True,
+        'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -106,6 +106,11 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'loaders': [
+            ('django.template.loaders.cached.Loader', [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ])],
         },
     },
 ]
