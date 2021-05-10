@@ -21,6 +21,8 @@ DEBUG=False
 
 SITE_ID = 1
 
+DEBUG=False
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 ALLOWED_HOSTS=["submit.naturallandscapeawards.com"]
@@ -191,14 +193,12 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media-deploy')
 MEDIA_URL = '/media/'
 
-STATIC_URL = 'https://t6f5e6n7.stackpathcdn.com/static'
-MEDIA_URL = 'https://t6f5e6n7.stackpathcdn.com/media'
+STATIC_URL = 'https://t6f5e6n7.stackpathcdn.com/static/'
+MEDIA_URL = 'https://t6f5e6n7.stackpathcdn.com/media/'
 
 # Wagtail settings
 
 WAGTAIL_SITE_NAME = "nlpa"
-
-
 
 # base.py
 
@@ -245,11 +245,6 @@ THUMBNAILS = {
         # You can also use Amazon S3 or any other Django storage backends
     },
     'SIZES': {
-        'large': {
-            'PROCESSORS': [
-                {'PATH': 'thumbnails.processors.resize', 'width': 80, 'height': 100, 'method': 'fit'},
-            ],
-        },
         'xlarge': {
             'PROCESSORS': [
                 {'PATH': 'thumbnails.processors.resize', 'width': 200, 'height': 300, 'method': 'fit'},

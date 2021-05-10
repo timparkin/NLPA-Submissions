@@ -17,7 +17,7 @@ class Entry(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
     category = models.CharField(verbose_name=_("Category"), max_length=128, choices=Categories.choices, default=Categories.grand_landscape, blank=True, null=True)
     filename = models.CharField(verbose_name=_("Filename"), max_length=128, default='', blank=True, null=True)
-    photo = ImageField(verbose_name=_("Entry Photo"), upload_to='entries/', default='entries/default-entry.png', max_length=500, pregenerated_sizes=["xlarge", "large"])
+    photo = models.ImageField(verbose_name=_("Entry Photo"), upload_to='entries/', default='entries/default-entry.png', max_length=500)
     datetime = models.DateTimeField(verbose_name=_("Uploaded date"), auto_now_add=True, null=True)
     description = models.CharField(verbose_name=_("Description"), max_length=2048, blank=True, null=True)
     title = models.CharField(verbose_name=_("Title"), max_length=128, default='Untitled')
