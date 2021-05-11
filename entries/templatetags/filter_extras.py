@@ -37,7 +37,7 @@ from django.utils.safestring import mark_safe
 @register.filter
 def gravatar(email, size=40):
     url = Gravatar(email)
-    return mark_safe('<img class="rounded-circle" src="%s" height="%d" width="%d">' % (url.get_image(), size, size))
+    return mark_safe('<img class="rounded-circle" src="%s" height="%d" width="%d">' % (url.get_image(default="mm"), size, size))
 
 @register.filter
 def s3toCDN(value):
