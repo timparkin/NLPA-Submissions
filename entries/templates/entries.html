@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 
 {% block content %}
 
@@ -7,8 +7,9 @@
 
 <div class="card">
   <div class="card-body position-relative">
- <h2>Entries</h2>
+ <h2>Single Images</h2>
 
+<p>You can upload images at any time and replace them at any time. You do not need to upload all your entries at once.</p>
 {% load filter_extras %}
 
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"></script>
@@ -40,13 +41,13 @@
 
 
 
-            {% if form.photo.value %}
-            <a class="d-block h-100" href="https://r8a7z2p5.stackpathcdn.com/{{ form.photo.value }}">
-              <img class="img-fluid  absolute-sm-centered" src="https://r8a7z2p5.stackpathcdn.com/{{ form.photo.value }}" alt="" />
-            </a>
-            {% else %}
+            {% if form.photo.value == 'entries/default-entry.png' %}
             <a class="d-block h-100" href="#">
               <img class="img-fluid fit-cover w-sm-75 h-sm-75rounded-1 absolute-sm-centered" src="https://nlpa-website-bucket.s3.amazonaws.com/entries/default-entry.png" alt="" />
+            </a>
+            {% else %}
+            <a class="d-block h-100" href="https://r8a7z2p5.stackpathcdn.com/{{ form.photo.value }}">
+              <img class="img-fluid  absolute-sm-centered" src="https://r8a7z2p5.stackpathcdn.com/{{ form.photo.value }}" alt="" />
             </a>
             {% endif %}
 
@@ -60,25 +61,33 @@
             <div class="col-lg-12 d-flex justify-content-between flex-column">
 
 
-{% if form.photo.value %}
-  <h5 class="mt-3 mt-sm-0">{{forloop.parentloop.counter}}. {{form.filename.value|limit_length_tooltip}}</h5>
+{% if form.photo.value == 'entries/default-entry.png' %}
+<h5 class="mt-3 mt-sm-0">{{forloop.parentloop.counter}}</h5><em class="text-muted">{{form.filename.value|limit_length_tooltip}}</em>
+  <span>&nbsp;</span>
+  <span>&nbsp;</span>
 
-    <span>{{form.photo_dimensions.value}}</span>
-    <span>{{form.photo_size.value|filesizeformat}}</span>
-
-<br><br>
 {% else %}
-  <h5 class="mt-3 mt-sm-0">{{forloop.parentloop.counter}}. [filename]</h5>
-    <span>&nbsp;</span>
-    <span>&nbsp;</span>
-<br>
+<h5 class="mt-3 mt-sm-0">{{forloop.parentloop.counter}}</h5><em class="text-muted">{{form.filename.value|limit_length_tooltip}}</em>
+
+  <span>{{form.photo_dimensions.value}}</span>
+  <span>{{form.photo_size.value|filesizeformat}}</span>
+
+
 {% endif %}
+<div class="container">
+  <div class="row">
+    <div class="col-lg-6"></div>
+<div class="col-lg-6">
+{% else %}
 {% endif %}
 
-<div class="w-50 p-1">
-  {{ field.errors.as_ul }}
-  {{ field }}
+  {{ field | as_crispy_field }}
+
+{% if forloop.last %}
 </div>
+</div>
+   </div>
+{% endif %}
 
 {% endfor %}
 
@@ -90,7 +99,7 @@
       </div>
     </div>
     {% endfor %}
-    <input type="submit" value="Submit" class="form-control-sm">
+    <input type="submit" value="Update" class="btn btn-outline-primary btn-lg mt-3">
   </div>
 </div>
 </form>

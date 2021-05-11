@@ -22,7 +22,7 @@ class Entry(models.Model):
     filename = models.CharField(verbose_name=_("Filename"), max_length=128, default='', blank=True, null=True)
     photo_size = models.CharField(verbose_name=_("Photo Size"), max_length=1024, default='', blank=True, null=True)
     photo_dimensions = models.CharField(verbose_name=_("Photo Dimensions"), max_length=1024, default='', blank=True, null=True)
-    photo = models.ImageField(verbose_name=_("Entry Photo"), upload_to='entries/', default='entries/default-entry.png', max_length=500)
+    photo = models.ImageField(verbose_name=_("Photo"), upload_to='entries/', default='entries/default-entry.png', max_length=500)
     datetime = models.DateTimeField(verbose_name=_("Uploaded date"), auto_now_add=True, null=True)
     description = models.CharField(verbose_name=_("Description"), max_length=2048, blank=True, null=True)
     title = models.CharField(verbose_name=_("Title"), max_length=128, default='Untitled')

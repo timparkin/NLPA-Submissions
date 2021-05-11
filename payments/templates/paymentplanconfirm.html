@@ -12,10 +12,22 @@
         <div class="card-body position-relative">
 
           <h3>Confirm Choices</h3>
-          <p>You have chosen the following payment option</p>
-          <p>Number of Entries = {{ request.session.number_of_entries }}</p>
-          <p>Number of Portfolios = {{ request.session.number_of_portfolios }}</p>
-          <button class="button is-primary" id="submitBtn">Purchase!</button>        </div>
+          <p>You have chosen the following entry options:</p>
+          <p class="lead"><strong>Number of Individual Images = {{ request.session.number_of_entries }}</strong></p>
+          <p class="lead"><strong>Number of Project Portfolios= {{ request.session.number_of_portfolios }}</strong></p>
+          <button class="button  btn btn-outline-primary " id="submitBtn">Purchase</button>
+
+          <p class="mt-2">
+          The plan you have chosen allows you to enter {{ request.session.number_of_entries }} individual images into any of our four categories.
+          {% if request.session.number_of_portfolios == '1' %}You have also chosen one portfolio category entry which allows you to submit one project of 6-10 images{%endif%}
+          {% if request.session.number_of_portfolios == '2' %}You have also chosen two portfolio category entries which allows you to submit two projects of 6-10 images{%endif%}
+          </p>
+
+
+
+
+
+        </div>
       </div>
 
 

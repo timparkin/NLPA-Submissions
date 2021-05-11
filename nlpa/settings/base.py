@@ -90,32 +90,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'nlpa.urls'
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(PROJECT_DIR, 'templates'),
-            os.path.join(BASE_DIR, 'userauth/templates/userauth/'),
-            os.path.join(BASE_DIR, 'payments/templates/'),
-            os.path.join(BASE_DIR, 'entries/templates/'),
-        ],
-        'APP_DIRS': False,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-            'loaders': [
-            ('django.template.loaders.cached.Loader', [
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-            ])],
-        },
-    },
-]
-
 WSGI_APPLICATION = 'nlpa.wsgi.application'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -138,16 +112,10 @@ AUTHENTICATION_BACKENDS = (
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'OPTIONS': {
+            'min_length': 6,
+        }
     },
 ]
 
@@ -198,13 +166,13 @@ WAGTAIL_SITE_NAME = "nlpa"
 
 # base.py
 
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/paymentplan'
+LOGIN_URL = '/accounts/signup/'
+LOGIN_REDIRECT_URL = '/'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_LOGOUT_ON_GET = False
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
-ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_PRESERVE_USERNAME_CASING = False
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False

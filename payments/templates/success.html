@@ -11,9 +11,14 @@
   <div class="card-body position-relative">
 
     <h3>Payment Successful</h3>
-      <p>Your payment succeeded.</p>
+      <p>Your payment succeeded. You will be redirected to <a href="/entries">entry pages</a> shortly. </p>
     </div>
   </div>
 
+<script type="text/javascript">
+  setTimeout(function () {
+         window.location.href = "/entries"; //will redirect to your blog page (an ex: blog.html)
+      }, 2000);
+  </script>
 
   {% endblock %}

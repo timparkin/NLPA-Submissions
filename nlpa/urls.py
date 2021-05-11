@@ -11,9 +11,10 @@ from wagtail.documents import urls as wagtaildocs_urls
 from search import views as search_views
 
 from . import views
+from entries import views as eviews
 
 urlpatterns = [
-    path('', views.HomePageView.as_view(), name='home'),
+    path('', eviews.get_entries, name='entries'),
     path('faq/', views.FAQPageView.as_view(), name='faq'),
     url(r'^.well-known/pki-validation/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/nlpa/static/pki-validation"}),
 
