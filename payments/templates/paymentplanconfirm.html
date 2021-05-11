@@ -10,6 +10,14 @@
         <!--/.bg-holder-->
 
         <div class="card-body position-relative">
+          {% if messages %}
+          <div>
+
+              {% for message in messages %}
+              <div class="alert alert-success" role="alert">{{message}}</div>
+              {% endfor %}
+          </div>
+          {% endif %}
 
           <h3>Confirm Choices</h3>
           <p>You have chosen the following entry options:</p>

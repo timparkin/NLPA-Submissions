@@ -9,6 +9,14 @@
   <!--/.bg-holder-->
 
   <div class="card-body position-relative">
+    {% if messages %}
+    <div>
+
+        {% for message in messages %}
+        <div class="alert alert-success" role="alert">{{message}}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <h3>Payment Successful</h3>
       <p>Your payment succeeded. You will be redirected to <a href="/entries">entry pages</a> shortly. </p>
