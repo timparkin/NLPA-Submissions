@@ -7,6 +7,14 @@
 
 <div class="card">
   <div class="card-body position-relative">
+    {% if messages %}
+    <div>
+
+        {% for message in messages %}
+        <div class="alert alert-success" role="alert">{{message}}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
  <h2>Single Images</h2>
 
 <p>You can upload images at any time and replace them at any time. You do not need to upload all your entries at once.</p>

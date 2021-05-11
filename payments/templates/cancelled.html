@@ -9,6 +9,14 @@
   <!--/.bg-holder-->
 
   <div class="card-body position-relative">
+    {% if messages %}
+    <div>
+
+        {% for message in messages %}
+        <div class="alert alert-success" role="alert">{{message}}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <h3>Cancelled Payment</h3>
       <p>Your payment was cancelled.</p>
