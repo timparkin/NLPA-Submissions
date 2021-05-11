@@ -32,6 +32,7 @@ def get_paymentplan(request):
             # process the data in form.cleaned_data as required
             request.session['number_of_entries'] = form.cleaned_data['number_of_entries']
             request.session['number_of_portfolios'] = form.cleaned_data['number_of_portfolios']
+            request.session['youth_entry'] = form.cleaned_data['youth_entry']
 
             # redirect to a new URL:
             return HttpResponseRedirect('/paymentplanconfirm/')

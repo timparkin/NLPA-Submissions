@@ -1,4 +1,4 @@
 {% load account %}
 {% load i18n %}
-{% user_display email as email %}
-{% blocktrans %}Successfully signed in as {{email}}.{% endblocktrans %}
+
+Successfully signed in. 

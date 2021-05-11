@@ -36,6 +36,15 @@ def cancelled(request):
 
 @login_required
 def payment_plan_confirm(request):
+    request.session['total_price'] = \
+        float(
+            entry_products[ str(request.session['number_of_entries']) ]['price'] )/100 + \
+        float(
+            portfolio_products[ str(request.session['number_of_portfolios']) ]['price'] )/100
+    if request.session['youth_entry']:
+        request.session['total_price'] = request.session['total_price'] * 0.3
+    request.session['total_price'] = '${:.0f}'.format( request.session['total_price'] )
+
     return render(request, 'paymentplanconfirm.html')
 
 @login_required
