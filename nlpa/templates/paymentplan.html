@@ -7,19 +7,25 @@
     {% if messages %}
     <div>
 
-        {% for message in messages %}
-        <div class="alert alert-success" role="alert">{{message}}</div>
-        {% endfor %}
+      {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+      {% endfor %}
     </div>
     {% endif %}
+
+
     <div class="row g-0">
       <div class="col-12 mb-3">
         <div class="row justify-content-center justify-content-sm-between">
           <div class="col-sm-auto text-center">
-            <h5 class="d-inline-block">Entry Fees</h5><span class="badge badge-soft-success rounded-pill ms-2">Youth Discount 70%</span>
+            {% if request.user.is_young_entrant %}
+            <h5 class="d-inline-block">Entry Fees</h5><span class="badge badge-soft-info rounded-pill ms-2" id="youth_discount">Youth Discount 70% click to enable</span>
+            {% else %}
+            <h5 class="d-inline-block">Entry Fees</h5></span>
+            {% endif %}
           </div>
           <div class="col-sm-auto d-flex justify-content-center mt-1 mt-sm-0">
-                  <h5 class="fw-medium">total = $<span id="total">90</span></h5>
+                  <h5 class="fw-medium"><span class="fw-small badge badge-soft-success rounded-pill ms-2" id="youth_enabled_tag" style="display:none;">youth discount enabled</span> total = $<span id="total">90</span></h5>
           </div>
         </div>
       </div>
@@ -77,7 +83,7 @@
     </div>
   </div>
 </div>
-  </form>
+
 
 
 
@@ -87,17 +93,41 @@
 <script>
 
   var entry_price_dict = {
-  '6': 40,
-  '12': 60,
-  '18': 100
+  '6': 40.0,
+  '12': 60.0,
+  '18': 100.0
  };
   var portfolio_price_dict = {
- '0': 0,
- '1': 30,
- '2': 60
+ '0': 0.0,
+ '1': 30.0,
+ '2': 60.0
 };
 
+ var discount=1.0;
+
         $(document).ready(function(){
+
+            $('#youth_discount').unbind('click');
+            $('#youth_discount').click( function () {
+               $('#id_youth_entry').click();
+
+
+               var checked = $("#id_youth_entry:checked").length;
+               if (checked == 0) {
+                  discount=1.0;
+
+                  $('#youth_enabled_tag').hide();
+               } else {
+                  discount=0.3;
+
+                  $('#youth_enabled_tag').show();
+              }
+              console.log(discount);
+
+               $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
+            });
+
+
             $('#choice-six .btn').unbind('click');
             $("#choice-six .btn").click(function () {
                 $("#form-entry input:radio").val(["6"]);
@@ -110,10 +140,11 @@
                 $("#choice-six .btn").text('selected');
                 $("#choice-twelve .btn").text('choose');
                 $("#choice-eighteen .btn").text('choose');
-                $("#total").text( entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] );
+                $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
            });
            $('#choice-twelve .btn').unbind('click');
            $("#choice-twelve .btn").click(function () {
+             console.log(discount);
                $("#form-entry input:radio").val(["12"]);
                $("#choice-twelve .btn").removeClass('btn-outline-primary');
                $("#choice-six .btn").removeClass('btn-primary');
@@ -124,7 +155,7 @@
                $("#choice-six .btn").text('choose');
                $("#choice-twelve .btn").text('selected');
                $("#choice-eighteen .btn").text('choose');
-               $("#total").text( entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] );
+               $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
           });
           $('#choice-eighteen .btn').unbind('click');
           $("#choice-eighteen .btn").click(function () {
@@ -138,7 +169,7 @@
               $("#choice-six .btn").text('choose');
               $("#choice-twelve .btn").text('choose');
               $("#choice-eighteen .btn").text('selected');
-              $("#total").text( entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] );
+              $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
          });
 
          $('#choice-portfolio-0').unbind('click');
@@ -150,7 +181,7 @@
              $("#choice-portfolio-1").addClass('btn-outline-primary');
              $("#choice-portfolio-2").removeClass('btn-primary');
              $("#choice-portfolio-2").addClass('btn-outline-primary');
-             $("#total").text( entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] );
+             $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
         });
         $('#choice-portfolio-1').unbind('click');
         $("#choice-portfolio-1").click(function () {
@@ -161,7 +192,7 @@
             $("#choice-portfolio-1").addClass('btn-primary');
             $("#choice-portfolio-2").removeClass('btn-primary');
             $("#choice-portfolio-2").addClass('btn-outline-primary');
-            $("#total").text( entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] );
+            $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
        });
 
        $('#choice-portfolio-2').unbind('click');
@@ -173,7 +204,7 @@
            $("#choice-portfolio-1").addClass('btn-outline-primary');
            $("#choice-portfolio-2").removeClass('btn-outline-primary');
            $("#choice-portfolio-2").addClass('btn-primary');
-           $("#total").text( entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] );
+           $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
       });
 
 

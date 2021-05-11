@@ -6,7 +6,55 @@ from .models import CustomUser
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Row, Column
 from wagtail.users.forms import UserCreationForm, UserEditForm
+from datetime import datetime, timedelta, date
+from dateutil.relativedelta import relativedelta
+import locale
 
+# Source: https://en.wikipedia.org/wiki/February_29
+PRE = [
+    'US',
+    'TW',
+]
+POST = [
+    'GB',
+    'HK',
+]
+
+
+def get_country():
+    code, _ = locale.getlocale()
+    try:
+        return code.split('_')[1]
+    except IndexError:
+        raise Exception('Country cannot be ascertained from locale.')
+
+
+def get_leap_birthday(year):
+    country = get_country()
+    if country in PRE:
+        return date(year, 2, 28)
+    elif country in POST:
+        return date(year, 3, 1)
+    else:
+        raise Exception('It is unknown whether your country treats leap year '
+                      + 'birthdays as being on the 28th of February or '
+                      + 'the 1st of March. Please consult your country\'s '
+                      + 'legal code for in order to ascertain an answer.')
+def age(dob, when):
+    today = when
+    years = today.year - dob.year
+
+    try:
+        birthday = date(today.year, dob.month, dob.day)
+    except ValueError as e:
+        if dob.month == 2 and dob.day == 29:
+            birthday = get_leap_birthday(today.year)
+        else:
+            raise e
+
+    if today < birthday:
+        years -= 1
+    return years
 
 class WagtailUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -28,6 +76,8 @@ class SignupForm(forms.Form):
     date_of_birth = forms.DateField(required=False,label="Date of Birth (if youth entrant)", widget=forms.TextInput(attrs={'class':'datetimepicsker','placeholder':'d/m/y', 'type':'date', 'data-options':'{"disableMobile":true, "format":"mm/dd/yyyy"}'}))
 
 
+
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -40,6 +90,8 @@ class SignupForm(forms.Form):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.date_of_birth = self.cleaned_data['date_of_birth']
+        user.is_young_entrant = relativedelta(date(2020, 12, 31), user.date_of_birth).years  < 17
+
         user.save()
 
 class CustomUserUpdateForm(forms.ModelForm):
