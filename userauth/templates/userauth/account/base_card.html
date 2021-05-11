@@ -5,7 +5,21 @@
 <div class="card overflow-hidden mb-3">
   <div class="card-body position-relative">
 
+    {% if messages %}
+    <div>
+
+        {% for message in messages %}
+        <div class="alert alert-success" role="alert">{{message}}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+
+
+
                     {% block card-body %}{% endblock %}
+
 
   </div>
 </div>

@@ -14,6 +14,7 @@
 {% block card-body %}
 
 <h3>{% trans "Sign Up" %}</h3>
+<p>If you already have an account, please log in <a href="/accounts/login">here</a></p>
 <br>
 
 <form method="POST" action="{% url 'account_signup' %}" class="needs-validation row g-3" novalidate>

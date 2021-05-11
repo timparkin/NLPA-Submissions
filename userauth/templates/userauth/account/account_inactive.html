@@ -1,0 +1,11 @@
+{% extends 'account/base_card.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load account %}
+
+
+{% block card-body %}
+<h1>{% trans "Account Inactive" %}</h1>
+
+<p>{% trans "This account is inactive." %}</p>
+{% endblock %}

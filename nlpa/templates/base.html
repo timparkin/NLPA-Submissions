@@ -132,12 +132,12 @@
 
                  <!-- Entry System -->
                  <a class="nav-link dropdown-indicator show  {% active_link 'entries || portfolios' %}" href="/entries" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="user">
-                   <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-user"></span></span><span class="nav-link-text ps-1">Entry System</span>
+                   <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-user"></span></span><span class="nav-link-text ps-1">Entries</span>
                    </div>
                  </a>
                  <ul class="nav collapse false show" id="user">
                    <li class="nav-item"><a class="nav-link {% active_link 'entries' %}" href="/entries">
-                       <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Main Entries</span>
+                       <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Single Images</span>
                        </div>
                      </a>
 
@@ -386,9 +386,11 @@
 
                   {% if request.user.is_authenticated %}
                       <a class="dropdown-item" href="/accounts/profile">{{ request.user.first_name }} {{ request.user.last_name }}</a>
+                      <a class="dropdown-item" href="{% url 'account_email' %}">Change E-mail</a>
                       <a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a>
                   {% else %}
                       <a class="dropdown-item" href="{% url 'account_login' %}">Login</a>
+                      <a class="dropdown-item" href="{% url 'account_signup' %}">Sign Up</a>
                   {% endif %}
 
 

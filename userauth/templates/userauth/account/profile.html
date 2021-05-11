@@ -9,16 +9,6 @@
     <div class="container">
         <div class="row">
             <div class="col border">
-                <small>{% trans "E-mail" %}:</small><br>
-                {{ request.user.email }}
-            </div>
-            <div class="col border">
-                <small>{% trans "Country" %}:</small><br>
-                {{ request.user.country }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col border">
                 <small>{% trans "First name" %}:</small><br>
                 {{ request.user.first_name|default:'' }}
             </div>
