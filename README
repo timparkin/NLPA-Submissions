@@ -37,15 +37,6 @@ git push -u origin main
 
 
 
-migrating to postgresql
-
-./manage.py dumpdata > db.json
-sudo apt install postgresql postgresql-contrib
-
-sudo apt install postgresql postgresql-contrib
-sudo -u postgres createuser --interactive
-sudo -u postgres createdb nlpa
-psql> alter user nlpa with password nlpa
 
 vi settings/base.py
 
@@ -84,27 +75,27 @@ AWS_ACCESS_KEY_ID = '####'
 AWS_SECRET_ACCESS_KEY = '####'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
-looking at stripe checkout on this url
-https://testdriven.io/blog/django-stripe-tutorial/
 
-pip3 install django-widget-tweaks (pythoneatstail)
+FULL INSTALL
 
-https://pypi.org/project/django-thumbnails/
+multipass launch 18.04 -m 2G -d 20G -n submit 
 
-Don't forget to install redis-server and pip install redis
+sudo apt update
+sudo apt install python3-pip
+sudo apt install postgresql postgresql-contrib
+sudo apt install libpq-dev python3-dev
+sudo pip3 install virtualenv
+virtualenv nlpa
+source nlpa/bin/activate
+sudo -u postgres createuser --interactive  --pwprompt
+sudo -u postgres createdb nlpa
 
-sudo npm install
-sudo npm install -g gulp-cli
+git clone https://github.com/timparkin/NLPA-Submissions.git
+pip install -r requirements
 
-trying to install thumbnail sorl
+#from io import BytesIO as cStringIO
+#and remove print statements from 
+#/home/ubuntu/nlpa/lib/python3.6/site-packages/django_thumbs/db/models.py
 
- 1439  sudo apt-get install libgraphicsmagick++-dev
- 1442  sudo apt-get install libboost-python1.62-dev
- 1525  sudo apt-get install graphicsmagick
- 1526  sudo apt-get install libmagickwand-dev
- 
- 1427  pip install sorl-thumbnail
- 1435  pip install Pillow
- 1524  pip install pgmagick
- 1527  pip install Wand
+# if you do this again, try dropping the migrations
 
