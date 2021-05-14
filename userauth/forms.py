@@ -9,6 +9,9 @@ from wagtail.users.forms import UserCreationForm, UserEditForm
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 import locale
+import logging
+
+logger = logging.getLogger('django')
 
 # Source: https://en.wikipedia.org/wiki/February_29
 PRE = [
@@ -91,7 +94,7 @@ class SignupForm(forms.Form):
         user.last_name = self.cleaned_data['last_name']
         user.date_of_birth = self.cleaned_data['date_of_birth']
         user.is_young_entrant = relativedelta(date(2020, 12, 31), user.date_of_birth).years  < 17
-
+        logger.info('date of birth: %s'%user.date_of_birth)
         user.save()
 
 class CustomUserUpdateForm(forms.ModelForm):
