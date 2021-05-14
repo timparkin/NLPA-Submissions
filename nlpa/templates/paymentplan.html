@@ -45,7 +45,7 @@
             <h3 class="fw-normal my-0">12 Images</h3>
             <p class="mt-3">Our normal plan lets you enter twelve images for five dollars an image</p>
             <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>60
-            </h2><span class="btn btn-primary">Selected</span>
+            </h2><span class="btn btn-outline-primary">Choose</span>
           </div>
         </div>
       </div>
@@ -66,12 +66,12 @@
             <p class="mt-3">You can also enter up to two portfolios of between 6 and 10 images</p>
             <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>30 <small class="fs--1 text-700">/ portfolio</small>
             </h2>
-            <span class="btn btn-outline-primary" id="choice-portfolio-0">0</span> <span class="btn btn-primary" id="choice-portfolio-1">1</span> <span class="btn btn-outline-primary" id="choice-portfolio-2">2</span>
+            <span class="btn btn-outline-primary" id="choice-portfolio-0">0</span> <span class="btn btn-outline-primary" id="choice-portfolio-1">1</span> <span class="btn btn-outline-primary" id="choice-portfolio-2">2</span>
           </div>
         </div>
       </div>
       <form action="/paymentplan/" method="post" id="form-entry">
-        <div  style="display:none">
+        <div style="display:none">
           {% csrf_token %}
           {{ form }}
           </div>
@@ -122,7 +122,6 @@
 
                   $('#youth_enabled_tag').show();
               }
-              console.log(discount);
 
                $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
             });
@@ -144,7 +143,6 @@
            });
            $('#choice-twelve .btn').unbind('click');
            $("#choice-twelve .btn").click(function () {
-             console.log(discount);
                $("#form-entry input:radio").val(["12"]);
                $("#choice-twelve .btn").removeClass('btn-outline-primary');
                $("#choice-six .btn").removeClass('btn-primary');
@@ -206,10 +204,69 @@
            $("#choice-portfolio-2").addClass('btn-primary');
            $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
       });
+    }); // end of document ready
 
 
+    window.onload=window.onpageshow= function() {
+       if ($("#form-entry option:selected").val() == '0') {
+         $("#choice-portfolio-0").removeClass('btn-outline-primary');
+         $("#choice-portfolio-0").addClass('btn-primary');
+         $("#choice-portfolio-1").removeClass('btn-primary');
+         $("#choice-portfolio-1").addClass('btn-outline-primary');
+         $("#choice-portfolio-2").removeClass('btn-primary');
+         $("#choice-portfolio-2").addClass('btn-outline-primary');
+       }
+       if ($("#form-entry option:selected").val() == '1') {
+         $("#choice-portfolio-0").removeClass('btn-primary');
+         $("#choice-portfolio-0").addClass('btn-outline-primary');
+         $("#choice-portfolio-1").removeClass('btn-outline-primary');
+         $("#choice-portfolio-1").addClass('btn-primary');
+         $("#choice-portfolio-2").removeClass('btn-primary');
+         $("#choice-portfolio-2").addClass('btn-outline-primary');
+       }
+       if ($("#form-entry option:selected").val() == '2') {
+         $("#choice-portfolio-0").removeClass('btn-primary');
+         $("#choice-portfolio-0").addClass('btn-outline-primary');
+         $("#choice-portfolio-1").removeClass('btn-primary');
+         $("#choice-portfolio-1").addClass('btn-outline-primary');
+         $("#choice-portfolio-2").removeClass('btn-outline-primary');
+         $("#choice-portfolio-2").addClass('btn-primary');
+       }
+       if ($("#form-entry input:checked").val() == '6') {
+         $("#choice-six .btn").removeClass('btn-outline-primary');
+         $("#choice-twelve .btn").removeClass('btn-primary');
+         $("#choice-twelve .btn").addClass('btn-outline-primary');
+         $("#choice-eighteen .btn").removeClass('btn-primary');
+         $("#choice-eighteen .btn").addClass('btn-outline-primary');
+         $("#choice-six .btn").addClass('btn-primary');
+         $("#choice-six .btn").text('selected');
+         $("#choice-twelve .btn").text('choose');
+         $("#choice-eighteen .btn").text('choose');
+       }
+       if ($("#form-entry input:checked").val() == '12') {
+         $("#choice-twelve .btn").removeClass('btn-outline-primary');
+         $("#choice-six .btn").removeClass('btn-primary');
+         $("#choice-six .btn").addClass('btn-outline-primary');
+         $("#choice-eighteen .btn").removeClass('btn-primary');
+         $("#choice-eighteen .btn").addClass('btn-outline-primary');
+         $("#choice-twelve .btn").addClass('btn-primary');
+         $("#choice-six .btn").text('choose');
+         $("#choice-twelve .btn").text('selected');
+         $("#choice-eighteen .btn").text('choose');
+       }
+       if ($("#form-entry input:checked").val() == '18') {
+         $("#choice-eighteen .btn").removeClass('btn-outline-primary');
+         $("#choice-six .btn").removeClass('btn-primary');
+         $("#choice-six .btn").addClass('btn-outline-primary');
+         $("#choice-twelve .btn").removeClass('btn-primary');
+         $("#choice-twelve .btn").addClass('btn-outline-primary');
+         $("#choice-eighteen .btn").addClass('btn-primary');
+         $("#choice-six .btn").text('choose');
+         $("#choice-twelve .btn").text('choose');
+         $("#choice-eighteen .btn").text('selected');
+       }
 
-
-        });
+      $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
+    };
 </script>
 {% endblock %}
