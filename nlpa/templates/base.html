@@ -16,14 +16,7 @@
     <!-- ===============================================-->
     <!--    Document Title-->
     <!-- ===============================================-->
-    <title>{% block title %}
-          {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
-      {% endblock %}
-      {% block title_suffix %}
-          {% with self.get_site.site_name as site_name %}
-              {% if site_name %}- {{ site_name }}{% endif %}
-          {% endwith %}
-      {% endblock %}</title>
+    <title>NLPA Submissions System</title>
 
 
     <!-- ===============================================-->
@@ -124,10 +117,7 @@
                      <hr class="mb-0 navbar-vertical-divider" />
                    </div>
                  </div>
-                 <!-- parent pages--><a class="nav-link {% active_link 'home' strict=True %}" href="/" role="button">
-                   <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-globe"></span></span><span class="nav-link-text ps-1">Home</span>
-                   </div>
-                 </a>
+            
 {% if "checkout.session.completed" in request.user.payment_status or "payment_pending" in request.user.payment_status %}
 
                  <!-- Entry System -->

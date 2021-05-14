@@ -14,7 +14,7 @@
 {% block card-body %}
 
 <h3>{% trans "Sign Up" %}</h3>
-<p>If you already have an account, please log in <a href="/accounts/login">here</a></p>
+<p>... OR, if you already have an account, please log in <a href="/accounts/login" style="text-decoration: underline">here</a></p>
 <br>
 
 <form method="POST" action="{% url 'account_signup' %}" class="needs-validation row g-3" novalidate>
@@ -40,7 +40,7 @@
         </div>
 
 
-    <button type="submit" class="btn btn-outline-primary mt-4">{% trans "Sign Up" %}</button>
+    <button type="submit" class="btn btn-outline-primary mt-4 w-50 mx-auto" id="signupbutton">{% trans "Sign Up" %}</button>
 </form>
 <p class="small my-3">We ask youth entrants for their date of birth. This gives them access to a 70% discount. Proof of age will be requested if the youth entrant makes the final stages.</p>
 
