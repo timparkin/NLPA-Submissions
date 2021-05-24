@@ -1,6 +1,7 @@
+#!/usr/bin/env python
 import stripe
 import yaml
-stripe.api_key = 'sk_test_51IUFQmIyfIE0cGLTvNmGC7fWX3xuvnaTuXWu8Bndi7AhKvKjutDs5Fgb6CshG9jjJzLXAoOCE9Y4ZWHGm1mePW2s007sOLku4X'
+stripe.api_key = '***REMOVED***'
 
 coupons = yaml.safe_load(open("coupons_live.yaml"))
 
