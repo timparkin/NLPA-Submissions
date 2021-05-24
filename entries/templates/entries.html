@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block extra_js %}
+
+
+{% endblock %}
+
 {% block content %}
 
 
@@ -86,6 +96,7 @@
 {% else %}
 {% endif %}
 
+{{ field.errors }}
   {{ field | as_crispy_field }}
 
 {% if forloop.last %}
@@ -106,6 +117,17 @@
   </div>
 </div>
 </form>
+
+
+<div id="uploading">
+  <div id="progress" class="bar">
+    <div id="progressbar">&nbsp;</div>
+    <div id="percents"></div>
+  </div>
+</div>
+
+
+
 
 <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
   <div class="modal-dialog" role="document">

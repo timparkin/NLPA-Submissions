@@ -17,6 +17,33 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 import json
 from nlpa.custom_storages import create_custom_storage, CustomS3Boto3Storage
 
+from django.forms import BaseInlineFormSet
+
+from django.core.exceptions import ValidationError
+from django.core.files.images import get_image_dimensions
+
+
+
+class ValidateImagesModelFormset(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        # example custom validation across forms in the formset
+        for f in self.forms:
+            if f.cleaned_data['photo'] == "entries/default-entry.png":
+                continue
+            # your custom formset validation
+            if not f.cleaned_data['photo']:
+                raise forms.ValidationError("No image!")
+            else:
+                w, h = get_image_dimensions(f.cleaned_data['photo'])
+                if w > h:
+                    long_edge = w
+                else:
+                    long_edge = h
+                if long_edge <1600:
+                    f.add_error('photo','The long side of the image is %i pixels. We recommend 2048.' % long_edge)
+
+
 
 
 category_list = ['GL', 'IA', 'N', 'A']
@@ -51,6 +78,7 @@ def get_entries(request):
     EntryInlineFormSet = inlineformset_factory(User,
                             Entry,
                             fields=('photo','filename', 'category','photo_size','photo_dimensions'),
+#                            formset=ValidateImagesModelFormset,
                             can_delete=False,
                             max_num=int(payment_plan['entries']),
                             min_num=int(payment_plan['entries']),
@@ -65,11 +93,15 @@ def get_entries(request):
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = EntryInlineFormSet(request.POST, request.FILES, instance=user, queryset=Entry.objects.filter(category__in=category_list))
+
+
+
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
             myformset = form.save(commit=False)
             for f in myformset:
+
                 f.photo.storage.custom = {
                                 'filename': f.photo.name,
                                 'user_email': request.user.email,

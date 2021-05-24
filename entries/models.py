@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
+from django.core.files.images import get_image_dimensions
 
 from userauth.models import CustomUser
 
