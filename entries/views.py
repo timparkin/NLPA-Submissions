@@ -162,7 +162,6 @@ class GetPortfolios(LoginRequiredMixin, View):
         ctxt['portfolio1'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P1'))
         ctxt['portfolio2'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P2'))
         ctxt['payment_plan_portfolios'] = int(json.loads(self.request.user.payment_plan)['portfolios'])
-        ctxt['payment_plan_portfolios'] = 2
 
 
         return render(request, self.template_name, self.get_context_data(**ctxt))
