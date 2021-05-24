@@ -9,27 +9,8 @@ import stripe
 import datetime
 import json
 
-#entry_products = {
-#'18': {'price_id':'price_1Ib3y1IyfIE0cGLTwiEUEsDA','product_id':'prod_JDUxYgaLhmsJXu','name':'Eighteen Images','price':10000},
-#'12': {'price_id':'price_1Ib3xdIyfIE0cGLTjx4XBqug','product_id':'prod_JDUxEseu8zbaYL','name':'Twelve Images','price':6000},
-#'6': {'price_id':'price_1Ib3vmIyfIE0cGLTQHyDqJh8','product_id':'prod_JDUvNXYOvwRyQm','name':'Six Images','price':4000},
-#}
-#portfolio_products = {
-#'0': {'price':0000},
-#'1': {'price_id':'price_1Ib3z5IyfIE0cGLTZxKExvnG','product_id':'prod_JDUz2CF7GA0wOR','name':'One Project Submission','price':3000},
-#'2': {'price_id':'price_1Ib3zdIyfIE0cGLT4uc5jU6Q','product_id':'prod_JDUzO4PtT5PYv6','name':'Two Project Submissions','price':6000},
-#}
+from nlpa.settings.config import entry_products, portfolio_products
 
-entry_products = {
-'18': {'price_id':'price_1IuZTqIyfIE0cGLTn8ZYh9HE','product_id':'prod_JXenzOyfrrtqpA','name':'Eighteen Images','price':10000},
-'12': {'price_id':'price_1IuZUJIyfIE0cGLTHrgufWkQ','product_id':'prod_JXenYBcMpCTY2r','name':'Twelve Images','price':6000},
-'6': {'price_id':'price_1IuZUlIyfIE0cGLT0QVhaCjR','product_id':'prod_JXeoBKVBHYjHE7','name':'Six Images','price':4000},
-}
-portfolio_products = {
-'0': {'price':0000},
-'1': {'price_id':'price_1IuZTLIyfIE0cGLTJVnWI1tb','product_id':'prod_JXemAuy269eU7h','name':'One Project Submission','price':3000},
-'2': {'price_id':'price_1IuZSkIyfIE0cGLTpNiPI0ul','product_id':'prod_JXemslLtFFx3D1','name':'Two Project Submissions','price':6000},
-}
 
 
 
