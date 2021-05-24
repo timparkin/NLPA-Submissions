@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import stripe
 import yaml
 stripe.api_key = '***REMOVED***'
