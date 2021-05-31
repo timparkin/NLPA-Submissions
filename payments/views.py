@@ -41,6 +41,81 @@ def payment_plan_confirm(request):
 
 @login_required
 def success(request):
+    gtag_body = """
+    <script>
+ gtag('event', 'purchase', {
+  "transaction_id": "%(email)s",
+  "affiliation": "NLPA Submission System",
+  "value": %(value)s,
+  "currency": "USD",
+  "shipping": 0.00,
+  "tax": 0.00,
+  "items": [
+%(items)s
+  ]
+});
+</script>
+"""
+
+    gtag_entry_item = """
+    {
+      "id": "%(item_id)s",
+      "name": "%(item_desc)s",
+      "category": "entry",
+      "quantity": 1,
+      "price": %(item_unit_price)s
+    }
+"""
+
+    gtag_portfolio_item = """
+    {
+      "id": "%(item_id)s",
+      "name": "%(item_desc)s",
+      "category": "portfolio",
+      "quantity": %(quantity)s,
+      "price": %(item_unit_price)s
+    }
+"""
+
+
+    entry_item = entry_products[ str(request.session['number_of_entries']) ]
+    portfolio_item = portfolio_products[ str(request.session['number_of_portfolios']) ]
+
+    items = gtag_entry_item % {
+
+      "item_id": entry_item['product_id'],
+      "item_desc": entry_item['name'],
+      "item_unit_price": entry_item['price']/100
+      }
+    price = entry_item['price']
+
+    if portfolio_item['price'] == 3000:
+
+        gtag_items = gtag_portfolio_item % {
+              "item_id": portfolio_item['product_id'],
+              "item_desc": portfolio_item['name'],
+              "category": 'Portfolio',
+              "quantity": 1,
+              "item_unit_price": portfolio_item['price']/100
+              }
+        items = '%s,%s'%(items,gtag_items)
+        price = price + portfolio_item['price']
+    if portfolio_item['price'] == 6000:
+
+        gtag_items = gtag_portfolio_item % {
+              "item_id": portfolio_item['product_id'],
+              "item_desc": portfolio_item['name'],
+              "category": 'Portfolio',
+              "quantity": 2,
+              "item_unit_price": portfolio_item['price']/200
+              }
+        items = '%s,%s'%(items,gtag_items)
+        price = price + portfolio_item['price']
+
+
+    gtag = gtag_body % { "email": request.user.email, "value": price/100, "items": items }
+    request.session['gtag'] = gtag
+
     request.user.payment_status='payment_pending %s'%datetime.datetime.now()
     request.user.save()
     return render(request, 'success.html')
