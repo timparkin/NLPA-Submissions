@@ -22,8 +22,6 @@ from django.forms import BaseInlineFormSet
 from django.core.exceptions import ValidationError
 from django.core.files.images import get_image_dimensions
 
-
-
 class ValidateImagesModelFormset(BaseInlineFormSet):
     def clean(self):
         super().clean()
@@ -94,24 +92,29 @@ def get_entries(request):
         # create a form instance and populate it with data from the request:
         form = EntryInlineFormSet(request.POST, request.FILES, instance=user, queryset=Entry.objects.filter(category__in=category_list))
 
-
-
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
             myformset = form.save(commit=False)
             for f in myformset:
-
-                f.photo.storage.custom = {
-                                'filename': f.photo.name,
-                                'user_email': request.user.email,
-                                'category': f.category,
-                                'is_young_entrant': request.user.is_young_entrant
-                                }
+                name = f.photo.name
+                tagdata = {
+                    'filename': name,
+                    'user_email': request.user.email,
+                    'category': f.category,
+                    'is_young_entrant': request.user.is_young_entrant
+                    }
+                if hasattr(f.photo.storage,'custom'):
+                    f.photo.storage.custom[ name ] = tagdata
+                else:
+                    f.photo.storage.custom = { name : tagdata }
                 f.photo_dimensions = '%s x %s'%(f.photo.width, f.photo.height)
                 f.photo_size = f.photo.size
                 f.filename = f.photo.name
+
             form.save()
+
+
 
             # redirect to a new URL:
             return HttpResponseRedirect('/entries/')
@@ -186,12 +189,18 @@ class GetPortfolios(LoginRequiredMixin, View):
                 myformset = portfolio1.save(commit=False)
                 for f in myformset:
                     f.category = 'P1'
-                    f.photo.storage.custom = {
-                                    'filename': f.photo.name,
-                                    'user_email': request.user.email,
-                                    'category': f.category,
-                                    'is_young_entrant': request.user.is_young_entrant
-                                    }
+                    name = f.photo.name
+                    tagdata = {
+                        'filename': name,
+                        'user_email': request.user.email,
+                        'category': f.category,
+                        'is_young_entrant': request.user.is_young_entrant
+                        }
+                    if hasattr(f.photo.storage,'custom'):
+                        f.photo.storage.custom[ name ] = tagdata
+                    else:
+                        f.photo.storage.custom = { name : tagdata }
+
                     f.photo_dimensions = '%s x %s'%(f.photo.width, f.photo.height)
                     f.photo_size = f.photo.size
                     f.filename = f.photo.name
@@ -205,12 +214,17 @@ class GetPortfolios(LoginRequiredMixin, View):
                 myformset = portfolio2.save(commit=False)
                 for f in myformset:
                     f.category = 'P2'
-                    f.photo.storage.custom = {
-                                    'filename': f.photo.name,
-                                    'user_email': request.user.email,
-                                    'category': f.category,
-                                    'is_young_entrant': request.user.is_young_entrant
-                                    }
+                    name = f.photo.name
+                    tagdata = {
+                        'filename': name,
+                        'user_email': request.user.email,
+                        'category': f.category,
+                        'is_young_entrant': request.user.is_young_entrant
+                        }
+                    if hasattr(f.photo.storage,'custom'):
+                        f.photo.storage.custom[ name ] = tagdata
+                    else:
+                        f.photo.storage.custom = { name : tagdata }
                     f.photo_dimensions = '%s x %s'%(f.photo.width, f.photo.height)
                     f.photo_size = f.photo.size
                     f.filename = f.photo.name
