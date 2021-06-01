@@ -21,7 +21,7 @@
             {% if request.user.is_young_entrant == 'True' %}
             <h5 class="d-inline-block">Entry Fees</h5><span class="badge badge-soft-info rounded-pill ms-2" id="youth_discount">Youth Discount 70% click to enable</span>
             {% else %}
-            <h5 class="d-inline-block">Entry Fees</h5></span>
+            <h5 class="d-inline-block">Entry Fees</h5>
             {% endif %}
           </div>
           <div class="col-sm-auto d-flex justify-content-center mt-1 mt-sm-0">
@@ -92,181 +92,199 @@
 
 <script>
 
-  var entry_price_dict = {
+var entry_price_dict = {
+  '0': 0.0,
   '6': 40.0,
   '12': 60.0,
   '18': 100.0
- };
-  var portfolio_price_dict = {
- '0': 0.0,
- '1': 30.0,
- '2': 60.0
+};
+var portfolio_price_dict = {
+  '0': 0.0,
+  '1': 30.0,
+  '2': 60.0
 };
 
- var discount=1.0;
+var discount=1.0;
 
-        $(document).ready(function(){
+function enable_entry(button) {
+  $(button).removeClass('btn-outline-primary');
+  $(button).addClass('btn-primary');
+  $(button).text('selected');
+}
 
-            $('#youth_discount').unbind('click');
-            $('#youth_discount').click( function () {
-               $('#id_youth_entry').click();
+function disable_entry(button) {
+  $(button).removeClass('btn-primary');
+  $(button).addClass('btn-outline-primary');
+  $(button).text('choose');
+}
 
+function set_entry_val(e) {
+  $("#form-entry input:radio").val([e]);
+}
 
-               var checked = $("#id_youth_entry:checked").length;
-               if (checked == 0) {
-                  discount=1.0;
+function set_portfolio_val(e) {
+  $("#id_number_of_portfolios option[value='"+e+"']").prop('selected', true);
+}
 
-                  $('#youth_enabled_tag').hide();
-               } else {
-                  discount=0.3;
+function disable_portfolio(button) {
+  $(button).removeClass('btn-primary');
+  $(button).addClass('btn-outline-primary');
+}
 
-                  $('#youth_enabled_tag').show();
-              }
+function enable_portfolio(button) {
+  $(button).removeClass('btn-outline-primary');
+  $(button).addClass('btn-primary');
+}
 
-               $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
-            });
+function set_total() {
+  $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
+}
 
+six = "#choice-six .btn";
+twelve = "#choice-twelve .btn";
+eighteen = "#choice-eighteen .btn";
 
-            $('#choice-six .btn').unbind('click');
-            $("#choice-six .btn").click(function () {
-                $("#form-entry input:radio").val(["6"]);
-                $("#choice-six .btn").removeClass('btn-outline-primary');
-                $("#choice-twelve .btn").removeClass('btn-primary');
-                $("#choice-twelve .btn").addClass('btn-outline-primary');
-                $("#choice-eighteen .btn").removeClass('btn-primary');
-                $("#choice-eighteen .btn").addClass('btn-outline-primary');
-                $("#choice-six .btn").addClass('btn-primary');
-                $("#choice-six .btn").text('selected');
-                $("#choice-twelve .btn").text('choose');
-                $("#choice-eighteen .btn").text('choose');
-                $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
-           });
-           $('#choice-twelve .btn').unbind('click');
-           $("#choice-twelve .btn").click(function () {
-               $("#form-entry input:radio").val(["12"]);
-               $("#choice-twelve .btn").removeClass('btn-outline-primary');
-               $("#choice-six .btn").removeClass('btn-primary');
-               $("#choice-six .btn").addClass('btn-outline-primary');
-               $("#choice-eighteen .btn").removeClass('btn-primary');
-               $("#choice-eighteen .btn").addClass('btn-outline-primary');
-               $("#choice-twelve .btn").addClass('btn-primary');
-               $("#choice-six .btn").text('choose');
-               $("#choice-twelve .btn").text('selected');
-               $("#choice-eighteen .btn").text('choose');
-               $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
-          });
-          $('#choice-eighteen .btn').unbind('click');
-          $("#choice-eighteen .btn").click(function () {
-              $("#form-entry input:radio").val(["18"]);
-              $("#choice-eighteen .btn").removeClass('btn-outline-primary');
-              $("#choice-six .btn").removeClass('btn-primary');
-              $("#choice-six .btn").addClass('btn-outline-primary');
-              $("#choice-twelve .btn").removeClass('btn-primary');
-              $("#choice-twelve .btn").addClass('btn-outline-primary');
-              $("#choice-eighteen .btn").addClass('btn-primary');
-              $("#choice-six .btn").text('choose');
-              $("#choice-twelve .btn").text('choose');
-              $("#choice-eighteen .btn").text('selected');
-              $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
-         });
+p0 = "#choice-portfolio-0";
+p1 = "#choice-portfolio-1";
+p2 = "#choice-portfolio-2";
 
-         $('#choice-portfolio-0').unbind('click');
-         $("#choice-portfolio-0").click(function () {
-             $("#id_number_of_portfolios option[value='0']").prop('selected', true);
-             $("#choice-portfolio-0").removeClass('btn-outline-primary');
-             $("#choice-portfolio-0").addClass('btn-primary');
-             $("#choice-portfolio-1").removeClass('btn-primary');
-             $("#choice-portfolio-1").addClass('btn-outline-primary');
-             $("#choice-portfolio-2").removeClass('btn-primary');
-             $("#choice-portfolio-2").addClass('btn-outline-primary');
-             $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
-        });
-        $('#choice-portfolio-1').unbind('click');
-        $("#choice-portfolio-1").click(function () {
-            $("#id_number_of_portfolios option[value='1']").prop('selected', true);
-            $("#choice-portfolio-0").removeClass('btn-primary');
-            $("#choice-portfolio-0").addClass('btn-outline-primary');
-            $("#choice-portfolio-1").removeClass('btn-outline-primary');
-            $("#choice-portfolio-1").addClass('btn-primary');
-            $("#choice-portfolio-2").removeClass('btn-primary');
-            $("#choice-portfolio-2").addClass('btn-outline-primary');
-            $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
-       });
-
-       $('#choice-portfolio-2').unbind('click');
-       $("#choice-portfolio-2").click(function () {
-           $("#id_number_of_portfolios option[value='2']").prop('selected', true);
-           $("#choice-portfolio-0").removeClass('btn-primary');
-           $("#choice-portfolio-0").addClass('btn-outline-primary');
-           $("#choice-portfolio-1").removeClass('btn-primary');
-           $("#choice-portfolio-1").addClass('btn-outline-primary');
-           $("#choice-portfolio-2").removeClass('btn-outline-primary');
-           $("#choice-portfolio-2").addClass('btn-primary');
-           $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
-      });
-    }); // end of document ready
+$(document).ready(function(){
 
 
-    window.onload=window.onpageshow= function() {
-       if ($("#form-entry option:selected").val() == '0') {
-         $("#choice-portfolio-0").removeClass('btn-outline-primary');
-         $("#choice-portfolio-0").addClass('btn-primary');
-         $("#choice-portfolio-1").removeClass('btn-primary');
-         $("#choice-portfolio-1").addClass('btn-outline-primary');
-         $("#choice-portfolio-2").removeClass('btn-primary');
-         $("#choice-portfolio-2").addClass('btn-outline-primary');
-       }
-       if ($("#form-entry option:selected").val() == '1') {
-         $("#choice-portfolio-0").removeClass('btn-primary');
-         $("#choice-portfolio-0").addClass('btn-outline-primary');
-         $("#choice-portfolio-1").removeClass('btn-outline-primary');
-         $("#choice-portfolio-1").addClass('btn-primary');
-         $("#choice-portfolio-2").removeClass('btn-primary');
-         $("#choice-portfolio-2").addClass('btn-outline-primary');
-       }
-       if ($("#form-entry option:selected").val() == '2') {
-         $("#choice-portfolio-0").removeClass('btn-primary');
-         $("#choice-portfolio-0").addClass('btn-outline-primary');
-         $("#choice-portfolio-1").removeClass('btn-primary');
-         $("#choice-portfolio-1").addClass('btn-outline-primary');
-         $("#choice-portfolio-2").removeClass('btn-outline-primary');
-         $("#choice-portfolio-2").addClass('btn-primary');
-       }
-       if ($("#form-entry input:checked").val() == '6') {
-         $("#choice-six .btn").removeClass('btn-outline-primary');
-         $("#choice-twelve .btn").removeClass('btn-primary');
-         $("#choice-twelve .btn").addClass('btn-outline-primary');
-         $("#choice-eighteen .btn").removeClass('btn-primary');
-         $("#choice-eighteen .btn").addClass('btn-outline-primary');
-         $("#choice-six .btn").addClass('btn-primary');
-         $("#choice-six .btn").text('selected');
-         $("#choice-twelve .btn").text('choose');
-         $("#choice-eighteen .btn").text('choose');
-       }
-       if ($("#form-entry input:checked").val() == '12') {
-         $("#choice-twelve .btn").removeClass('btn-outline-primary');
-         $("#choice-six .btn").removeClass('btn-primary');
-         $("#choice-six .btn").addClass('btn-outline-primary');
-         $("#choice-eighteen .btn").removeClass('btn-primary');
-         $("#choice-eighteen .btn").addClass('btn-outline-primary');
-         $("#choice-twelve .btn").addClass('btn-primary');
-         $("#choice-six .btn").text('choose');
-         $("#choice-twelve .btn").text('selected');
-         $("#choice-eighteen .btn").text('choose');
-       }
-       if ($("#form-entry input:checked").val() == '18') {
-         $("#choice-eighteen .btn").removeClass('btn-outline-primary');
-         $("#choice-six .btn").removeClass('btn-primary');
-         $("#choice-six .btn").addClass('btn-outline-primary');
-         $("#choice-twelve .btn").removeClass('btn-primary');
-         $("#choice-twelve .btn").addClass('btn-outline-primary');
-         $("#choice-eighteen .btn").addClass('btn-primary');
-         $("#choice-six .btn").text('choose');
-         $("#choice-twelve .btn").text('choose');
-         $("#choice-eighteen .btn").text('selected');
-       }
+  $( "#form-entry" ).submit(function( event ) {
+    entries = $("#form-entry input:checked").val();
+    portfolios = $("#form-entry option:selected").val();
+    if (entries ==0 && portfolios == 0) {
+      alert( "You need to choose either a Portfolio Plan or an Entry Plan" );
+      event.preventDefault();
+    }
+  });
 
-      $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
-    };
+  $('#youth_discount').unbind('click');
+  $('#youth_discount').click( function () {
+    $('#id_youth_entry').click();
+
+
+    var checked = $("#id_youth_entry:checked").length;
+
+    if (checked == 0) {
+      discount=1.0;
+      $('#youth_enabled_tag').hide();
+    } else {
+      discount=0.3;
+      $('#youth_enabled_tag').show();
+    }
+
+    set_total();
+  });
+
+  $('#choice-six .btn').unbind('click');
+  $("#choice-six .btn").click(function () {
+    disable_entry(twelve);
+    disable_entry(eighteen);
+    if ($("#form-entry input:checked").val() == "6") {
+      set_entry_val(0);
+      disable_entry(six);
+    } else {
+      set_entry_val(6);
+      enable_entry(six);
+    }
+    set_total();
+  });
+
+  $('#choice-twelve .btn').unbind('click');
+  $("#choice-twelve .btn").click(function () {
+    disable_entry(six);
+    disable_entry(eighteen);
+    if ($("#form-entry input:checked").val() == "12") {
+      set_entry_val(0);
+      disable_entry(twelve);
+    } else {
+      set_entry_val(12);
+      enable_entry(twelve);
+    }
+    set_total();
+  });
+
+
+  $('#choice-eighteen .btn').unbind('click');
+  $("#choice-eighteen .btn").click(function () {
+    disable_entry(six);
+    disable_entry(twelve);
+    if ($("#form-entry input:checked").val() == "18") {
+      set_entry_val(0);
+      disable_entry(eighteen);
+    } else {
+      set_entry_val(18);
+      enable_entry(eighteen);
+    }
+    set_total();
+  });
+
+  $('#choice-portfolio-0').unbind('click');
+  $("#choice-portfolio-0").click(function () {
+    set_portfolio_val(0);
+    enable_portfolio(p0);
+    disable_portfolio(p1);
+    disable_portfolio(p2);
+    set_total();
+  });
+  $('#choice-portfolio-1').unbind('click');
+  $("#choice-portfolio-1").click(function () {
+    set_portfolio_val(1);
+    disable_portfolio(p0);
+    enable_portfolio(p1);
+    disable_portfolio(p2);
+    set_total();
+  });
+
+  $('#choice-portfolio-2').unbind('click');
+  $("#choice-portfolio-2").click(function () {
+    set_portfolio_val(2);
+    disable_portfolio(p0);
+    disable_portfolio(p1);
+    enable_portfolio(p2);
+    set_total();
+  });
+}); // end of document ready
+
+window.onload=window.onpageshow= function() {
+   if ($("#form-entry option:selected").val() == '0') {
+     enable_portfolio(p0);
+     disable_portfolio(p1);
+     disable_portfolio(p2);
+   }
+   if ($("#form-entry option:selected").val() == '1') {
+     disable_portfolio(p0);
+     enable_portfolio(p1);
+     disable_portfolio(p2);
+   }
+   if ($("#form-entry option:selected").val() == '2') {
+     disable_portfolio(p0);
+     disable_portfolio(p1);
+     enable_portfolio(p2);
+   }
+   if ($("#form-entry input:checked").val() == '0') {
+     disable_entry(six);
+     disable_entry(twelve);
+     disable_entry(eighteen);
+   }
+   if ($("#form-entry input:checked").val() == '6') {
+     enable_entry(six);
+     disable_entry(twelve);
+     disable_entry(eighteen);
+   }
+   if ($("#form-entry input:checked").val() == '12') {
+     disable_entry(six);
+     enable_entry(twelve);
+     disable_entry(eighteen);
+   }
+   if ($("#form-entry input:checked").val() == '18') {
+     disable_entry(six);
+     disable_entry(twelve);
+     enable_entry(eighteen);
+   }
+  set_total();
+};
 </script>
 {% endblock %}
