@@ -81,43 +81,52 @@ def success(request):
     entry_item = entry_products[ str(request.session['number_of_entries']) ]
     portfolio_item = portfolio_products[ str(request.session['number_of_portfolios']) ]
 
-    items = gtag_entry_item % {
+    items = []
+    price = 0
 
-      "item_id": entry_item['product_id'],
-      "item_desc": entry_item['name'],
-      "item_unit_price": entry_item['price']/100
-      }
-    price = entry_item['price']
+    if entry_item['price'] > 0:
+        items.append( gtag_entry_item % {
+
+          "item_id": entry_item['product_id'],
+          "item_desc": entry_item['name'],
+          "item_unit_price": entry_item['price']/100
+          } )
+        price = entry_item['price']
+
 
     if portfolio_item['price'] == 3000:
 
-        gtag_items = gtag_portfolio_item % {
+        items.append( gtag_portfolio_item % {
               "item_id": portfolio_item['product_id'],
               "item_desc": portfolio_item['name'],
               "category": 'Portfolio',
               "quantity": 1,
               "item_unit_price": portfolio_item['price']/100
-              }
-        items = '%s,%s'%(items,gtag_items)
+              } )
         price = price + portfolio_item['price']
     if portfolio_item['price'] == 6000:
 
-        gtag_items = gtag_portfolio_item % {
+        items.append( gtag_portfolio_item % {
               "item_id": portfolio_item['product_id'],
               "item_desc": portfolio_item['name'],
               "category": 'Portfolio',
               "quantity": 2,
               "item_unit_price": portfolio_item['price']/200
-              }
-        items = '%s,%s'%(items,gtag_items)
+              } )
         price = price + portfolio_item['price']
 
-
-    gtag = gtag_body % { "email": request.user.email, "value": price/100, "items": items }
+    gtag_items = ','.join(items)
+    gtag = gtag_body % { "email": request.user.email, "value": price/100, "items": gtag_items }
     request.session['gtag'] = gtag
 
     request.user.payment_status='payment_pending %s'%datetime.datetime.now()
     request.user.save()
+
+    if entry_item['price'] == 0:
+        request.session['nextpage'] = 'portfolios'
+    else:
+        request.session['nextpage'] = 'entries'
+
     return render(request, 'success.html')
 
 @csrf_exempt
@@ -134,12 +143,14 @@ def create_checkout_session(request):
         domain_url = settings.BASE_URL
         stripe.api_key = settings.STRIPE_SECRET_KEY
         try:
-            line_items=[
-                {
-                    'quantity': 1,
-                    'price': entry_products[request.session['number_of_entries']]['price_id']
-                }
-            ]
+            line_items = []
+            if (int(request.session['number_of_entries'])>0):
+                line_items=[
+                    {
+                        'quantity': 1,
+                        'price': entry_products[request.session['number_of_entries']]['price_id']
+                    }
+                ]
             if (int(request.session['number_of_portfolios'])>0):
                 line_items.append(
                     {

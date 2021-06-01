@@ -33,9 +33,12 @@
           <button class="button  btn btn-outline-primary " id="submitBtn">Purchase</button>
 
           <p class="mt-2 fw-light">
-          The plan you have chosen allows you to enter {{ request.session.number_of_entries }} individual images into any of our four categories.
-          {% if request.session.number_of_portfolios == '1' %}You have also chosen one portfolio category entry which allows you to submit one project of 6-10 images{%endif%}
-          {% if request.session.number_of_portfolios == '2' %}You have also chosen two portfolio category entries which allows you to submit two projects of 6-10 images{%endif%}
+          The plan you have chosen includes
+
+          {% if request.session.number_of_entries != '0' %} {{ request.session.number_of_entries }} individual images into any of our four categories and {%endif%}
+
+          {% if request.session.number_of_portfolios == '1' %}one portfolio category entry which allows you to submit one project of 6-10 images{%endif%}
+          {% if request.session.number_of_portfolios == '2' %}two portfolio category entries which allows you to submit two projects of 6-10 images{%endif%}
           </p>
 
 

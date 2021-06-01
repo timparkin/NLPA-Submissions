@@ -79,6 +79,7 @@
     {% block extra_css %}
         {# Override this in templates to add extra stylesheets #}
     {% endblock %}
+
   </head>
 
 
@@ -138,17 +139,20 @@
                    </div>
                  </a>
                  <ul class="nav collapse false show" id="user">
+                   {% if request.session.number_of_entries != '0' %}
                    <li class="nav-item"><a class="nav-link {% active_link 'entries' %}" href="/entries">
                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Single Images</span>
                        </div>
                      </a>
-
                    </li>
+                   {% endif %}
+                   {% if request.session.number_of_portfolios != '0' %}
                    <li class="nav-item"><a class="nav-link {% active_link 'portfolios' %}" href="/portfolios">
                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Portfolios</span>
                        </div>
                      </a>
                    </li>
+                   {% endif %}
                  </ul>
 
 {% else %}
@@ -446,6 +450,11 @@
         {% block extra_js %}
             {# Override this in templates to add extra javascript #}
         {% endblock %}
+<script type="text/javascript">
+(function(d, src, c) { var t=d.scripts[d.scripts.length - 1],s=d.createElement('script');s.id='la_x2s6df8d';s.async=true;s.src=src;s.onload=s.onreadystatechange=function(){var rs=this.readyState;if(rs&&(rs!='complete')&&(rs!='loaded')){return;}c(this);};t.parentElement.insertBefore(s,t.nextSibling);})(document,
+'https://naturallandscapeawards.ladesk.com/scripts/track.js',
+function(e){ LiveAgent.createButton('r4zu7i2v', e); });
+</script>
 
     </body>
 </html>

@@ -78,9 +78,6 @@ class SignupForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput)
     date_of_birth = forms.DateField(required=False,label="Date of Birth (if youth entrant)", widget=forms.TextInput(attrs={'class':'datetimepicsker','placeholder':'d/m/y', 'type':'date', 'data-options':'{"disableMobile":true, "format":"mm/dd/yyyy"}'}))
 
-
-
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -93,8 +90,11 @@ class SignupForm(forms.Form):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.date_of_birth = self.cleaned_data['date_of_birth']
-        user.is_young_entrant = relativedelta(date(2020, 12, 31), user.date_of_birth).years  < 17
-        logger.info('date of birth: %s'%user.date_of_birth)
+        print('user age %s'% relativedelta(date(2020, 12, 31), user.date_of_birth).years)
+        user.is_young_entrant = False
+        if user.date_of_birth is not None:
+            user.is_young_entrant = relativedelta(date(2020, 12, 31), user.date_of_birth).years  < 17
+            print('user under 18')
         user.save()
 
 class CustomUserUpdateForm(forms.ModelForm):
