@@ -76,7 +76,7 @@ class SignupForm(forms.Form):
     last_name = forms.CharField(max_length=30)
     email=forms.EmailField(required=True)
     password1 = forms.CharField(widget=forms.PasswordInput)
-    date_of_birth = forms.DateField(required=False,label="Date of Birth (if youth entrant)", widget=forms.TextInput(attrs={'class':'datetimepicsker','placeholder':'d/m/y', 'type':'date', 'data-options':'{"disableMobile":true, "format":"mm/dd/yyyy"}'}))
+    date_of_birth = forms.DateField(required=False,label="Date of Birth (if youth entrant)", widget=forms.TextInput(attrs={'class':'datetimepicsker','placeholder':'dd/mm/yyyy', 'type':'date', 'data-options':'{"disableMobile":true, "format":"dd/mm/yyyy"}'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -90,11 +90,16 @@ class SignupForm(forms.Form):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.date_of_birth = self.cleaned_data['date_of_birth']
+        print('user dob %s'% user.date_of_birth)
         print('user age %s'% relativedelta(date(2020, 12, 31), user.date_of_birth).years)
         user.is_young_entrant = False
         if user.date_of_birth is not None:
             user.is_young_entrant = relativedelta(date(2020, 12, 31), user.date_of_birth).years  < 17
+
+        if user.is_young_entrant:
             print('user under 18')
+        else:
+            print('user is an oldie')
         user.save()
 
 class CustomUserUpdateForm(forms.ModelForm):
