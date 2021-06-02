@@ -136,6 +136,16 @@ def get_entries(request):
 
 
 
+class ProjectDescription(forms.Form):
+    description = forms.CharField(help_text="Please enter a description of your project", widget=forms.Textarea(attrs={
+                'rows': '5',
+                'cols': '90',
+                'maxlength': '1000',
+            }))
+
+
+
+
 
 
 class GetPortfolios(LoginRequiredMixin, View):
@@ -151,6 +161,8 @@ class GetPortfolios(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         ctxt = {}
+
+
         EntryInlineFormSet = inlineformset_factory(User,
                                 Entry,
                                 fields=('photo','filename','photo_size','photo_dimensions'),
@@ -169,6 +181,8 @@ class GetPortfolios(LoginRequiredMixin, View):
             return HttpResponseRedirect('/paymentplan')
         ctxt['portfolio1'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P1'))
         ctxt['portfolio2'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P2'))
+        ctxt['description_form1'] = ProjectDescription(initial={'description': request.user.project_description_one})
+        ctxt['description_form2'] = ProjectDescription(initial={'description': request.user.project_description_two})
         ctxt['payment_plan_portfolios'] = int(json.loads(self.request.user.payment_plan)['portfolios'])
 
 
@@ -176,6 +190,9 @@ class GetPortfolios(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         ctxt = {}
+
+
+
         EntryInlineFormSet = inlineformset_factory(User,
                                 Entry,
                                 fields=('photo','filename','photo_size','photo_dimensions'),
@@ -188,6 +205,18 @@ class GetPortfolios(LoginRequiredMixin, View):
                                     'photo_size':forms.HiddenInput,
                                     'photo':ImageWidget,
                                     })
+
+        if 'description1' in request.POST:
+            description_form1 = ProjectDescription(request.POST)
+            if description_form1.is_valid():
+                description1 = description_form1.cleaned_data['description']
+                request.user.project_description_one = description1
+                request.user.save()
+            else:
+                ctxt['description_form1'] = ProjectDescription(initial={'description': request.user.project_description_one})
+
+
+
         if 'portfolio1' in request.POST:
             portfolio1 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(category='P1'))
             if portfolio1.is_valid():
@@ -213,7 +242,19 @@ class GetPortfolios(LoginRequiredMixin, View):
             else:
                 ctxt['portfolio1'] = portfolio1
 
-        elif 'portfolio2' in request.POST:
+        if 'description2' in request.POST:
+            description_form2 = ProjectDescription(request.POST)
+            if description_form2.is_valid():
+                description2 = description_form2.cleaned_data['description']
+                request.user.project_description_two = description2
+                request.user.save()
+            else:
+                ctxt['description_form2'] = ProjectDescription(initial={'description': request.user.project_description_two})
+
+
+
+        if 'portfolio2' in request.POST:
+            description2 = ProjectDescription(request.POST)
             portfolio2 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(category='P2'))
             if portfolio2.is_valid():
                 myformset = portfolio2.save(commit=False)

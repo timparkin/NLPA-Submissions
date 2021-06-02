@@ -19,6 +19,7 @@
  <h2>Portfolios</h2>
 
 <p>You can upload images at any time and replace them at any time until entries close on the 31st August. You do not need to upload all your entries at once. Once you have chosen your photo and category, use the update button at the bottom of the page.</p>
+<p>Please make project descriptions concise in order to help judges quickly understand the project's intentions (around 80 words max would be great).</p>
 {% load filter_extras %}
 
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"></script>
@@ -26,6 +27,15 @@
 
 {% if payment_plan_portfolios > 0 %}
  <h3>Portfolio One</h3>
+
+<form action="/portfolios/" method="post" enctype="multipart/form-data" style="display:block;">
+    {% csrf_token %}
+    {{ description_form1|crispy }}
+    <input type="hidden" name="description1" value="true" />
+    <input type="submit" value="Save Description" class="btn btn-outline-primary btn-lg mt-3">
+</form>
+<h4 class="mt-3">Project Images</h4>
+
 <form action="/portfolios/" method="post" enctype="multipart/form-data" style="display:block;">
     {% csrf_token %}
     {{ portfolio1.management_form }}
@@ -112,9 +122,20 @@
 </form>
 
 
+
+
 {% endif %}
 {% if payment_plan_portfolios > 1 %}
  <h3 class="mt-5">Portfolio Two</h3>
+
+ <form action="/portfolios/" method="post" enctype="multipart/form-data" style="display:block;">
+     {% csrf_token %}
+     {{ description_form2|crispy }}
+     <input type="hidden" name="description2" value="true" />
+     <input type="submit" value="Save Description" class="btn btn-outline-primary btn-lg mt-3">
+ </form>
+ <h4 class="mt-3">Project Images</h4>
+
 <form action="/portfolios/" method="post" enctype="multipart/form-data" style="display:block;">
     {% csrf_token %}
     {{ portfolio2.management_form }}
