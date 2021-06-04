@@ -20,8 +20,6 @@ from .config import *
 
 SITE_ID = 1
 
-DEBUG=False
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -44,6 +42,7 @@ INSTALLED_APPS = [
     'wagtail.search',
     'wagtail.admin',
     'wagtail.core',
+    'wagtail.contrib.modeladmin',
 
     'modelcluster',
     'taggit',
@@ -185,7 +184,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 # New Settings for UserAuth
 WAGTAIL_USER_CREATION_FORM = 'userauth.forms.WagtailUserCreationForm'
 WAGTAIL_USER_EDIT_FORM = 'userauth.forms.WagtailUserEditForm'
-WAGTAIL_USER_CUSTOM_FIELDS = ['display_name', 'date_of_birth', 'address1', 'address2', 'zip_code', 'city', 'country', 'mobile_phone', 'additional_information', 'photo',]
+WAGTAIL_USER_CUSTOM_FIELDS = ['display_name', 'date_of_birth', 'address1', 'address2', 'zip_code', 'city', 'country', 'mobile_phone', 'additional_information', 'photo','payment_status','payment_plan']
 
 DATE_INPUT_FORMATS = ['%d/%m/%Y']
 
