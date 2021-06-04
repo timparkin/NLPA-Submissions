@@ -4,6 +4,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
+from wagtail.admin.edit_handlers import FieldPanel
+from wagtail.images.edit_handlers import ImageChooserPanel
 
 
 class CustomUser(AbstractUser):
@@ -31,6 +33,12 @@ class CustomUser(AbstractUser):
     is_young_entrant = models.CharField(verbose_name=_("Is Young Entrant"), max_length=1024, blank=True, null=False, default='False')
     project_description_one = models.TextField(verbose_name=_("Project Description One"), blank=True, null=True)
     project_description_two = models.TextField(verbose_name=_("Project Description Two"), blank=True, null=True)
+
+    panels = [
+        FieldPanel('payment_status'),
+        FieldPanel('payment_plan'),
+
+    ]
 
     class Meta:
         ordering = ['last_name']
