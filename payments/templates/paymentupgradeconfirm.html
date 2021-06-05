@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+
+      <div class="card overflow-hidden mb-3">
+
+        <!--/.bg-holder-->
+
+        <div class="card-body position-relative">
+          {% if messages %}
+          <div>
+
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <h3>Confirm Choices</h3>
+          <p>You have chosen the following upgrade options for an upgrade price of <strong class="lead text-primary fs-2">{{ request.session.upgrade_price }}</strong>:</p>
+          <p class="lead">Number of additional Individual Images = <span class="lead text-primary fs-2">{{ request.session.number_of_additional_entries }}</span></p>
+          <p class="lead">Number of additional Project Portfolios = <span class="lead text-primary fs-2">{{ request.session.number_of_additional_portfolios }}</span></p>
+          {% if request.user.is_young_entrant %}
+          {% if request.session.youth_entry %}
+<p class="fw-light">This price includes the 70% discount for your youth entry status with your birthday on <span class="fw-bold">{{ request.user.date_of_birth }}</span>.
+  If you wish to confirm the use of the youth discount, please use the discount code <span class="fw-bold">YOUTH70</span> when making your payment on the next screen</p>
+          {% endif %}
+          {% endif %}
+
+          <button class="button  btn btn-outline-primary " id="submitBtn">Purchase</button>
+
+          <p class="mt-2 fw-light">
+          The full plan you have chosen, including upgrades, allows you to enter
+
+          {% if request.session.total_entries != 0 %} {{ request.session.total_entries }} individual images into any of our four categories
+              {% if request.session.total_portfolios == 1 or request.session.total_portfolios == 2 %} and {% endif %}
+          {%endif%}
+
+          {% if request.session.total_portfolios == 1 %}one portfolio category entry which allows you to submit one project of 6-10 images{%endif%}
+          {% if request.session.total_portfolios == 2 %}two portfolio category entries which allows you to submit two projects of 6-10 images{%endif%}
+          </p>
+
+
+
+
+
+        </div>
+      </div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://js.stripe.com/v3/"></script>  <!-- new -->
+<script>
+  // Get Stripe publishable key
+  fetch("/config/")
+  .then((result) => { return result.json(); })
+  .then((data) => {
+    // Initialize Stripe.js
+    const stripe = Stripe(data.publicKey);
+
+    // new
+    // Event handler
+    document.querySelector("#submitBtn").addEventListener("click", () => {
+      // Get Checkout Session ID
+      fetch("/create-checkout-session-upgrade/")
+      .then((result) => { return result.json(); })
+      .then((data) => {
+        console.log(data);
+        // Redirect to Stripe Checkout
+        return stripe.redirectToCheckout({sessionId: data.sessionId})
+      })
+      .then((res) => {
+        console.log(res);
+      });
+    });
+  });
+</script>
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+{% endblock %}

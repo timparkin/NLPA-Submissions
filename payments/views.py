@@ -40,6 +40,24 @@ def payment_plan_confirm(request):
     return render(request, 'paymentplanconfirm.html')
 
 @login_required
+def payment_upgrade_confirm(request):
+    request.session['upgrade_price'] = \
+        float(
+            entry_products[ str(request.session['number_of_additional_entries']) ]['price'] )/100 + \
+        float(
+            portfolio_products[ str(request.session['number_of_additional_portfolios']) ]['price'] )/100
+    if request.session['youth_entry']:
+        request.session['upgrade_price'] = request.session['total_price'] * 0.3
+    request.session['upgrade_price'] = '${:.0f}'.format( request.session['upgrade_price'] )
+    request.session['total_entries'] = request.session['number_of_additional_entries'] + request.session['entries']
+    request.session['total_portfolios'] = request.session['number_of_additional_portfolios'] + request.session['portfolios']
+
+
+    return render(request, 'paymentupgradeconfirm.html')
+
+
+
+@login_required
 def success(request):
     gtag_body = """
     <script>
@@ -178,6 +196,49 @@ def create_checkout_session(request):
 
 
 @csrf_exempt
+@login_required
+def create_checkout_session_upgrade(request):
+    if request.method == 'GET':
+        domain_url = settings.BASE_URL
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        try:
+            line_items = []
+            if (int(request.session['number_of_additional_entries'])>0):
+                line_items=[
+                    {
+                        'quantity': 1,
+                        'price': entry_products['+%s'%request.session['number_of_additional_entries']]['price_id']
+                    }
+                ]
+            if (int(request.session['number_of_additional_portfolios'])>0):
+                line_items.append(
+                    {
+                    'quantity': 1,
+                    'price': portfolio_products['+%s'%request.session['number_of_additional_portfolios']]['price_id']
+                    }
+                )
+
+            print(line_items)
+            checkout_session = stripe.checkout.Session.create(
+                client_reference_id=request.user.id if request.user.is_authenticated else None,
+                success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url=domain_url + 'cancelled/',
+                payment_method_types=['card'],
+                mode='payment',
+                line_items=line_items,
+                allow_promotion_codes=True,
+            )
+            print('%s : %s' % (request.session['total_entries'], request.session['total_portfolios']))
+            request.user.payment_upgrade_plan = json.dumps( {'entries': request.session['total_entries'], 'portfolios': request.session['total_portfolios'] })
+            request.user.payment_upgrade_status = 'checkingout %s'%datetime.datetime.now()
+            request.user.save()
+            return JsonResponse({'sessionId': checkout_session['id']})
+        except Exception as e:
+            return JsonResponse({'error': str(e)})
+
+
+
+@csrf_exempt
 def stripe_webhook(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
@@ -197,7 +258,14 @@ def stripe_webhook(request):
         # Invalid signature
         return HttpResponse(status=400)
 
-    request.user.payment_status='%s %s'%(event['type'],datetime.datetime.now())
+    if request.user.payment_status == 'checkout.session.completed':
+        print('upgrading')
+        request.user.payment_upgrade_status='%s %s'%(event['type'],datetime.datetime.now())
+        print('r.s.u.s %s' % request.user.payment_upgrade_status)
+        request.user.payment_plan = request.user.payment_upgrade_plan
+    else:
+        request.user.payment_status='%s %s'%(event['type'],datetime.datetime.now())
+        print('r.u.p.s %s' % request.user.payment_status)
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
         print("Payment was successful.")
