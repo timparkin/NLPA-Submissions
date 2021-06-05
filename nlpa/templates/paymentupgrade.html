@@ -1,0 +1,340 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="card mb-3">
+  <div class="card-body">
+    {% if messages %}
+    <div>
+
+      {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+
+    <div class="row g-0">
+      <div class="col-12 mb-3">
+        <div class="row justify-content-center justify-content-sm-between">
+          <div class="col-sm-auto text-center">
+            {% if request.user.is_young_entrant == 'True' %}
+            <h5 class="d-inline-block">Entry Fees</h5><span class="badge badge-soft-info rounded-pill ms-2" id="youth_discount">Youth Discount 70% click to enable</span>
+            {% else %}
+            <h5 class="d-inline-block">Entry Fees</h5>
+            {% endif %}
+          </div>
+          <div class="col-sm-auto"><p>{{ request.session.plantext }}</p></div>
+          <div class="col-sm-auto d-flex justify-content-center mt-1 mt-sm-0">
+                  <h5 class="fw-medium"><span class="fw-small badge badge-soft-success rounded-pill ms-2" id="youth_enabled_tag" style="display:none;">youth discount enabled</span> upgrade = $<span id="total">0</span></h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 border-top border-bottom" id="choice-six" style="{% if request.session.entries > 6 %}opacity:0.5{% endif %}">
+        <div class="h-100">
+          <div class="text-center p-4">
+            <h3 class="fw-normal my-0">6 Images</h3>
+            <p class="mt-3">If you just want to try things out, choose this option which lets you enter six images.</p>
+            <h2 class="fw-medium my-4">
+              {% if request.session.entries == 0 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>40{% endif %}
+              {% if request.session.entries == 6 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>0{% endif %}
+              {% if request.session.entries > 6 %}n/a{% endif %}
+            </h2>{% if request.session.entries <= 6 %}<span class="btn {% if request.session.entries == 6 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}">Choose</span>{% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 border-top border-bottom dark__bg-1000 px-4 px-lg-0" style="background-color: rgba(115, 255, 236, 0.18);{% if request.session.entries > 12 %}opacity:0.5{% endif %}" id="choice-twelve">
+        <div class="h-100">
+          <div class="text-center p-4">
+            <h3 class="fw-normal my-0">12 Images</h3>
+            <p class="mt-3">Our normal plan lets you enter twelve images for five dollars an image</p>
+            <h2 class="fw-medium my-4">
+              {% if request.session.entries == 0 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>60{% endif %}
+              {% if request.session.entries == 6 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>40{% endif %}
+              {% if request.session.entries == 12 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>0{% endif %}
+              {% if request.session.entries > 12 %}n/a{% endif %}
+            </h2>{% if request.session.entries <= 12 %}<span class="btn {% if request.session.entries == 12 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}">Choose</span>{% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 border-top border-bottom" id="choice-eighteen" style="{% if request.session.entries > 18 %}opacity:0.5{% endif %}">
+        <div class="h-100">
+          <div class="text-center p-4">
+            <h3 class="fw-normal my-0">18 Images</h3>
+            <p class="mt-3">If you want to enter a few extra images, this plan gives you six more for eighteen in total</p>
+            <h2 class="fw-medium my-4">
+              {% if request.session.entries == 0 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>100{% endif %}
+              {% if request.session.entries == 6 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>60{% endif %}
+              {% if request.session.entries == 12 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>40{% endif %}
+              {% if request.session.entries == 18 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>0{% endif %}
+            </h2>{% if request.session.entries <= 18 %}<span class="btn {% if request.session.entries == 18 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}">Choose</span>{% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 border-top border-bottom">
+        <div class="h-100">
+          <div class="text-center p-4">
+            <h3 class="fw-normal my-0">Portfolio</h3>
+            <p class="mt-3">You can also enter up to two portfolios of between 6 and 10 images</p>
+            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>30 <small class="fs--1 text-700">/ portfolio</small>
+            </h2>
+             {% if request.session.portfolios <= 0 %}<span class="btn {% if request.session.portfolios == 0 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}" id="choice-portfolio-0">0</span>{% endif %}
+             {% if request.session.portfolios <= 1 %}<span class="btn {% if request.session.portfolios == 1 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}" id="choice-portfolio-1">1</span>{% endif %}
+             {% if request.session.portfolios <= 2 %}<span class="btn {% if request.session.portfolios == 2 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}" id="choice-portfolio-2">2</span>{% endif %}
+          </div>
+        </div>
+      </div>
+      <form action="/paymentupgrade/" method="post" id="form-entry">
+        <div style="display:none">
+          {% csrf_token %}
+          {{ form }}
+          </div>
+
+
+      <div class="col-12 text-center">
+        <input type="submit" value="Submit" class="btn btn-outline-primary btn-lg mt-3">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<script>
+
+var entry_price_dict = {
+  '0': 0.0,
+  '6': 40.0,
+  '12': 60.0,
+  '18': 100.0
+};
+var portfolio_price_dict = {
+  '0': 0.0,
+  '1': 30.0,
+  '2': 60.0
+};
+
+var discount=1.0;
+
+six = "#choice-six .btn";
+twelve = "#choice-twelve .btn";
+eighteen = "#choice-eighteen .btn";
+
+vmap = {
+  6: six,
+  12: twelve,
+  18: eighteen
+};
+
+p0 = "#choice-portfolio-0";
+p1 = "#choice-portfolio-1";
+p2 = "#choice-portfolio-2";
+
+pmap = {
+  0: p0,
+  1: p1,
+  2: p2
+};
+
+tag_selected = 'dark';
+tag_normal = 'primary';
+
+function enable_entry(button) {
+  if (button == vmap[{{request.session.entries}}]) {
+    tag = tag_selected;
+  } else {
+    tag = tag_normal;
+  }
+  $(button).removeClass('btn-outline-' + tag);
+  $(button).addClass('btn-' + tag);
+  $(button).text('selected');
+}
+
+function disable_entry(button) {
+  if (button == vmap[{{request.session.entries}}]) {
+    tag = tag_selected;
+  } else {
+    tag = tag_normal;
+  }
+  $(button).removeClass('btn-' + tag);
+  $(button).addClass('btn-outline-' + tag);
+  $(button).text('choose');
+}
+
+function set_entry_val(e) {
+  $("#form-entry input:radio").val([e]);
+}
+
+function set_portfolio_val(e) {
+  $("#id_number_of_portfolios option[value='"+e+"']").prop('selected', true);
+}
+
+function disable_portfolio(button) {
+  if (button == pmap[{{request.session.portfolios}}]) {
+    tag = tag_selected;
+  } else {
+    tag = tag_normal;
+  }
+  $(button).removeClass('btn-' + tag);
+  $(button).addClass('btn-outline-' + tag);
+}
+
+function enable_portfolio(button) {
+  if (button == pmap[{{request.session.portfolios}}]) {
+    tag = tag_selected;
+  } else {
+    tag = tag_normal;
+  }
+  $(button).removeClass('btn-outline-' + tag);
+  $(button).addClass('btn-' + tag);
+}
+
+function set_total() {
+  $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] - {{request.session.total_price}})*discount );
+}
+
+
+$(document).ready(function(){
+
+
+  $( "#form-entry" ).submit(function( event ) {
+    entries = $("#form-entry input:checked").val();
+    portfolios = $("#form-entry option:selected").val();
+    if ((entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] - {{request.session.total_price}}) <= 0) {
+      alert( "You need to select an additional entry plan or portfolio to upgrade." );
+      event.preventDefault();
+    }
+  });
+
+  $('#youth_discount').unbind('click');
+  $('#youth_discount').click( function () {
+    $('#id_youth_entry').click();
+
+
+    var checked = $("#id_youth_entry:checked").length;
+
+    if (checked == 0) {
+      discount=1.0;
+      $('#youth_enabled_tag').hide();
+    } else {
+      discount=0.3;
+      $('#youth_enabled_tag').show();
+    }
+
+    set_total();
+  });
+
+  $('#choice-six .btn').unbind('click');
+  $("#choice-six .btn").click(function () {
+    disable_entry(twelve);
+    disable_entry(eighteen);
+    if ($("#form-entry input:checked").val() == "6") {
+      set_entry_val(0);
+      disable_entry(six);
+    } else {
+      set_entry_val(6);
+      enable_entry(six);
+    }
+    set_total();
+  });
+
+  $('#choice-twelve .btn').unbind('click');
+  $("#choice-twelve .btn").click(function () {
+    disable_entry(six);
+    disable_entry(eighteen);
+    if ($("#form-entry input:checked").val() == "12") {
+      set_entry_val(0);
+      disable_entry(twelve);
+    } else {
+      set_entry_val(12);
+      enable_entry(twelve);
+    }
+    set_total();
+  });
+
+
+  $('#choice-eighteen .btn').unbind('click');
+  $("#choice-eighteen .btn").click(function () {
+    disable_entry(six);
+    disable_entry(twelve);
+    if ($("#form-entry input:checked").val() == "18") {
+      set_entry_val(0);
+      disable_entry(eighteen);
+    } else {
+      set_entry_val(18);
+      enable_entry(eighteen);
+    }
+    set_total();
+  });
+
+  $('#choice-portfolio-0').unbind('click');
+  $("#choice-portfolio-0").click(function () {
+    set_portfolio_val(0);
+    enable_portfolio(p0);
+    disable_portfolio(p1);
+    disable_portfolio(p2);
+    set_total();
+  });
+  $('#choice-portfolio-1').unbind('click');
+  $("#choice-portfolio-1").click(function () {
+    set_portfolio_val(1);
+    disable_portfolio(p0);
+    enable_portfolio(p1);
+    disable_portfolio(p2);
+    set_total();
+  });
+
+  $('#choice-portfolio-2').unbind('click');
+  $("#choice-portfolio-2").click(function () {
+    set_portfolio_val(2);
+    disable_portfolio(p0);
+    disable_portfolio(p1);
+    enable_portfolio(p2);
+    set_total();
+  });
+}); // end of document ready
+
+window.onload=window.onpageshow= function() {
+   if ($("#form-entry option:selected").val() == '0') {
+     enable_portfolio(p0);
+     disable_portfolio(p1);
+     disable_portfolio(p2);
+   }
+   if ($("#form-entry option:selected").val() == '1') {
+     disable_portfolio(p0);
+     enable_portfolio(p1);
+     disable_portfolio(p2);
+   }
+   if ($("#form-entry option:selected").val() == '2') {
+     disable_portfolio(p0);
+     disable_portfolio(p1);
+     enable_portfolio(p2);
+   }
+   if ($("#form-entry input:checked").val() == '0') {
+     disable_entry(six);
+     disable_entry(twelve);
+     disable_entry(eighteen);
+   }
+   if ($("#form-entry input:checked").val() == '6') {
+     enable_entry(six);
+     disable_entry(twelve);
+     disable_entry(eighteen);
+   }
+   if ($("#form-entry input:checked").val() == '12') {
+     disable_entry(six);
+     enable_entry(twelve);
+     disable_entry(eighteen);
+   }
+   if ($("#form-entry input:checked").val() == '18') {
+     disable_entry(six);
+     disable_entry(twelve);
+     enable_entry(eighteen);
+   }
+  set_total();
+};
+</script>
+{% endblock %}
