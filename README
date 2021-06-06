@@ -78,7 +78,7 @@ AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
 FULL INSTALL
 
-multipass launch 18.04 -m 2G -d 20G -n submit 
+multipass launch 18.04 -m 2G -d 20G -n submit
 
 sudo apt update
 sudo apt install python3-pip
@@ -92,10 +92,13 @@ sudo -u postgres createdb nlpa
 
 git clone https://github.com/timparkin/NLPA-Submissions.git
 pip install -r requirements
+./manage.py makemigrations
+./manage.py migrate
+./manage.py createsuperuser
+
 
 #from io import BytesIO as cStringIO
-#and remove print statements from 
+#and remove print statements from
 #/home/ubuntu/nlpa/lib/python3.6/site-packages/django_thumbs/db/models.py
 
 # if you do this again, try dropping the migrations
-
