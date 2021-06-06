@@ -28,6 +28,7 @@ urlpatterns = [
 
     path('paymentplan/', views.get_paymentplan, name='paymentplan'),
     path('paymentupgrade/', views.get_paymentupgrade, name='paymentupgrade'),
+    path('072348-datamining/', views.datamining, name='datamining'),
 
 
 

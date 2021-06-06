@@ -10,6 +10,10 @@ import json
 
 from nlpa.settings.config import entry_products, portfolio_products
 
+from django.contrib.admin.views.decorators import staff_member_required
+
+
+
 class HomePageView(TemplateView):
     template_name = 'home.html'
 
@@ -122,3 +126,11 @@ def get_paymentupgrade(request):
                 })
 
     return render(request, 'paymentupgrade.html', {'form': form})
+
+
+@staff_member_required
+def datamining(request):
+    users = User.objects.all()
+
+
+    return render(request, 'datamining.html', {'users': users})
