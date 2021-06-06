@@ -19,9 +19,9 @@
         <div class="row justify-content-center justify-content-sm-between">
           <div class="col-sm-auto text-center">
             {% if request.user.is_young_entrant == 'True' %}
-            <h5 class="d-inline-block">Entry Fees</h5><span class="badge badge-soft-info rounded-pill ms-2" id="youth_discount">Youth Discount 70% click to enable</span>
+            <h5 class="d-inline-block">Upgrade</h5><span class="badge badge-soft-info rounded-pill ms-2" id="youth_discount">Youth Discount 70% click to enable</span>
             {% else %}
-            <h5 class="d-inline-block">Entry Fees</h5>
+            <h5 class="d-inline-block">Upgrade</h5>
             {% endif %}
           </div>
           <div class="col-sm-auto"><p>{{ request.session.plantext }}</p></div>
@@ -92,7 +92,7 @@
 
 
       <div class="col-12 text-center">
-        <input type="submit" value="Submit" class="btn btn-outline-primary btn-lg mt-3">
+       <input id="totalbottom" type="submit" value="Upgrade" class="btn btn-outline-primary btn-lg mt-3">
       </div>
     </div>
   </div>
@@ -194,7 +194,13 @@ function enable_portfolio(button) {
 }
 
 function set_total() {
-  $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] - {{request.session.total_price}})*discount );
+  total =  (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] - {{request.session.total_price}})*discount;
+  $("#total").text( total );
+  if (total == 0) {
+  $("#totalbottom").val('Upgrade');
+  } else { 
+  $("#totalbottom").val('Upgrade for $' + (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] - {{request.session.total_price}})*discount) ;
+  }
 }
 
 
