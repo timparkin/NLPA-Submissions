@@ -9,7 +9,6 @@ ADMINS = [('Tim Parkin', 'info@timparkin.co.uk'), ]
 
 
 # SECURITY WARNING: define the correct hosts in production!
-ALLOWED_HOSTS = ['192.168.64.5']
 
 SERVER_EMAIL='info@naturallandscapeawards.com'
 DEFAULT_FROM_EMAIL='info@naturallandscapeawards.com'
@@ -38,7 +37,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(PROJECT_DIR, 'nlpa-filehandler.log'),
+            'filename': '/var/www/testing.naturallandscapeawards.com/NLPA-Submissions/nlpa-filehandler-dev.log',
             'formatter': 'verbose'
         },
     },
