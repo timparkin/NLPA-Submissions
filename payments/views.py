@@ -50,7 +50,6 @@ def payment_upgrade_confirm(request):
         payment_plan = None
     payment_status = request.user.payment_status
     is_young_entrant = request.user.is_young_entrant
-    print(payment_plan)
     entries = int(payment_plan['entries'])
     portfolios = int(payment_plan['portfolios'])
 
@@ -241,16 +240,15 @@ def create_checkout_session_upgrade(request):
         additional_entries = int(request.session['number_of_additional_entries'])
         additional_portfolios = int(request.session['number_of_additional_portfolios'])
 
-
         try:
             line_items = []
             if (additional_entries>0):
-                line_items=[
+                line_items.append(
                     {
                         'quantity': 1,
                         'price': entry_products['%s+%s'%(entries,additional_entries)]['price_id']
                     }
-                ]
+                )
             if (additional_portfolios>0):
                 line_items.append(
                     {
@@ -268,7 +266,6 @@ def create_checkout_session_upgrade(request):
                 line_items=line_items,
                 allow_promotion_codes=True,
             )
-            print('%s : %s' % (request.session['total_entries'], request.session['total_portfolios']))
             request.user.payment_upgrade_plan = json.dumps( {'entries': request.session['total_entries'], 'portfolios': request.session['total_portfolios'] })
             request.user.payment_upgrade_status = 'checkingout %s'%datetime.datetime.now()
             request.user.save()
