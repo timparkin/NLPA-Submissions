@@ -93,9 +93,9 @@ def get_paymentupgrade(request):
         if entries >0:
             plantext += " and "
         if portfolios == 1:
-            plantext += "%s portfolio entry"%portfolios
+            plantext += "%s project entry"%portfolios
         else:
-            plantext += "%s portfolio entries"%portfolios
+            plantext += "%s project entries"%portfolios
     request.session['plantext'] = plantext
 
     if payment_status is None or ('checkout.session.completed' not in payment_status and 'payment_pending' not in payment_status):
