@@ -227,24 +227,38 @@ def create_checkout_session_upgrade(request):
     if request.method == 'GET':
         domain_url = settings.BASE_URL
         stripe.api_key = settings.STRIPE_SECRET_KEY
+
+        if request.user.payment_plan is not None:
+            payment_plan = json.loads(request.user.payment_plan)
+        else:
+            payment_plan = None
+        payment_status = request.user.payment_status
+        is_young_entrant = request.user.is_young_entrant
+        entries = int(payment_plan['entries'])
+        portfolios = int(payment_plan['portfolios'])
+
+
+        additional_entries = int(request.session['number_of_additional_entries'])
+        additional_portfolios = int(request.session['number_of_additional_portfolios'])
+
+
         try:
             line_items = []
-            if (int(request.session['number_of_additional_entries'])>0):
+            if (additional_entries>0):
                 line_items=[
                     {
                         'quantity': 1,
-                        'price': entry_products['+%s'%request.session['number_of_additional_entries']]['price_id']
+                        'price': entry_products['%s+%s'%(entries,additional_entries)]['price_id']
                     }
                 ]
-            if (int(request.session['number_of_additional_portfolios'])>0):
+            if (additional_portfolios>0):
                 line_items.append(
                     {
                     'quantity': 1,
-                    'price': portfolio_products['+%s'%request.session['number_of_additional_portfolios']]['price_id']
+                    'price': portfolio_products['+%s'%additional_portfolios]['price_id']
                     }
                 )
 
-            print(line_items)
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=request.user.id if request.user.is_authenticated else None,
                 success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
