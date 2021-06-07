@@ -26,7 +26,7 @@
     {% endif %}
  <h2>Single Images</h2>
 
-<p>You can upload images at any time and replace them at any time until entries close on the 31st August. You do not need to upload all your entries at once. Once you have chosen your photo and category, use the update button at the bottom of the page.</p>
+<p>You can upload/replace images up until the 31st August. You do not need to upload all your entries at once. Files will be automatically renamed for anonymity after final submission. Titles are not required. Remember to select a category. Use the update button to store any changes.</p>
 {% load filter_extras %}
 
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"></script>
@@ -97,7 +97,7 @@
 
 {{ field.errors }}
   {{ field | as_crispy_field }}
-
+<span style="display:block; margin-bottom:0.8rem"></span>
 {% if forloop.last %}
    </div>
 {% endif %}

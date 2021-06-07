@@ -18,8 +18,9 @@
     {% endif %}
  <h2>Projects</h2>
 
-<p>You can upload images at any time and replace them at any time until entries close on the 31st August. You do not need to upload all your entries at once. Once you have chosen your photo and category, use the update button at the bottom of the page.</p>
-<p>Please make project descriptions concise in order to help judges quickly understand the project's intentions (around 80 words max would be great).</p>
+<p>You can upload/replace images up until the 31st August. You do not need to upload all your entries at once. Files will be automatically renamed for anonymity after final submission. Individual image titles are not required. Use the update button to store any changes. Projects must have a minimum of 6 images and a maximum of 10.</p>
+<p>Project descriptions should concisely explain the project’s intentions (80 words max).</p>
+<p>Check the Submission Requirements and Rules</p>
 {% load filter_extras %}
 
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"></script>
@@ -100,7 +101,7 @@
   {% endif %}
 
     {{ field | as_crispy_field }}
-
+<span style="display:block; margin-bottom:0.8rem"></span>
   {% if forloop.last %}
      </div>
   {% endif %}
@@ -200,7 +201,7 @@
   {% endif %}
 
     {{ field | as_crispy_field }}
-
+<span style="display:block; margin-bottom:0.8rem"></span>
   {% if forloop.last %}
      </div>
   {% endif %}
