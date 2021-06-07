@@ -131,6 +131,4 @@ def get_paymentupgrade(request):
 @staff_member_required
 def datamining(request):
     users = User.objects.all()
-
-
     return render(request, 'datamining.html', {'users': users})
