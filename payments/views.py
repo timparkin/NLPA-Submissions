@@ -42,16 +42,36 @@ def payment_plan_confirm(request):
 
 @login_required
 def payment_upgrade_confirm(request):
-    request.session['upgrade_price'] = \
+
+
+    if request.user.payment_plan is not None:
+        payment_plan = json.loads(request.user.payment_plan)
+    else:
+        payment_plan = None
+    payment_status = request.user.payment_status
+    is_young_entrant = request.user.is_young_entrant
+    print(payment_plan)
+    entries = int(payment_plan['entries'])
+    portfolios = int(payment_plan['portfolios'])
+
+    new_total = \
         float(
-            entry_products[ str(request.session['number_of_additional_entries']) ]['price'] )/100 + \
+            entry_products[ str(request.session['number_of_additional_entries']+entries) ]['price'] )/100 + \
         float(
-            portfolio_products[ str(request.session['number_of_additional_portfolios']) ]['price'] )/100
+            portfolio_products[ str(request.session['number_of_additional_portfolios']+portfolios) ]['price'] )/100
+
+    original_total = \
+        float(
+            entry_products[ str(entries) ]['price'] )/100 + \
+        float(
+            portfolio_products[ str(portfolios) ]['price'] )/100
+
+    request.session['upgrade_price'] = new_total - original_total
     if request.session['youth_entry']:
         request.session['upgrade_price'] = request.session['total_price'] * 0.3
     request.session['upgrade_price'] = '${:.0f}'.format( request.session['upgrade_price'] )
-    request.session['total_entries'] = request.session['number_of_additional_entries'] + request.session['entries']
-    request.session['total_portfolios'] = request.session['number_of_additional_portfolios'] + request.session['portfolios']
+    request.session['total_entries'] = request.session['number_of_additional_entries'] + entries
+    request.session['total_portfolios'] = request.session['number_of_additional_portfolios'] + portfolios
 
 
     return render(request, 'paymentupgradeconfirm.html')
@@ -135,7 +155,7 @@ def success(request):
         price = price + portfolio_item['price']
 
     gtag_items = ','.join(items)
-    gtag = gtag_body % { "email": request.user.email, "value": price/100, "items": gtag_items } 
+    gtag = gtag_body % { "email": request.user.email, "value": price/100, "items": gtag_items }
 
     if GOOGLEANALYTICS is True:
         request.session['gtag'] = gtag
@@ -267,7 +287,7 @@ def stripe_webhook(request):
     logger.info('eventkeys:%s'%event.keys())
     logger.info('email:%s'%event['data']['object']['customer_details']['email'])
     logger.info('id:%s'%event['data']['object']['client_reference_id'])
-    
+
     try:
         user_id = int(event['data']['object']['client_reference_id'])
         logger.info('using userid %s'%user_id)
@@ -277,7 +297,7 @@ def stripe_webhook(request):
         logger.error('user doesnt exist')
         return HttpResponse(status=400)
 
-    logger.error('eventtype: %s'%event['type']) 
+    logger.error('eventtype: %s'%event['type'])
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
         logger.info('in completed')

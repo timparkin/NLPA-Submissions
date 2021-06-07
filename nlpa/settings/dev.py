@@ -37,7 +37,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/var/www/testing.naturallandscapeawards.com/NLPA-Submissions/nlpa-filehandler-dev.log',
+            'filename': os.path.join(PROJECT_DIR, 'nlpa-filehandler-dev.log'),
             'formatter': 'verbose'
         },
     },
