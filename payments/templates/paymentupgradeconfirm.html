@@ -22,7 +22,7 @@
           <h3>Confirm Choices</h3>
           <p>You have chosen the following upgrade options for an upgrade price of <strong class="lead text-primary fs-2">{{ request.session.upgrade_price }}</strong>:</p>
           <p class="lead">Number of additional Individual Images = <span class="lead text-primary fs-2">{{ request.session.number_of_additional_entries }}</span></p>
-          <p class="lead">Number of additional Project Portfolios = <span class="lead text-primary fs-2">{{ request.session.number_of_additional_portfolios }}</span></p>
+          <p class="lead">Number of additional Projects  = <span class="lead text-primary fs-2">{{ request.session.number_of_additional_portfolios }}</span></p>
           {% if request.user.is_young_entrant %}
           {% if request.session.youth_entry %}
 <p class="fw-light">This price includes the 70% discount for your youth entry status with your birthday on <span class="fw-bold">{{ request.user.date_of_birth }}</span>.
@@ -39,8 +39,8 @@
               {% if request.session.total_portfolios == 1 or request.session.total_portfolios == 2 %} and {% endif %}
           {%endif%}
 
-          {% if request.session.total_portfolios == 1 %}one portfolio category entry which allows you to submit one project of 6-10 images{%endif%}
-          {% if request.session.total_portfolios == 2 %}two portfolio category entries which allows you to submit two projects of 6-10 images{%endif%}
+          {% if request.session.total_portfolios == 1 %}one project entry which allows you to submit one project of 6-10 images{%endif%}
+          {% if request.session.total_portfolios == 2 %}two project entries which allows you to submit two projects of 6-10 images{%endif%}
           </p>
 
 

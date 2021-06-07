@@ -19,9 +19,9 @@
         <div class="row justify-content-center justify-content-sm-between">
           <div class="col-sm-auto text-center">
             {% if request.user.is_young_entrant == 'True' %}
-            <h5 class="d-inline-block">Upgrade</h5><span class="badge badge-soft-info rounded-pill ms-2" id="youth_discount">Youth Discount 70% click to enable</span>
+            <h5 class="d-inline-block">Entry Fees</h5><span class="badge badge-soft-info rounded-pill ms-2" id="youth_discount">Youth Discount 70% click to enable</span>
             {% else %}
-            <h5 class="d-inline-block">Upgrade</h5>
+            <h5 class="d-inline-block">Entry Fees</h5>
             {% endif %}
           </div>
           <div class="col-sm-auto"><p>{{ request.session.plantext }}</p></div>
@@ -74,9 +74,9 @@
       <div class="col-lg-3 border-top border-bottom">
         <div class="h-100">
           <div class="text-center p-4">
-            <h3 class="fw-normal my-0">Portfolio</h3>
-            <p class="mt-3">You can also enter up to two portfolios of between 6 and 10 images</p>
-            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>30 <small class="fs--1 text-700">/ portfolio</small>
+            <h3 class="fw-normal my-0">Projects</h3>
+            <p class="mt-3">You can also enter up to two projects of between 6 and 10 images</p>
+            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>30 <small class="fs--1 text-700">/ project</small>
             </h2>
              {% if request.session.portfolios <= 0 %}<span class="btn {% if request.session.portfolios == 0 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}" id="choice-portfolio-0">0</span>{% endif %}
              {% if request.session.portfolios <= 1 %}<span class="btn {% if request.session.portfolios == 1 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}" id="choice-portfolio-1">1</span>{% endif %}
