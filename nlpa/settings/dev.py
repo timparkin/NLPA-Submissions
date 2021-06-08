@@ -1,8 +1,6 @@
 from .base import *
 import os
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ADMINS = [('Tim Parkin', 'info@timparkin.co.uk'), ]
 
@@ -37,7 +35,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(PROJECT_DIR, 'nlpa-filehandler-dev.log'),
+            'filename': os.path.join(BASE_DIR, 'nlpa-filehandler-dev.log'),
             'formatter': 'verbose'
         },
     },
