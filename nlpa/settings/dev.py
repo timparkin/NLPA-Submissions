@@ -1,4 +1,5 @@
 from .base import *
+import os
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -8,7 +9,6 @@ ADMINS = [('Tim Parkin', 'info@timparkin.co.uk'), ]
 
 
 # SECURITY WARNING: define the correct hosts in production!
-ALLOWED_HOSTS = ['submit.naturallandscapeawards.com']
 
 SERVER_EMAIL='info@naturallandscapeawards.com'
 DEFAULT_FROM_EMAIL='info@naturallandscapeawards.com'
@@ -37,7 +37,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/var/www/submit.naturallandscapeawards.com/NLPA-Submissions/nlpa-filehandler.log',
+            'filename': os.path.join(PROJECT_DIR, 'nlpa-filehandler-dev.log'),
             'formatter': 'verbose'
         },
     },

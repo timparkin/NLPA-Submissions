@@ -4,6 +4,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
+from wagtail.admin.edit_handlers import FieldPanel
+from wagtail.images.edit_handlers import ImageChooserPanel
 
 
 class CustomUser(AbstractUser):
@@ -27,10 +29,20 @@ class CustomUser(AbstractUser):
     photo = models.ImageField(verbose_name=_("Photo"), upload_to='photos/', default='photos/default-user-avatar.png')
     website = models.CharField(verbose_name=_("Main Website"), max_length=1024, blank=True, null=True)
     payment_status = models.CharField(verbose_name=_("Payment Status"), max_length=1024, blank=True, null=True)
-    payment_plan = models.CharField(verbose_name=_("Payment Status"), max_length=1024, blank=True, null=True)
+    payment_plan = models.CharField(verbose_name=_("Payment Plan"), max_length=1024, blank=True, null=True)
+    payment_upgrade_status = models.CharField(verbose_name=_("Payment Upgrade Status"), max_length=1024, blank=True, null=True)
+    payment_upgrade_plan = models.CharField(verbose_name=_("Payment Upgrade Plan"), max_length=1024, blank=True, null=True)
     is_young_entrant = models.CharField(verbose_name=_("Is Young Entrant"), max_length=1024, blank=True, null=False, default='False')
+    project_title_one = models.CharField(verbose_name=_("Project Title One"), max_length=1024, blank=True, null=True)
     project_description_one = models.TextField(verbose_name=_("Project Description One"), blank=True, null=True)
+    project_title_two = models.CharField(verbose_name=_("Project Title Two"), max_length=1024, blank=True, null=True)
     project_description_two = models.TextField(verbose_name=_("Project Description Two"), blank=True, null=True)
+
+    panels = [
+        FieldPanel('payment_status'),
+        FieldPanel('payment_plan'),
+
+    ]
 
     class Meta:
         ordering = ['last_name']
