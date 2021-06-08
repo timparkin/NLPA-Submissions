@@ -137,11 +137,13 @@ def get_entries(request):
 
 
 class ProjectDescription(forms.Form):
+    title = forms.CharField()
     description = forms.CharField(help_text="Please enter a description of your project", widget=forms.Textarea(attrs={
                 'rows': '5',
                 'cols': '90',
                 'maxlength': '1000',
             }))
+
 
 
 
@@ -181,8 +183,9 @@ class GetPortfolios(LoginRequiredMixin, View):
             return HttpResponseRedirect('/paymentplan')
         ctxt['portfolio1'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P1'))
         ctxt['portfolio2'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P2'))
-        ctxt['description_form1'] = ProjectDescription(initial={'description': request.user.project_description_one})
-        ctxt['description_form2'] = ProjectDescription(initial={'description': request.user.project_description_two})
+
+        ctxt['description_form1'] = ProjectDescription(initial={'title': request.user.project_title_one,'description': request.user.project_description_one})
+        ctxt['description_form2'] = ProjectDescription(initial={'title': request.user.project_title_two,'description': request.user.project_description_two})
         ctxt['payment_plan_portfolios'] = int(json.loads(self.request.user.payment_plan)['portfolios'])
 
 
@@ -209,11 +212,13 @@ class GetPortfolios(LoginRequiredMixin, View):
         if 'description1' in request.POST:
             description_form1 = ProjectDescription(request.POST)
             if description_form1.is_valid():
+                title1 = description_form1.cleaned_data['title']
                 description1 = description_form1.cleaned_data['description']
+                request.user.project_title_one = title1
                 request.user.project_description_one = description1
                 request.user.save()
             else:
-                ctxt['description_form1'] = ProjectDescription(initial={'description': request.user.project_description_one})
+                ctxt['description_form1'] = ProjectDescription(initial={'title': request.user.project_title_one,'description': request.user.project_description_one})
 
 
 
@@ -245,11 +250,13 @@ class GetPortfolios(LoginRequiredMixin, View):
         if 'description2' in request.POST:
             description_form2 = ProjectDescription(request.POST)
             if description_form2.is_valid():
+                title2 = description_form2.cleaned_data['title']
                 description2 = description_form2.cleaned_data['description']
+                request.user.project_title_two = title2
                 request.user.project_description_two = description2
                 request.user.save()
             else:
-                ctxt['description_form2'] = ProjectDescription(initial={'description': request.user.project_description_two})
+                ctxt['description_form2'] = ProjectDescription(initial={'title': request.user.project_title_two,'description': request.user.project_description_two})
 
 
 

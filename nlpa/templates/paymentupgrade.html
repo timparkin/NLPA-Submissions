@@ -24,39 +24,50 @@
             <h5 class="d-inline-block">Entry Fees</h5>
             {% endif %}
           </div>
-          <div class="col-sm-auto"><p><strong style="color: #900">Please enter discount code on the final payment page</strong></p></div>
+          <div class="col-sm-auto"><p>{{ request.session.plantext }}</p></div>
           <div class="col-sm-auto d-flex justify-content-center mt-1 mt-sm-0">
-                  <h5 class="fw-medium"><span class="fw-small badge badge-soft-success rounded-pill ms-2" id="youth_enabled_tag" style="display:none;">youth discount enabled</span> total = $<span id="total">90</span></h5>
+                  <h5 class="fw-medium"><span class="fw-small badge badge-soft-success rounded-pill ms-2" id="youth_enabled_tag" style="display:none;">youth discount enabled</span> upgrade = $<span id="total">0</span></h5>
           </div>
         </div>
       </div>
-      <div class="col-lg-3 border-top border-bottom" id="choice-six">
+      <div class="col-lg-3 border-top border-bottom" id="choice-six" style="{% if request.session.entries > 6 %}opacity:0.5{% endif %}">
         <div class="h-100">
           <div class="text-center p-4">
             <h3 class="fw-normal my-0">6 Images</h3>
             <p class="mt-3">If you just want to try things out, choose this option which lets you enter six images.</p>
-            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>40
-            </h2><span class="btn btn-outline-primary">Choose</span>
+            <h2 class="fw-medium my-4">
+              {% if request.session.entries == 0 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>40{% endif %}
+              {% if request.session.entries == 6 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>0{% endif %}
+              {% if request.session.entries > 6 %}n/a{% endif %}
+            </h2>{% if request.session.entries <= 6 %}<span class="btn {% if request.session.entries == 6 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}">Choose</span>{% endif %}
           </div>
         </div>
       </div>
-      <div class="col-lg-3 border-top border-bottom dark__bg-1000 px-4 px-lg-0" style="background-color: rgba(115, 255, 236, 0.18);" id="choice-twelve">
+      <div class="col-lg-3 border-top border-bottom dark__bg-1000 px-4 px-lg-0" style="background-color: rgba(115, 255, 236, 0.18);{% if request.session.entries > 12 %}opacity:0.5{% endif %}" id="choice-twelve">
         <div class="h-100">
           <div class="text-center p-4">
             <h3 class="fw-normal my-0">12 Images</h3>
             <p class="mt-3">Our normal plan lets you enter twelve images for five dollars an image</p>
-            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>60
-            </h2><span class="btn btn-outline-primary">Choose</span>
+            <h2 class="fw-medium my-4">
+              {% if request.session.entries == 0 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>60{% endif %}
+              {% if request.session.entries == 6 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>20{% endif %}
+              {% if request.session.entries == 12 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>0{% endif %}
+              {% if request.session.entries > 12 %}n/a{% endif %}
+            </h2>{% if request.session.entries <= 12 %}<span class="btn {% if request.session.entries == 12 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}">Choose</span>{% endif %}
           </div>
         </div>
       </div>
-      <div class="col-lg-3 border-top border-bottom" id="choice-eighteen">
+      <div class="col-lg-3 border-top border-bottom" id="choice-eighteen" style="{% if request.session.entries > 18 %}opacity:0.5{% endif %}">
         <div class="h-100">
           <div class="text-center p-4">
             <h3 class="fw-normal my-0">18 Images</h3>
             <p class="mt-3">If you want to enter a few extra images, this plan gives you six more for eighteen in total</p>
-            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>100
-            </h2><span class="btn btn-outline-primary">Choose</span>
+            <h2 class="fw-medium my-4">
+              {% if request.session.entries == 0 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>100{% endif %}
+              {% if request.session.entries == 6 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>60{% endif %}
+              {% if request.session.entries == 12 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>40{% endif %}
+              {% if request.session.entries == 18 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>0{% endif %}
+            </h2>{% if request.session.entries <= 18 %}<span class="btn {% if request.session.entries == 18 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}">Choose</span>{% endif %}
           </div>
         </div>
       </div>
@@ -67,11 +78,13 @@
             <p class="mt-3">You can also enter up to two projects of between 6 and 10 images</p>
             <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>30 <small class="fs--1 text-700">/ project</small>
             </h2>
-            <span class="btn btn-outline-primary" id="choice-portfolio-0">0</span> <span class="btn btn-outline-primary" id="choice-portfolio-1">1</span> <span class="btn btn-outline-primary" id="choice-portfolio-2">2</span>
+             {% if request.session.portfolios <= 0 %}<span class="btn {% if request.session.portfolios == 0 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}" id="choice-portfolio-0">0</span>{% endif %}
+             {% if request.session.portfolios <= 1 %}<span class="btn {% if request.session.portfolios == 1 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}" id="choice-portfolio-1">1</span>{% endif %}
+             {% if request.session.portfolios <= 2 %}<span class="btn {% if request.session.portfolios == 2 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}" id="choice-portfolio-2">2</span>{% endif %}
           </div>
         </div>
       </div>
-      <form action="/paymentplan/" method="post" id="form-entry">
+      <form action="/paymentupgrade/" method="post" id="form-entry">
         <div style="display:none">
           {% csrf_token %}
           {{ form }}
@@ -79,9 +92,7 @@
 
 
       <div class="col-12 text-center">
-        <input type="submit" value="Submit" class="btn btn-outline-primary btn-lg mt-3">
-        <div class="col-sm-auto  text-center justify-content-center  mt-3 fs--1">Fees are in dollars, but if you are paying in another currency the conversion will be made automatically at the payment stage.</div>
-
+       <input id="totalbottom" type="submit" value="Upgrade" class="btn btn-outline-primary btn-lg mt-3">
       </div>
     </div>
   </div>
@@ -109,15 +120,48 @@ var portfolio_price_dict = {
 
 var discount=1.0;
 
+six = "#choice-six .btn";
+twelve = "#choice-twelve .btn";
+eighteen = "#choice-eighteen .btn";
+
+vmap = {
+  6: six,
+  12: twelve,
+  18: eighteen
+};
+
+p0 = "#choice-portfolio-0";
+p1 = "#choice-portfolio-1";
+p2 = "#choice-portfolio-2";
+
+pmap = {
+  0: p0,
+  1: p1,
+  2: p2
+};
+
+tag_selected = 'dark';
+tag_normal = 'primary';
+
 function enable_entry(button) {
-  $(button).removeClass('btn-outline-primary');
-  $(button).addClass('btn-primary');
+  if (button == vmap[{{request.session.entries}}]) {
+    tag = tag_selected;
+  } else {
+    tag = tag_normal;
+  }
+  $(button).removeClass('btn-outline-' + tag);
+  $(button).addClass('btn-' + tag);
   $(button).text('selected');
 }
 
 function disable_entry(button) {
-  $(button).removeClass('btn-primary');
-  $(button).addClass('btn-outline-primary');
+  if (button == vmap[{{request.session.entries}}]) {
+    tag = tag_selected;
+  } else {
+    tag = tag_normal;
+  }
+  $(button).removeClass('btn-' + tag);
+  $(button).addClass('btn-outline-' + tag);
   $(button).text('choose');
 }
 
@@ -130,26 +174,35 @@ function set_portfolio_val(e) {
 }
 
 function disable_portfolio(button) {
-  $(button).removeClass('btn-primary');
-  $(button).addClass('btn-outline-primary');
+  if (button == pmap[{{request.session.portfolios}}]) {
+    tag = tag_selected;
+  } else {
+    tag = tag_normal;
+  }
+  $(button).removeClass('btn-' + tag);
+  $(button).addClass('btn-outline-' + tag);
 }
 
 function enable_portfolio(button) {
-  $(button).removeClass('btn-outline-primary');
-  $(button).addClass('btn-primary');
+  if (button == pmap[{{request.session.portfolios}}]) {
+    tag = tag_selected;
+  } else {
+    tag = tag_normal;
+  }
+  $(button).removeClass('btn-outline-' + tag);
+  $(button).addClass('btn-' + tag);
 }
 
 function set_total() {
-  $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
+  total =  (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] - {{request.session.total_price}})*discount;
+  $("#total").text( total );
+  if (total == 0) {
+  $("#totalbottom").val('Upgrade');
+  } else { 
+  $("#totalbottom").val('Upgrade for $' + (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] - {{request.session.total_price}})*discount) ;
+  }
 }
 
-six = "#choice-six .btn";
-twelve = "#choice-twelve .btn";
-eighteen = "#choice-eighteen .btn";
-
-p0 = "#choice-portfolio-0";
-p1 = "#choice-portfolio-1";
-p2 = "#choice-portfolio-2";
 
 $(document).ready(function(){
 
@@ -157,8 +210,8 @@ $(document).ready(function(){
   $( "#form-entry" ).submit(function( event ) {
     entries = $("#form-entry input:checked").val();
     portfolios = $("#form-entry option:selected").val();
-    if (entries ==0 && portfolios == 0) {
-      alert( "You need to choose either a Portfolio Plan or an Entry Plan" );
+    if ((entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] - {{request.session.total_price}}) <= 0) {
+      alert( "You need to select an additional entry plan or portfolio to upgrade." );
       event.preventDefault();
     }
   });
