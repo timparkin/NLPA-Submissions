@@ -33,7 +33,9 @@ class CustomUser(AbstractUser):
     payment_upgrade_status = models.CharField(verbose_name=_("Payment Upgrade Status"), max_length=1024, blank=True, null=True)
     payment_upgrade_plan = models.CharField(verbose_name=_("Payment Upgrade Plan"), max_length=1024, blank=True, null=True)
     is_young_entrant = models.CharField(verbose_name=_("Is Young Entrant"), max_length=1024, blank=True, null=False, default='False')
+    project_title_one = models.CharField(verbose_name=_("Project Title One"), max_length=1024, blank=True, null=True)
     project_description_one = models.TextField(verbose_name=_("Project Description One"), blank=True, null=True)
+    project_title_two = models.CharField(verbose_name=_("Project Title Two"), max_length=1024, blank=True, null=True)
     project_description_two = models.TextField(verbose_name=_("Project Description Two"), blank=True, null=True)
 
     panels = [
