@@ -115,9 +115,13 @@ def success(request):
     }
 """
 
-
-    entry_item = entry_products[ str(request.session['number_of_entries']) ]
-    portfolio_item = portfolio_products[ str(request.session['number_of_portfolios']) ]
+    try:
+        entry_item = entry_products[ str(request.session['number_of_entries']) ]
+        portfolio_item = portfolio_products[ str(request.session['number_of_portfolios']) ]
+    except KeyError as e:
+        entry_item = entry_products[ str(request.session['entries']) ]
+        portfolio_item = portfolio_products[ str(request.session['portfolios']) ]
+        
 
     items = []
     price = 0
