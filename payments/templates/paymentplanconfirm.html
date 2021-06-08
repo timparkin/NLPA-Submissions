@@ -35,7 +35,9 @@
           <p class="mt-2 fw-light">
           The plan you have chosen includes
 
-          {% if request.session.number_of_entries != '0' %} {{ request.session.number_of_entries }} individual images into any of our four categories and {%endif%}
+          {% if request.session.number_of_entries != '0' %} {{ request.session.number_of_entries }} individual images into any of our four categories
+            {% if request.session.total_portfolios == 1 or request.session.total_portfolios == 2 %} and {% endif %}
+          {%endif%}
 
           {% if request.session.number_of_portfolios == '1' %}one project entry which allows you to submit one project of 6-10 images{%endif%}
           {% if request.session.number_of_portfolios == '2' %}two project entries which allows you to submit two projects of 6-10 images{%endif%}
