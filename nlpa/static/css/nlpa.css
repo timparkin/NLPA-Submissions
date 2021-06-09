@@ -1,8 +1,45 @@
+@font-face {
+    font-family: 'Grota Sans Alt Rd';
+    src: url('/static/fonts/GrotaSansAltRd-Medium.woff2') format('woff2'),
+        url('/static/fonts/GrotaSansAltRd-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Grota Sans Alt Rd Semi';
+    src: url('/static/fonts/GrotaSansAltRd-SemiBold.woff2') format('woff2'),
+        url('/static/fonts/GrotaSansAltRd-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Grota Sans Alt Rd Bold';
+    src: url('/static/fonts/GrotaSansAltRd-Bold.woff2') format('woff2'),
+        url('/static/fonts/GrotaSansAltRd-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
 
 body .font-sans-serif  {
   font-family: 'Grota Sans Alt Rd Bold' !important;
 }
 
 h1, h2, h3, h4, h5, h6{
-   font-family: 'Grota Sans Alt Rd Bold' !important; 
+   font-family: 'Grota Sans Alt Rd Bold' !important;
 }
+
+button.btn-outline-primary, input[type="submit"].btn-outline-primary {
+  background-color: #345f22 !important;
+  color: #fff !important;
+}
+button.btn-outline-primary:hover, input[type="submit"].btn-outline-primary {
+
+  color: rgba(255, 255, 255, 1);
+  box-shadow: 0 5px 15px rgba(52, 95, 34, .4);
+}
+
