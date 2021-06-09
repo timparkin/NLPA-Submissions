@@ -149,3 +149,10 @@ passwords.txt
 /static
 /static-deploy
 /static-backup
+/nlpa/static
+/nlpa/static/*
+/nlpa/xstatic
+faq.html
+faq_lines.txt
+stripe-customers.csv
+
