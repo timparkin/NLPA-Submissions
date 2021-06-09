@@ -139,20 +139,16 @@
                    </div>
                  </a>
                  <ul class="nav collapse false show" id="user">
-                   {% if request.session.number_of_entries != '0' %}
                    <li class="nav-item"><a class="nav-link {% active_link 'entries' %}" href="/entries">
                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Single Images</span>
                        </div>
                      </a>
                    </li>
-                   {% endif %}
-                   {% if request.session.number_of_portfolios != '0' %}
                    <li class="nav-item"><a class="nav-link {% active_link 'portfolios' %}" href="/portfolios">
                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Projects</span>
                        </div>
                      </a>
                    </li>
-                   {% endif %}
                    <li class="nav-item"><a class="nav-link {% active_link 'paymentupgrade' %}" href="/paymentupgrade">
                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Upgrade</span>
                        </div>
