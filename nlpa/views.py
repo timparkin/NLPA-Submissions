@@ -12,6 +12,7 @@ import json
 from nlpa.settings.config import entry_products, portfolio_products
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django_thumbor import generate_url
 
 
 
@@ -131,7 +132,7 @@ def get_paymentupgrade(request):
 
 @staff_member_required
 def datamining(request):
-    
+
     cusers = {}
 
     if 'email' in request.GET:
