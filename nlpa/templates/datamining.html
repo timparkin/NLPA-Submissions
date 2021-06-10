@@ -29,13 +29,12 @@
 
               <h6>Users</h6>
 
-<div id="tableExample" data-list='{"valueNames":["name","email","username","payment_status","payment_plan","entries"],"page":500,"pagination":true}'>
+<div id="tableExample" data-list='{"valueNames":["name","email","payment_status","payment_plan","entries"],"page":500,"pagination":true}'>
   <table class="table table-bordered table-striped fs--1">
     <thead class="bg-200 text-900">
       <tr>
         <th class="sort" data-sort="name">Name</th>
         <th class="sort" data-sort="email">Email</th>
-        <th class="sort" data-sort="username">Username</th>
         <th class="sort" data-sort="payment_status">Payment Status</th>
         <th class="sort" data-sort="payment_plan">Payment Plan</th>
         <th class="sort" data-sort="payment_plan">Entries</th>
@@ -47,9 +46,8 @@
       <tr>
         <td class="name">{{ u.name }} </td>
         <td class="email">{{u.email}}</td>
-        <td class="username">{{u.username}}</td>
-        <td class="payment_status">{{u.payment_status}}</td>
-        <td class="payment_plan">{{u.payment_plan}}</td>
+        <td class="payment_status">{{u.payment_status|decodestatus}}</td>
+        <td class="payment_plan">{{u.payment_plan|decodepaymentplan}}</td>
         <td class="payment_plan">{{u.entries|entry_count}}</td>
       </tr>
 {% endfor %}

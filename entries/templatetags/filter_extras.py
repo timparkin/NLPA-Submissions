@@ -4,6 +4,7 @@ import urllib
 from django import template
 from django.template.defaultfilters import stringfilter
 from libgravatar import Gravatar
+import json
 
 
 register = template.Library()
@@ -45,9 +46,18 @@ def s3toCDN(value):
     return value.replace('https://nlpa-website-bucket.s3.amazonaws.com', 'https://r8a7z2p5.stackpathcdn.com')
 
 @register.filter
-def mupper(value):
+def decodestatus(value):
     """test"""
-    return value.upper()
+    return value.replace('payment_pending','paid_nc')
+
+
+@register.filter
+def decodepaymentplan(value):
+    """test"""
+    if value is not None:
+        payment_plan = json.loads(value)
+        return "entries: %(entries)s, projects: %(portfolios)s"%payment_plan
+    return ''
 
 
 @register.filter
