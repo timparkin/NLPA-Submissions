@@ -45,6 +45,12 @@ def s3toCDN(value):
     return value.replace('https://nlpa-website-bucket.s3.amazonaws.com', 'https://r8a7z2p5.stackpathcdn.com')
 
 @register.filter
+def mupper(value):
+    """test"""
+    return value.upper()
+
+
+@register.filter
 def is_big_enough(value):
     """check for 2048px is OK, 1600px is maybe and add icons"""
     if 'x' in value:
@@ -60,3 +66,14 @@ def is_big_enough(value):
 
     else:
         return mark_safe('<span data-bs-toggle="tooltip" data-bs-placement="top" title="There is a problem with this image, please try again"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#EE0000" class="bi bi-x-circle-fill" viewBox="0 0 16 16">  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/></svg></span>')
+
+
+@register.filter
+def entry_count(value):
+    """test"""
+    output = []
+    for entry in value:
+        entry_text = "%s %s"%('<img src="https://r8a7z2p5.stackpathcdn.com/%s" width="30">'%entry.photo, entry.category)
+        output.append(entry_text)
+
+    return mark_safe('<br>'.join(output))

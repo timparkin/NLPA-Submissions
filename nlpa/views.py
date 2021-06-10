@@ -6,6 +6,7 @@ from django.shortcuts import render
 
 from nlpa.forms import PaymentPlanForm
 from userauth.models import CustomUser as User
+from entries.models import Entry
 import json
 
 from nlpa.settings.config import entry_products, portfolio_products
@@ -130,5 +131,28 @@ def get_paymentupgrade(request):
 
 @staff_member_required
 def datamining(request):
-    users = User.objects.all()
-    return render(request, 'datamining.html', {'users': users})
+    
+    cusers = {}
+
+    if 'email' in request.GET:
+        email = request.GET['email']
+        users = [User.objects.get(email=email)]
+    else:
+        users = User.objects.all()
+
+    for user in users:
+        cusers[user.email] = {
+                'name': '%s %s'%(user.first_name,user.last_name),
+                'email': user.email,
+                'username': user.username,
+                'payment_status': user.payment_status,
+                'payment_plan': user.payment_plan,
+                'entries': user.entry_set.all()
+                }
+        #user.entry_set.all()
+    tusers = []
+    for k,v in cusers.items():
+        tusers.append(v)
+
+
+    return render(request, 'datamining.html', {'users': tusers})
