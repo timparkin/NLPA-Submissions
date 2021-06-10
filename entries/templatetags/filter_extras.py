@@ -5,7 +5,9 @@ from django import template
 from django.template.defaultfilters import stringfilter
 from libgravatar import Gravatar
 import json
+from libthumbor import CryptoURL
 
+crypto = CryptoURL(key='holysmokesbatman')
 
 register = template.Library()
 
@@ -83,7 +85,14 @@ def entry_count(value):
     """test"""
     output = []
     for entry in value:
-        entry_text = "%s %s"%('<img src="https://r8a7z2p5.stackpathcdn.com/%s" width="30">'%entry.photo, entry.category)
+        imgurl = 'https://r8a7z2p5.stackpathcdn.com/%s'%entry.photo
+        encurl = crypto.generate(
+                width=200,
+                height=100,
+                smart=True,
+                image_url=imgurl
+            )
+        entry_text = "%s %s"%('<img src="http://submit.naturallandscapeawards.com:8000%s" width="200">'%encurl, entry.category)
         output.append(entry_text)
 
     return mark_safe('<br>'.join(output))
