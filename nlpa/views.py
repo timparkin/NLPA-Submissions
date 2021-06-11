@@ -1,8 +1,11 @@
 from django.conf import settings # new
 from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
-from django.http.response import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.http.response import JsonResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import render
+import csv
+import stripe
 
 from nlpa.forms import PaymentPlanForm
 from userauth.models import CustomUser as User
@@ -13,6 +16,7 @@ from nlpa.settings.config import entry_products, portfolio_products
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django_thumbor import generate_url
+from mailchimp3 import MailChimp
 
 
 
@@ -133,27 +137,176 @@ def get_paymentupgrade(request):
 @staff_member_required
 def datamining(request):
 
-    cusers = {}
 
-    if 'email' in request.GET:
-        email = request.GET['email']
-        users = [User.objects.get(email=email)]
-    else:
-        users = User.objects.all()
+    cusers = {}
+    users = User.objects.all()
 
     for user in users:
         cusers[user.email] = {
                 'name': '%s %s'%(user.first_name,user.last_name),
+                'id': user.id,
                 'email': user.email,
                 'username': user.username,
                 'payment_status': user.payment_status,
                 'payment_plan': user.payment_plan,
                 'entries': user.entry_set.all()
                 }
-        #user.entry_set.all()
+
+
+    mailchimp_api_key = "d27bd5dfdc92f62ee663893a2422cd56-us7"
+    client = MailChimp(mc_api=mailchimp_api_key,mc_user='naturallandscapeawards')
+    mc = client.lists.members.all('06156c9627',get_all=True, fields="members.email_address,members.id")
+    print(mc)
+    for m in mc['members']:
+        if m['email_address'] not in cusers:
+            cusers[m['email_address']] = {'email': m['email_address'], 'source': 'mailchimp'}
+        else:
+            cusers[m['email_address']]['source'] = 'mailchimp'
+
+
+    if 'email' in request.GET:
+        email = request.GET['email']
+    else:
+        email = None
+
     tusers = []
     for k,v in cusers.items():
-        tusers.append(v)
+        if email:
+            if k == email:
+                tusers.append(v)
+        else:
+            tusers.append(v)
+
 
 
     return render(request, 'datamining.html', {'users': tusers})
+
+@staff_member_required
+def datamining_child(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse()
+
+    response['Content-Disposition'] = 'attachment; filename="nlpa_combined_mailing_list.csv"'
+
+    cusers = {}
+    cusers_by_id = {}
+    users = User.objects.all()
+
+    for user in users:
+        if user.payment_plan is not None:
+            pp = json.loads(request.user.payment_plan)
+            entries = pp['entries']
+            projects = pp['portfolios']
+        else:
+            entries = 0
+            projects = 0
+        cusers[user.email] = {
+                'name': '%s %s'%(user.first_name,user.last_name),
+                'id': user.id,
+                'email': user.email,
+                'username': user.username,
+                'payment_status': user.payment_status,
+                'entries': entries,
+                'projects': projects,
+                'uploads': user.entry_set.count(),
+                'source': 'system'
+                }
+
+        cusers_by_id[user.id] = cusers[user.email]
+
+
+    mailchimp_api_key = "d27bd5dfdc92f62ee663893a2422cd56-us7"
+    client = MailChimp(mc_api=mailchimp_api_key,mc_user='naturallandscapeawards')
+    mc = client.lists.members.all('06156c9627',get_all=True, fields="members.email_address,members.id")
+
+    for m in mc['members']:
+        if m['email_address'] not in cusers:
+            cusers[m['email_address']] = {'email': m['email_address'], 'source': 'mailchimp'}
+        else:
+            cusers[m['email_address']]['source'] = 'mailchimp'
+
+
+    # NEED TO BLEND MAILCHIMP & SYSTEM USERS WITH MAIN USERS
+
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    sessions = stripe.checkout.Session.list(limit=100)
+    customers = stripe.Customer.list(limit=100)
+    cleaned_sessions = []
+
+    pc = {}
+
+
+    for c in sessions.auto_paging_iter():
+        if c.get('customer_details'):
+            email = c['customer_details']['email']
+        else:
+            try:
+                email = cusers_by_id[int(c['client_reference_id'])]['email']
+            except:
+                email = c['client_reference_id']
+
+        if email not in pc:
+            pc[email] = {'paid': 0, 'unpaid':0}
+        pc[email]['email'] = email
+        pc[email][c['payment_status']] += c['amount_total']
+        pc[email]['user_id'] = c['client_reference_id']
+        pc[email]['pi_id'] = c['payment_intent']
+        pc[email]['stripe_user_id'] = c['customer']
+
+        cleaned_sessions.append(
+            {
+            'email': email,
+            'user_id': c['client_reference_id'],
+            'stripe_user_id': c['customer'],
+            'pi_id': c['payment_intent'],
+            'paid': c['amount_total'],
+            'payment_status': c['payment_status'],
+            }
+        )
+
+    CUSERS = []
+    for v in cleaned_sessions:
+        try:
+            cusers[v['email']].update(v)
+        except:
+            pass
+        CUSERS.append(v)
+
+    extras = []
+    for C in CUSERS:
+        if C['email'] not in cusers:
+            extras.append(C)
+
+    Cs = []
+    for email, cuser in cusers.items():
+        Cs.append(cuser)
+    Cs.extend(extras)
+
+
+
+
+    cleaned_customers = {}
+    for c in customers.auto_paging_iter():
+
+        cleaned_customers[c['email']] = {
+            'email': c['email'],
+            'user_id': c['id'],
+            'name': c['name'],
+            }
+
+    final_cc = []
+    for k,v in cleaned_customers.items():
+        final_cc.append(v)
+
+
+
+
+
+    # return render(request, 'datamining_csv.html', {'sessions': cleaned_sessions, 'compiled_customers': compiled_customers, 'customers': final_cc})
+
+    writer = csv.writer(response)
+    writer.writerow(['email','source','name', 'id', 'stripe_user_id', 'payment_status','entries','projects','uploads','paid','unpaid'])
+    for C in Cs:
+        writer.writerow([ C['email'], C.get('source'), C.get('name'), C.get('id'), C.get('stripe_user_id'),  C.get('payment_status'), C.get('entries'), C.get('projects'), C.get('uploads'), C.get('paid'), C.get('unpaid'), ])
+
+    return response
