@@ -153,7 +153,7 @@ def datamining(request):
                 }
 
 
-    mailchimp_api_key = "d27bd5dfdc92f62ee663893a2422cd56-us7"
+    mailchimp_api_key = settings.MAILCHIMP_API_KEY
     client = MailChimp(mc_api=mailchimp_api_key,mc_user='naturallandscapeawards')
     mc = client.lists.members.all('06156c9627',get_all=True, fields="members.email_address,members.id")
     print(mc)
@@ -215,7 +215,7 @@ def datamining_child(request):
         cusers_by_id[user.id] = cusers[user.email]
 
 
-    mailchimp_api_key = "d27bd5dfdc92f62ee663893a2422cd56-us7"
+    mailchimp_api_key = settings.MAILCHIMP_API_KEY
     client = MailChimp(mc_api=mailchimp_api_key,mc_user='naturallandscapeawards')
     mc = client.lists.members.all('06156c9627',get_all=True, fields="members.email_address,members.id")
 
