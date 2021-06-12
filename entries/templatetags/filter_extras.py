@@ -88,7 +88,6 @@ def entry_count(value):
         imgurl = 'https://r8a7z2p5.stackpathcdn.com/%s'%entry.photo
         encurl = crypto.generate(
                 width=200,
-                height=100,
                 smart=True,
                 image_url=imgurl
             )
