@@ -17,10 +17,7 @@ from nlpa.settings.config import entry_products, portfolio_products
 from django.contrib.admin.views.decorators import staff_member_required
 from django_thumbor import generate_url
 from mailchimp3 import MailChimp
-<<<<<<< HEAD
-=======
 from .data import  *
->>>>>>> e2113972ad0ef60cb9c3b49f6c82d2d50fe302e3
 
 
 
