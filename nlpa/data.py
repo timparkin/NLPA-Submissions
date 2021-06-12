@@ -52,13 +52,14 @@ def clean_ss_users(ss_users, db_users):
 
     for c in ss_users.auto_paging_iter():
 
-        if c.get('customer_details'):
-            email = c['customer_details']['email']
-        else:
-            try:
-                cid = c['client_reference_id']
-                email = db_user_by_id[ cid ]['email']
-            except:
+
+        try:
+            cid = c['client_reference_id']
+            email = db_user_by_id[ cid ]['email']
+        except:
+            if c.get('customer_details'):
+                email = c['customer_details']['email']
+            else:
                 email = '%s?'%c['client_reference_id']
         # this is used to get back to db account email adress from purchae email address (hopefully)
         email_by_cus_id[c['customer']] = email
