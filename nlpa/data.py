@@ -30,9 +30,24 @@ def clean_mc_users(mc_users):
 
     output = {}
     for m in mc_users['members']:
+        tags = m['tags']
+        mc_discount = None
+        mc_optin = None
+        mc_monster = None
+        for t in tags:
+            if t['name'] == 'discount':
+                mc_discount = True
+            if t['name'] == 'optin':
+                mc_optin = True
+            if t['name'] == 'optinmonster':
+                mc_monster = True
+
         output[m['email_address']] = {
         'email': m['email_address'],
         'in_mailchimp': True,
+        'mc_optin': mc_optin, 
+        'mc_discount': mc_discount,
+        'mc_monster': mc_monster
         }
 
     return output
