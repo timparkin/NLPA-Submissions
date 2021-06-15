@@ -155,4 +155,5 @@ passwords.txt
 faq.html
 faq_lines.txt
 stripe-customers.csv
-
+nlpa.pgdump
+thumbor
