@@ -19,14 +19,13 @@ class PurchasePageView(TemplateView):
     template_name = 'purchase.html'
 
 
+@csrf_exempt
+def stripe_config(request):
+    if request.method == 'GET':
+        stripe_config = {'publicKey': settings.STRIPE_PUBLISHABLE_KEY}
+        return JsonResponse(stripe_config, safe=False)
 
-
-@login_required
-def cancelled(request):
-    request.user.payment_status='cancelled %s'%datetime.datetime.now()
-    request.user.save()
-    return render(request, 'cancelled.html')
-
+#### CONFIRM CHOICES ##########################################
 @login_required
 def payment_plan_confirm(request):
     request.session['total_price'] = \
@@ -77,112 +76,8 @@ def payment_upgrade_confirm(request):
 
 
 
-@login_required
-def success(request):
-    gtag_body = """
-    <script>
- gtag('event', 'purchase', {
-  "transaction_id": "%(email)s",
-  "affiliation": "NLPA Submission System",
-  "value": %(value)s,
-  "currency": "USD",
-  "shipping": 0.00,
-  "tax": 0.00,
-  "items": [
-%(items)s
-  ]
-});
-</script>
-"""
 
-    gtag_entry_item = """
-    {
-      "id": "%(item_id)s",
-      "name": "%(item_desc)s",
-      "category": "entry",
-      "quantity": 1,
-      "price": %(item_unit_price)s
-    }
-"""
-
-    gtag_portfolio_item = """
-    {
-      "id": "%(item_id)s",
-      "name": "%(item_desc)s",
-      "category": "portfolio",
-      "quantity": %(quantity)s,
-      "price": %(item_unit_price)s
-    }
-"""
-
-    try:
-        entry_item = entry_products[ str(request.session['number_of_entries']) ]
-        portfolio_item = portfolio_products[ str(request.session['number_of_portfolios']) ]
-    except KeyError as e:
-        entry_item = entry_products[ str(request.session['entries']) ]
-        portfolio_item = portfolio_products[ str(request.session['portfolios']) ]
-        
-
-    items = []
-    price = 0
-
-    if entry_item['price'] > 0:
-        items.append( gtag_entry_item % {
-
-          "item_id": entry_item['product_id'],
-          "item_desc": entry_item['name'],
-          "item_unit_price": entry_item['price']/100
-          } )
-        price = entry_item['price']
-
-
-    if portfolio_item['price'] == 3000:
-
-        items.append( gtag_portfolio_item % {
-              "item_id": portfolio_item['product_id'],
-              "item_desc": portfolio_item['name'],
-              "category": 'Portfolio',
-              "quantity": 1,
-              "item_unit_price": portfolio_item['price']/100
-              } )
-        price = price + portfolio_item['price']
-    if portfolio_item['price'] == 6000:
-
-        items.append( gtag_portfolio_item % {
-              "item_id": portfolio_item['product_id'],
-              "item_desc": portfolio_item['name'],
-              "category": 'Portfolio',
-              "quantity": 2,
-              "item_unit_price": portfolio_item['price']/200
-              } )
-        price = price + portfolio_item['price']
-
-    gtag_items = ','.join(items)
-    gtag = gtag_body % { "email": request.user.email, "value": price/100, "items": gtag_items }
-
-    if GOOGLEANALYTICS is True:
-        request.session['gtag'] = gtag
-    else:
-        request.session['gtag'] = ''
-
-
-    request.user.payment_status='payment_pending %s'%datetime.datetime.now()
-    request.user.save()
-
-    if entry_item['price'] == 0:
-        request.session['nextpage'] = 'portfolios'
-    else:
-        request.session['nextpage'] = 'entries'
-
-    return render(request, 'success.html')
-
-@csrf_exempt
-def stripe_config(request):
-    if request.method == 'GET':
-        stripe_config = {'publicKey': settings.STRIPE_PUBLISHABLE_KEY}
-        return JsonResponse(stripe_config, safe=False)
-
-
+#### CREATE CHECKOUT SESSIONS ##################################
 @csrf_exempt
 @login_required
 def create_checkout_session(request):
@@ -277,7 +172,122 @@ def create_checkout_session_upgrade(request):
         except Exception as e:
             return JsonResponse({'error': str(e)})
 
+#### CANCELLED ##############################################
+@login_required
+def cancelled(request):
+    if 'checkoutout' in user.payment_upgrade_status or 'pending' in user.payment_upgrade_status:
+        user.payment_upgrade_status='cancelled %s'%datetime.datetime.now()
+    else:
+        user.payment_status='cancelled %s'%datetime.datetime.now()
 
+    request.user.save()
+    return render(request, 'cancelled.html')
+
+
+
+
+#### SUCCESS ##############################################
+@login_required
+def success(request):
+    gtag_body = """
+    <script>
+ gtag('event', 'purchase', {
+  "transaction_id": "%(email)s",
+  "affiliation": "NLPA Submission System",
+  "value": %(value)s,
+  "currency": "USD",
+  "shipping": 0.00,
+  "tax": 0.00,
+  "items": [
+%(items)s
+  ]
+});
+</script>
+"""
+
+    gtag_entry_item = """
+    {
+      "id": "%(item_id)s",
+      "name": "%(item_desc)s",
+      "category": "entry",
+      "quantity": 1,
+      "price": %(item_unit_price)s
+    }
+"""
+
+    gtag_portfolio_item = """
+    {
+      "id": "%(item_id)s",
+      "name": "%(item_desc)s",
+      "category": "portfolio",
+      "quantity": %(quantity)s,
+      "price": %(item_unit_price)s
+    }
+"""
+
+    try:
+        entry_item = entry_products[ str(request.session['number_of_entries']) ]
+        portfolio_item = portfolio_products[ str(request.session['number_of_portfolios']) ]
+    except KeyError as e:
+
+        entry_item = entry_products[ str(request.session['entries']) ]
+        portfolio_item = portfolio_products[ str(request.session['portfolios']) ]
+
+
+    items = []
+    price = 0
+
+    if entry_item['price'] > 0:
+        items.append( gtag_entry_item % {
+
+          "item_id": entry_item['product_id'],
+          "item_desc": entry_item['name'],
+          "item_unit_price": entry_item['price']/100
+          } )
+        price = entry_item['price']
+
+
+    if portfolio_item['price'] == 3000:
+
+        items.append( gtag_portfolio_item % {
+              "item_id": portfolio_item['product_id'],
+              "item_desc": portfolio_item['name'],
+              "category": 'Portfolio',
+              "quantity": 1,
+              "item_unit_price": portfolio_item['price']/100
+              } )
+        price = price + portfolio_item['price']
+    if portfolio_item['price'] == 6000:
+
+        items.append( gtag_portfolio_item % {
+              "item_id": portfolio_item['product_id'],
+              "item_desc": portfolio_item['name'],
+              "category": 'Portfolio',
+              "quantity": 2,
+              "item_unit_price": portfolio_item['price']/200
+              } )
+        price = price + portfolio_item['price']
+
+    gtag_items = ','.join(items)
+    gtag = gtag_body % { "email": request.user.email, "value": price/100, "items": gtag_items }
+
+    if GOOGLEANALYTICS is True:
+        request.session['gtag'] = gtag
+    else:
+        request.session['gtag'] = ''
+
+
+    request.user.payment_status='payment_pending %s'%datetime.datetime.now()
+
+    # NEED TO CHECK WHEThER THIS IS AN UPGRADE OR JUST A PURCHASE AND SET PAYMENT PLAN ACCORDINGLY
+    if 'checkingout' in request.user.payment_upgrade_status:
+        request.user.payment_plan = request.user.payment_upgrade_plan
+
+    request.user.save()
+
+    request.session['nextpage'] = 'entries'
+
+    return render(request, 'success.html')
 
 @csrf_exempt
 def stripe_webhook(request):
@@ -292,41 +302,22 @@ def stripe_webhook(request):
         )
     except ValueError as e:
         # Invalid payload
-        logger.error('invalid payload')
         return HttpResponse(status=400)
     except stripe.error.SignatureVerificationError as e:
-        logger.error('signature verification error')
         return HttpResponse(status=400)
-
-    logger.info('in webhook')
-    logger.info('eventkeys:%s'%event.keys())
-    logger.info('email:%s'%event['data']['object']['customer_details']['email'])
-    logger.info('id:%s'%event['data']['object']['client_reference_id'])
 
     try:
         user_id = int(event['data']['object']['client_reference_id'])
-        logger.info('using userid %s'%user_id)
         user = User.objects.get(id=user_id)
-        logger.info('found user and assigned')
     except User.DoesNotExist:
-        logger.error('user doesnt exist')
         return HttpResponse(status=400)
 
-    logger.error('eventtype: %s'%event['type'])
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
-        logger.info('in completed')
-        if 'completed' in user.payment_status or 'pending' in user.payment_status:
-            logger.info('upgrading')
-            user.payment_upgrade_status='%s %s'%(event['type'],datetime.datetime.now())
-            logger.info('r.s.u.s %s' % user.payment_upgrade_status)
-            logger.info('r.s.u.p %s' % user.payment_upgrade_plan)
-            #user.payment_plan = user.payment_upgrade_plan
-            logger.info("Payment was successful.")
+        if 'checkoutout' in user.payment_upgrade_status or 'pending' in user.payment_upgrade_status:
+            user.payment_upgrade_status='completed %s'%datetime.datetime.now()
         else:
-            logger.info('just logging %s;'%event['type'])
-            user.payment_status='%s %s'%(event['type'],datetime.datetime.now())
-            logger.info('r.u.p.s %s' % user.payment_status)
+            user.payment_status='completed %s'%datetime.datetime.now()
         user.save()
 
     return HttpResponse(status=200)
