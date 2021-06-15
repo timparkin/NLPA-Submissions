@@ -194,7 +194,7 @@ def datamining_child(request):
     # GET MAILCHIMP USERS
     mailchimp_api_key = settings.MAILCHIMP_API_KEY
     client = MailChimp(mc_api=mailchimp_api_key,mc_user='naturallandscapeawards')
-    mc_users = clean_mc_users(client.lists.members.all('06156c9627',get_all=True, fields="members.email_address,members.id"))
+    mc_users = clean_mc_users(client.lists.members.all('06156c9627',get_all=True, fields="members.email_address,members.id,members.tags"))
 
 
     # STRIPE SESSION USERS
@@ -226,8 +226,8 @@ def datamining_child(request):
     # return render(request, 'datamining_csv.html', {'db_user_list': db_user_list, 'db_users': db_users, 'mc_users': mc_users, 'ss_users': ss_users, 'sc_users': sc_users, 'sessions': sessions })
 
     writer = csv.writer(response)
-    writer.writerow(['email','name','id', 'entries', 'projects', 'uploads','in_db','in_mailchimp','in_stripe','paid','unpaid'])
+    writer.writerow(['email','name','id', 'entries', 'projects', 'uploads','in_db','in_mailchimp','in_stripe','paid','unpaid','mc_optin','mc_discount','mc_monster'])
     for C in db_user_list:
-        writer.writerow([ C['email'], C.get('name'), C.get('id'), C.get('entries'), C.get('projects'),  C.get('uploads'), C.get('in_db'), C.get('in_mailchimp'), C.get('in_stripe'), C.get('paid'), C.get('unpaid'), ])
+        writer.writerow([ C['email'], C.get('name'), C.get('id'), C.get('entries'), C.get('projects'),  C.get('uploads'), C.get('in_db'), C.get('in_mailchimp'), C.get('in_stripe'), C.get('paid'), C.get('unpaid'), C.get('mc_optin'),C.get('mc_discount'),C.get('mc_monster'), ])
 
     return response
