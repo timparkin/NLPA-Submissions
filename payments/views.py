@@ -321,7 +321,7 @@ def stripe_webhook(request):
             user.payment_upgrade_status='%s %s'%(event['type'],datetime.datetime.now())
             logger.info('r.s.u.s %s' % user.payment_upgrade_status)
             logger.info('r.s.u.p %s' % user.payment_upgrade_plan)
-            user.payment_plan = user.payment_upgrade_plan
+            #user.payment_plan = user.payment_upgrade_plan
             logger.info("Payment was successful.")
         else:
             logger.info('just logging %s;'%event['type'])
