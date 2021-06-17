@@ -175,6 +175,9 @@ def create_checkout_session_upgrade(request):
 #### CANCELLED ##############################################
 @login_required
 def cancelled(request):
+
+    user = request.user
+    
     if 'checkoutout' in user.payment_upgrade_status or 'pending' in user.payment_upgrade_status:
         user.payment_upgrade_status='cancelled %s'%datetime.datetime.now()
     else:
@@ -314,10 +317,11 @@ def stripe_webhook(request):
 
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
-        if user.payment_upgrade_status:
-            if 'checkoutout' in user.payment_upgrade_status or 'pending' in user.payment_upgrade_status:
-                user.payment_upgrade_status='checkout.session.completed %s'%datetime.datetime.now()
-        user.payment_status='checkout.session.completed %s'%datetime.datetime.now()
+        if 'checkoutout' in user.payment_upgrade_status or 'pending' in user.payment_upgrade_status:
+            user.payment_upgrade_status='checkout.session.completed %s'%datetime.datetime.now()
+        else:
+            user.payment_status='checkout.session.completed %s'%datetime.datetime.now()
         user.save()
 
     return HttpResponse(status=200)
+                              
