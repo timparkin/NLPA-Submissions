@@ -138,7 +138,6 @@ def create_checkout_session_upgrade(request):
 
         additional_entries = int(request.session['number_of_additional_entries'])
         additional_portfolios = int(request.session['number_of_additional_portfolios'])
-
         try:
             line_items = []
             if (additional_entries>0):
