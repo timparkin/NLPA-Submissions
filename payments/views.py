@@ -39,6 +39,11 @@ def payment_plan_confirm(request):
 
     return render(request, 'paymentplanconfirm.html')
 
+#### CONFIRM CHOICES ##########################################
+@login_required
+def payment_plan_confirm_youth(request):
+    return render(request, 'paymentplanconfirm_youth.html')
+
 @login_required
 def payment_upgrade_confirm(request):
 
@@ -138,6 +143,7 @@ def create_checkout_session_upgrade(request):
 
         additional_entries = int(request.session['number_of_additional_entries'])
         additional_portfolios = int(request.session['number_of_additional_portfolios'])
+
         try:
             line_items = []
             if (additional_entries>0):
@@ -293,6 +299,17 @@ def success(request):
 
     return render(request, 'success.html')
 
+
+@login_required
+def success_youth(request):
+
+    request.user.payment_status='payment_pending %s'%datetime.datetime.now()
+    request.user.payment_plan= json.dumps( {'entries': '12', 'portfolios': '0'})
+    request.user.save()
+    request.session['nextpage'] = 'entries'
+
+    return render(request, 'success_youth.html')    
+
 @csrf_exempt
 def stripe_webhook(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -325,4 +342,3 @@ def stripe_webhook(request):
         user.save()
 
     return HttpResponse(status=200)
-

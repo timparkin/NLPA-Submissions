@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+
+      <div class="card overflow-hidden mb-3">
+
+        <!--/.bg-holder-->
+
+        <div class="card-body position-relative">
+          {% if messages %}
+          <div>
+            {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <h3>Confirm Choice</h3>
+          <p>Your free Youth plan includes the following: </p>
+          <p class="lead">Number of Individual Images = <span class="lead text-primary fs-2">12</span></p>
+          <p>This entry is free because you have declared yourself under 18 years of age. Please note that, should one or more of your images be selected to go through to the final round, we will
+            contact you to ask for confirmation of a parent or guardian's permission to take part in the competition. If you think you may not be able to get confirmation quickly if we ask for it at the start of September, you could send confirmation to us by email at <a href="mailto:info@naturallandscapeawards.com">info@naturallandscapeawards.com</a>. Please include your parent's or guardian's name, mailing address, email address and phone number along with a note confirming permission to enter. Should one of your images win or be published in the book, we will phone to check the details.</p>
+
+
+          <button class="button  btn btn-outline-primary " id="submitBtn" onclick="location.href='/success_youth';" >Confirm</button>
+
+
+
+        </div>
+      </div>
+
+
+{% endblock %}

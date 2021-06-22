@@ -39,6 +39,8 @@ def get_paymentplan(request):
     #request.user.save()
 
 
+
+
     payment_status = request.user.payment_status
     if payment_status is not None:
         if 'checkout.session.completed' in payment_status:
@@ -57,13 +59,19 @@ def get_paymentplan(request):
             request.session['youth_entry'] = form.cleaned_data['youth_entry']
 
             # redirect to a new URL:
-            return HttpResponseRedirect('/paymentplanconfirm/')
-
+            if request.user.is_young_entrant:
+                return HttpResponseRedirect('/paymentplanconfirm_youth/')
+            else:
+                return HttpResponseRedirect('/paymentplanconfirm/')
     # if a GET (or any other method) we'll create a blank form
     else:
         form = PaymentPlanForm()
 
-    return render(request, 'paymentplan.html', {'form': form})
+
+    if request.user.is_young_entrant:
+        return render(request, 'paymentplan_youth.html', {'form': form})
+    else:
+        return render(request, 'paymentplan.html', {'form': form})
 
 
 @login_required

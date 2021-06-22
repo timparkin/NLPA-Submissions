@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+{{ request.session.gtag | safe }}
+
+<div class="card overflow-hidden mb-3">
+
+  <!--/.bg-holder-->
+
+  <div class="card-body position-relative">
+    {% if messages %}
+    <div>
+
+      {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <h3>Plan Creation Successful</h3>
+      <p>Your profile has been created You will be redirected to the <a href="/entries">entry pages</a> shortly. </p>
+    </div>
+  </div>
+
+<script type="text/javascript">
+  setTimeout(function () {
+         window.location.href = "/{{ request.session.nextpage }}";
+      }, 4000);
+  </script>
+
+  {% endblock %}

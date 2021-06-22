@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="card mb-3">
+  <div class="card-body">
+    {% if messages %}
+    <div>
+
+      {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+
+    <div class="row g-0">
+      <div class="col-12 mb-3">
+        <div class="row justify-content-center justify-content-sm-between">
+          <div class="col-sm-auto text-center">
+            <h5 class="d-inline-block">Entry Fees</h5>
+          </div>
+<div class="col-sm-auto"><p>You're under 18 and hence get a free entry!</p></div>
+          <div class="col-sm-auto d-flex justify-content-center mt-1 mt-sm-0">
+                  <h5 class="fw-medium">total = <span id="total">FREE</span></h5>
+          </div>
+
+
+
+
+        </div>
+      </div>
+      <div class="col-lg-3 border-top border-bottom" id="choice-six" style="opacity:0.4">
+        <div class="h-100">
+          <div class="text-center p-4">
+            <h3 class="fw-normal my-0">6 Images</h3>
+            <p class="mt-3">If you just want to try things out, choose this option which lets you enter six images.</p>
+            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>40
+            </h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 border-top border-bottom dark__bg-1000 px-4 px-lg-0" style="background-color: rgba(115, 255, 236, 0.18);" id="choice-twelve">
+        <div class="h-100">
+          <div class="text-center p-4">
+            <h3 class="fw-normal my-0">12 Images</h3>
+            <p class="mt-3">As a youth entrant, you get twelve images for free, you just need parental approval if an image gets through to the final round</p>
+            <h2 class="fw-medium"> <sup class="fw-normal fs-2 me-1" style="text-decoration: line-through"></sup>FREE</h2>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 border-top border-bottom" id="choice-eighteen" style="opacity:0.4">
+        <div class="h-100">
+          <div class="text-center p-4">
+            <h3 class="fw-normal my-0">18 Images</h3>
+            <p class="mt-3">If you want to enter a few extra images, this plan gives you six more for eighteen in total</p>
+            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>100
+            </h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 border-top border-bottom" style="opacity:0.4">
+        <div class="h-100">
+          <div class="text-center p-4">
+            <h3 class="fw-normal my-0">Projects</h3>
+            <p class="mt-3">You can also enter up to two projects of between 6 and 10 images</p>
+            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>30 <small class="fs--1 text-700">/ project</small>
+            </h2>
+          </div>
+        </div>
+      </div>
+      <form action="/paymentplan/" method="post" id="form-entry">
+        <div style="display:none">
+          {% csrf_token %}
+          {{ form }}
+          </div>
+
+
+      <div class="col-12 text-center">
+        <input type="submit" value="Submit" class="btn btn-outline-primary btn-lg mt-3">
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+{% endblock %}
