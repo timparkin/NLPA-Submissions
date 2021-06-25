@@ -144,7 +144,7 @@
                        </div>
                      </a>
                    </li>
-                   {% if request.user.is_young_entrant %}
+                   {% if request.user.is_young_entrant is True %}
                    {% else %}
                    <li class="nav-item"><a class="nav-link {% active_link 'portfolios' %}" href="/portfolios">
                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Projects</span>
