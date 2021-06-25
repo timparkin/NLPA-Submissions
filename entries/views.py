@@ -84,6 +84,7 @@ def get_entries(request):
 #                            formset=ValidateImagesModelFormset,
                             can_delete=False,
                             max_num=int(payment_plan['entries']),
+                            validate_max=True,
                             min_num=int(payment_plan['entries']),
                             widgets={
                                 'filename':forms.HiddenInput,
@@ -170,6 +171,7 @@ class GetPortfolios(LoginRequiredMixin, View):
                                 fields=('photo','filename','photo_size','photo_dimensions'),
                                 can_delete=False,
                                 max_num=10,
+                                validate_max=True,
                                 min_num=10,
                                 widgets={
                                     'filename':forms.HiddenInput,
@@ -201,6 +203,7 @@ class GetPortfolios(LoginRequiredMixin, View):
                                 fields=('photo','filename','photo_size','photo_dimensions'),
                                 can_delete=False,
                                 max_num=10,
+                                validate_max=True,
                                 min_num=10,
                                 widgets={
                                     'filename':forms.HiddenInput,
