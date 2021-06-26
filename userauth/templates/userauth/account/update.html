@@ -24,16 +24,5 @@
 <br>
         <button type="submit" class="btn btn-outline-primary">{% trans "Update" %}</button>
     </form>
-    <br>
-    {% if socialaccount_providers %}
-        <br>
-        <p>{% blocktrans with site.name as site_name %}Connect your existing account to one of your social accounts:{% endblocktrans %}</p>
-        {% include "socialaccount/provider_list.html" with process="connect" %}
-    {% endif %}
-    <div class="text-center py-2">
-        <small>
-            <a href="{% url 'account_delete' request.user.pk %}" class="text-muted">{% trans "Delete your account" %}</a>
-        </small>
-    </div>
 
 {% endblock %}

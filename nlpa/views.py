@@ -59,7 +59,7 @@ def get_paymentplan(request):
             request.session['youth_entry'] = form.cleaned_data['youth_entry']
 
             # redirect to a new URL:
-            if request.user.is_young_entrant:
+            if request.user.is_young_entrant is True:
                 return HttpResponseRedirect('/paymentplanconfirm_youth/')
             else:
                 return HttpResponseRedirect('/paymentplanconfirm/')
@@ -68,7 +68,7 @@ def get_paymentplan(request):
         form = PaymentPlanForm()
 
 
-    if request.user.is_young_entrant:
+    if request.user.is_young_entrant is True:
         return render(request, 'paymentplan_youth.html', {'form': form})
     else:
         return render(request, 'paymentplan.html', {'form': form})

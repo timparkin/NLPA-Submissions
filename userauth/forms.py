@@ -96,7 +96,7 @@ class SignupForm(forms.Form):
         if user.date_of_birth is not None:
             user.is_young_entrant = relativedelta(date(2020, 12, 31), user.date_of_birth).years  < 17
 
-        if user.is_young_entrant:
+        if user.is_young_entrant is True:
             print('user under 18')
         else:
             print('user is an oldie')
