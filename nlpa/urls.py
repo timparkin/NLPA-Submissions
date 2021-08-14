@@ -30,6 +30,8 @@ urlpatterns = [
     path('paymentupgrade/', views.get_paymentupgrade, name='paymentupgrade'),
     path('072348-datamining/', views.datamining, name='datamining'),
     path('072348-datamining/nlpa_combined_mailing_list.csv', views.datamining_child, name='datamining_child'),
+    path('072348-datamining/nlpa_combined_entries.csv', views.datamining_child_entries, name='datamining_child_entries'),
+    path('072348-datamining/nlpa_combined_users.csv', views.datamining_child_users, name='datamining_child_users'),
 
 
 

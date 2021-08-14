@@ -1,5 +1,6 @@
 import json
 import copy
+from userauth.models import CustomUser as User
 
 def clean_db_users(db_users):
 
@@ -9,9 +10,11 @@ def clean_db_users(db_users):
             pp = json.loads(user.payment_plan)
             entries = pp['entries']
             projects = pp['portfolios']
+            entry_objects = user.entry_set.all()
         else:
             entries = 0
             projects = 0
+            entry_objects = user.entry_set.all()
         output[user.email] = {
                 'name': '%s %s'%(user.first_name,user.last_name),
                 'id': str(user.id),
@@ -19,9 +22,16 @@ def clean_db_users(db_users):
                 'username': user.username,
                 'payment_status': user.payment_status,
                 'entries': entries,
+                'entry_objects': entry_objects,
                 'projects': projects,
                 'uploads': user.entry_set.count(),
-                'in_db': True
+                'in_db': True,
+                'is_young_entrant': user.is_young_entrant,
+                'date_of_birth': user.date_of_birth,
+                'project_title_one': user.project_title_one,
+                'project_description_one': user.project_description_one,
+                'project_title_two': user.project_title_two,
+                'project_description_two': user.project_description_two,
                 }
 
     return output
@@ -43,9 +53,9 @@ def clean_mc_users(mc_users):
                 mc_monster = True
 
         output[m['email_address']] = {
-        'email': m['email_address'],
+        'mc_email': m['email_address'],
         'in_mailchimp': True,
-        'mc_optin': mc_optin, 
+        'mc_optin': mc_optin,
         'mc_discount': mc_discount,
         'mc_monster': mc_monster
         }
@@ -79,7 +89,7 @@ def clean_ss_users(ss_users, db_users):
         # this is used to get back to db account email adress from purchae email address (hopefully)
         email_by_cus_id[c['customer']] = email
         data =  {
-            'email': email,
+            'ss_email': email,
             'id': c['client_reference_id'],
             'in_stripe': True
             }
@@ -107,9 +117,16 @@ def clean_sc_users(sc_users):
     for c in sc_users.auto_paging_iter():
 
         output[c['email']] = {
-            'email': c['email'],
+            'sc_email': c['email'],
             'user_id': c['id'],
             'name': c['name'],
             }
 
     return output
+
+def get_entries(users):
+    user = User.objects.get(id=612)
+    entries = user.entry_set.all()
+    for n,e in enumerate(entries):
+        print(n,e.filename,e.id)
+    return
