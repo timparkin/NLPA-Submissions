@@ -1,5 +1,17 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load filter_extras %}
+
+{% load active_link_tags %}
+{% block extra_menu_item %}
+{% if ENTRIES_CLOSED %}
+<li class="nav-item"><a class="nav-link {% active_link 'secondround' %}" href="/secondround">
+    <div class="d-flex align-items-center"><span class="nav-link-text ps-1">RAW Verficiation</span>
+    </div>
+  </a>
+</li>
+{% endif %}
+{% endblock %}
 
 
 {% block extra_css %}
@@ -38,7 +50,7 @@
 <p>Comgratulations on getting into the second round. We now need to be able to assess your raw files (or other confirmation of images).</p>
   <p>If you have more than one raw file or other confirmation files, please use <a href="https://wetransfer.com/">Wetransfer</a> to upload them and add the link in the wetransfer field. Use the update button to store any changes.</p>
   <p>Please <a href="mailto:info@naturallandscapeawards.com">email us</a> if you have any questions.</p>
-{% load filter_extras %}
+
 
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"></script>
 
@@ -84,7 +96,7 @@
             <div class="col-lg-12 d-flex justify-content-between flex-column">
 
 
-<h5 class="mt-3 mt-sm-0"><em class="text-muted"><span style="display:inline-block;width: 100px; font-style: normal" class="font-weight-bold font-weight-normal">Entry File:</span> {{form.instance.filename|limit_length_tooltip}} ({{form.instance.category}})</em></h5>
+<h5 class="mt-3 mt-sm-0"><em class="text-muted"><span style="display:inline-block;width: 100px; font-style: normal" class="font-weight-bold font-weight-normal">Entry File:</span> {{form.instance.filename|limit_length_tooltip}} ({{form.instance.category}}) </em></h5>
 
 <div class="my-2">
 {% else %}

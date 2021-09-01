@@ -1,6 +1,17 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+{% load active_link_tags %}
+{% block extra_menu_item %}
+{% if ENTRIES_CLOSED %}
+<li class="nav-item"><a class="nav-link {% active_link 'secondround' %}" href="/secondround">
+    <div class="d-flex align-items-center"><span class="nav-link-text ps-1">RAW Verficiation</span>
+    </div>
+  </a>
+</li>
+{% endif %}
+{% endblock %}
+
 
 {% block extra_css %}
 

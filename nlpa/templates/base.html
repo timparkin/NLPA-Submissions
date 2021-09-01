@@ -156,8 +156,13 @@
                        </div>
                      </a>
                    </li>
+
                    {% endif %}
+                   {% block extra_menu_item %}
+                      {# Override this in templates to add extra stylesheets #} 
+                   {% endblock %}
                  </ul>
+
 
 {% else %}
 

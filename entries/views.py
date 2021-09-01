@@ -21,7 +21,7 @@ from django.forms import BaseInlineFormSet
 
 from django.core.exceptions import ValidationError
 from django.core.files.images import get_image_dimensions
-from nlpa.settings.config import entry_products, portfolio_products
+from nlpa.settings.config import entry_products, portfolio_products, ENTRIES_CLOSED
 
 class ValidateImagesModelFormset(BaseInlineFormSet):
     def clean(self):
@@ -86,6 +86,8 @@ def get_entries(request):
     payment_status = request.user.payment_status
     if payment_status is None or ('checkout.session.completed' not in payment_status and 'payment_pending' not in payment_status):
         return HttpResponseRedirect('/paymentplan')
+    if ENTRIES_CLOSED:
+        return HttpResponseRedirect('/secondround')
     user = request.user
     if request.user.payment_plan is not None:
         payment_plan = json.loads(request.user.payment_plan)
@@ -109,6 +111,8 @@ def get_entries(request):
                                 'photo_size':forms.HiddenInput,
                                 'photo':ImageWidget,
                                 })
+
+    request.session['ENTRIES_CLOSED'] = ENTRIES_CLOSED
 
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -146,7 +150,7 @@ def get_entries(request):
     else:
         form = EntryInlineFormSet(instance=user, queryset=Entry.objects.filter(category__in=category_list))
 
-    return render(request, 'entries.html', {'formset': form})
+    return render(request, 'entries.html', {'formset': form, 'ENTRIES_CLOSED': ENTRIES_CLOSED})
 
 
 
@@ -200,13 +204,16 @@ class GetPortfolios(LoginRequiredMixin, View):
         payment_status = request.user.payment_status
         if payment_status is None or ('checkout.session.completed' not in payment_status and 'payment_pending' not in payment_status):
             return HttpResponseRedirect('/paymentplan')
+        if ENTRIES_CLOSED:
+            return HttpResponseRedirect('/secondround')
+
         ctxt['portfolio1'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P1'))
         ctxt['portfolio2'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P2'))
 
         ctxt['description_form1'] = ProjectDescription(initial={'title': request.user.project_title_one,'description': request.user.project_description_one})
         ctxt['description_form2'] = ProjectDescription(initial={'title': request.user.project_title_two,'description': request.user.project_description_two})
         ctxt['payment_plan_portfolios'] = int(json.loads(self.request.user.payment_plan)['portfolios'])
-
+        ctxt['ENTRIES_CLOSED'] = ENTRIES_CLOSED
 
         return render(request, self.template_name, self.get_context_data(**ctxt))
 
@@ -228,6 +235,10 @@ class GetPortfolios(LoginRequiredMixin, View):
                                     'photo_size':forms.HiddenInput,
                                     'photo':ImageWidget,
                                     })
+
+        if ENTRIES_CLOSED:
+            return HttpResponseRedirect('/secondround')
+
 
         if 'description1' in request.POST:
             description_form1 = ProjectDescription(request.POST)
@@ -306,6 +317,7 @@ class GetPortfolios(LoginRequiredMixin, View):
                 ctxt['portfolio2'] = portfolio2
         ctxt['payment_plan_portfolios'] = int(json.loads(self.request.user.payment_plan)['portfolios'])
 
+        ctxt['ENTRIES_CLOSED'] = ENTRIES_CLOSED
 
         return HttpResponseRedirect('/portfolios/')
 
@@ -325,8 +337,7 @@ def get_raws(request):
     else:
         payment_plan = None
     request.session['payment_plan'] = payment_plan
-
-
+    request.session['ENTRIES_CLOSED'] = ENTRIES_CLOSED
 
 
     EntryInlineFormSet = inlineformset_factory(User,
@@ -358,13 +369,14 @@ def get_raws(request):
                                 'evidence_file_5':FileWidget,
                                 'ef5_filename':forms.HiddenInput,
 
-                                })
+                                },
+                                extra=0)
 
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
 
         # create a form instance and populate it with data from the request:
-        form = EntryInlineFormSet(request.POST, request.FILES, instance=user)
+        form = EntryInlineFormSet(request.POST, request.FILES, instance=user, queryset=Entry.objects.filter(in_second_round=True))
 
         # check whether it's valid:
         if form.is_valid():
@@ -418,6 +430,6 @@ def get_raws(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = EntryInlineFormSet(instance=user)
+        form = EntryInlineFormSet(instance=user, queryset=Entry.objects.filter(in_second_round=True))
 
-    return render(request, 'secondround.html', {'formset': form})
+    return render(request, 'secondround.html', {'formset': form, 'ENTRIES_CLOSED': ENTRIES_CLOSED})
