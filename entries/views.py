@@ -42,6 +42,20 @@ class ValidateImagesModelFormset(BaseInlineFormSet):
                 if long_edge <1600:
                     f.add_error('photo','The long side of the image is %i pixels. We recommend 2048.' % long_edge)
 
+class ValidateRawsModelFormset(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+
+        # example custom validation across forms in the formset
+        for f in self.forms:
+            if f.cleaned_data['photo'] == "raws/default-entry.png":
+                continue
+            # your custom formset validation
+            if not f.cleaned_data['photo']:
+                raise forms.ValidationError("No image!")
+
+
+
 
 
 
@@ -56,6 +70,9 @@ entries_categories = (
 )
 
 class ImageWidget(forms.widgets.ClearableFileInput):
+    template_name = 'django/forms/widgets/clearable_file_input.html'
+
+class FileWidget(forms.widgets.ClearableFileInput):
     template_name = 'django/forms/widgets/clearable_file_input.html'
 
 
@@ -291,3 +308,116 @@ class GetPortfolios(LoginRequiredMixin, View):
 
 
         return HttpResponseRedirect('/portfolios/')
+
+
+
+
+@login_required
+def get_raws(request):
+
+
+    payment_status = request.user.payment_status
+    if payment_status is None or ('checkout.session.completed' not in payment_status and 'payment_pending' not in payment_status):
+        return HttpResponseRedirect('/paymentplan')
+    user = request.user
+    if request.user.payment_plan is not None:
+        payment_plan = json.loads(request.user.payment_plan)
+    else:
+        payment_plan = None
+    request.session['payment_plan'] = payment_plan
+
+
+
+
+    EntryInlineFormSet = inlineformset_factory(User,
+                            Entry,
+                            fields=(
+                                    'evidence_file_1',
+                                    'ef1_filename',
+                                    'evidence_file_2',
+                                    'ef2_filename',
+                                    'evidence_file_3',
+                                    'ef3_filename',
+                                    'evidence_file_4',
+                                    'ef4_filename',
+                                    'evidence_file_5',
+                                    'ef5_filename',
+                                    ),
+                            can_delete=False,
+                            #formset = ValidateRawsModelFormset,
+                            widgets={
+
+                                'evidence_file_1':FileWidget,
+                                'ef1_filename':forms.HiddenInput,
+                                'evidence_file_2':FileWidget,
+                                'ef2_filename':forms.HiddenInput,
+                                'evidence_file_3':FileWidget,
+                                'ef3_filename':forms.HiddenInput,
+                                'evidence_file_4':FileWidget,
+                                'ef4_filename':forms.HiddenInput,
+                                'evidence_file_5':FileWidget,
+                                'ef5_filename':forms.HiddenInput,
+
+                                })
+
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+
+        # create a form instance and populate it with data from the request:
+        form = EntryInlineFormSet(request.POST, request.FILES, instance=user)
+
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            myformset = form.save(commit=False)
+            for f in myformset:
+                ef1_name = f.evidence_file_1.name
+                ef2_name = f.evidence_file_2.name
+                ef3_name = f.evidence_file_3.name
+                ef4_name = f.evidence_file_4.name
+                ef5_name = f.evidence_file_5.name
+
+                if hasattr(f.evidence_file_1.storage,'custom'):
+                    f.evidence_file_1.storage.custom[ ef1_name ] = {'ef1_filename': ef1_name }
+                else:
+                    f.evidence_file_1.storage.custom = { ef1_name : {'ef1_filename': ef1_name} }
+                f.ef1_filename = f.evidence_file_1.name
+
+                if hasattr(f.evidence_file_2.storage,'custom'):
+                    f.evidence_file_2.storage.custom[ ef2_name ] = {'ef2_filename': ef2_name }
+                else:
+                    f.evidence_file_2.storage.custom = { ef2_name : {'ef2_filename': ef2_name} }
+                f.ef2_filename = f.evidence_file_2.name
+
+                if hasattr(f.evidence_file_3.storage,'custom'):
+                    f.evidence_file_3.storage.custom[ ef3_name ] = {'ef3_filename': ef3_name }
+                else:
+                    f.evidence_file_3.storage.custom = { ef3_name : {'ef3_filename': ef3_name} }
+                f.ef3_filename = f.evidence_file_3.name
+
+                if hasattr(f.evidence_file_4.storage,'custom'):
+                    f.evidence_file_4.storage.custom[ ef4_name ] = {'ef4_filename': ef4_name }
+                else:
+                    f.evidence_file_4.storage.custom = { ef4_name : {'ef4_filename': ef4_name} }
+                f.ef4_filename = f.evidence_file_4.name
+
+                if hasattr(f.evidence_file_5.storage,'custom'):
+                    f.evidence_file_5.storage.custom[ ef5_name ] = {'ef5_filename': ef5_name }
+                else:
+                    f.evidence_file_5.storage.custom = { ef5_name : {'ef5_filename': ef5_name} }
+                f.ef5_filename = f.evidence_file_5.name
+
+
+            form.save()
+
+
+
+            # redirect to a new URL:
+            return HttpResponseRedirect('/secondround/')
+
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = EntryInlineFormSet(instance=user)
+
+    return render(request, 'secondround.html', {'formset': form})
