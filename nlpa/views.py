@@ -59,7 +59,7 @@ def get_paymentplan(request):
             request.session['youth_entry'] = form.cleaned_data['youth_entry']
 
             # redirect to a new URL:
-            if request.user.is_young_entrant:
+            if request.user.is_young_entrant =='True':
                 return HttpResponseRedirect('/paymentplanconfirm_youth/')
             else:
                 return HttpResponseRedirect('/paymentplanconfirm/')
@@ -68,7 +68,7 @@ def get_paymentplan(request):
         form = PaymentPlanForm()
 
 
-    if request.user.is_young_entrant:
+    if request.user.is_young_entrant == 'True':
         return render(request, 'paymentplan_youth.html', {'form': form})
     else:
         return render(request, 'paymentplan.html', {'form': form})
@@ -234,9 +234,26 @@ def datamining_child(request):
     # return render(request, 'datamining_csv.html', {'db_user_list': db_user_list, 'db_users': db_users, 'mc_users': mc_users, 'ss_users': ss_users, 'sc_users': sc_users, 'sessions': sessions })
 
     writer = csv.writer(response)
-    writer.writerow(['email','name','id', 'entries', 'projects', 'uploads','in_db','in_mailchimp','in_stripe','paid','unpaid','mc_optin','mc_discount','mc_monster','is_young_entrant','date_of_birth'])
+    writer.writerow(['email','name','id', 'entries', 'projects', 'uploads','np1','np2','np12','ne','misent','misproj','in_db','in_mailchimp','in_stripe','payment_status','paid','unpaid','mc_optin','mc_discount','mc_monster','is_young_entrant','date_of_birth'])
     for C in db_user_list:
-        writer.writerow([ C['email'], C.get('name'), C.get('id'), C.get('entries'), C.get('projects'),  C.get('uploads'), C.get('in_db'), C.get('in_mailchimp'), C.get('in_stripe'), C.get('paid'), C.get('unpaid'), C.get('mc_optin'),C.get('mc_discount'),C.get('mc_monster'),C.get('is_young_entrant'), C.get('date_of_birth') ])
+        entries = int(C.get('entries',0))
+        projects = int(C.get('projects',0))
+        num_entries = int(C.get('ne',0))
+        num_p1 = int(C.get('np1',0))
+        num_p2 = int(C.get('np2',0))
+        if entries-num_entries != 0:
+            missing_entries = 1
+        else:
+            missing_entries = 0
+        if projects ==1 and num_p1 <6:
+            missing_projects = 1
+        elif projects ==2 and (num_p1 < 6 or num_p2 <6):
+            missing_projects = 1
+        else:
+            missing_projects = 0
+         
+
+        writer.writerow([ C.get('email'), C.get('name'), C.get('id'), C.get('entries'), C.get('projects'),  C.get('uploads'), C.get('np1'), C.get('np2'), C.get('np1',0)+C.get('np2',0), C.get('ne'), missing_entries, missing_projects, C.get('in_db'), C.get('in_mailchimp'), C.get('in_stripe'), C.get('payment_status'), C.get('paid'), C.get('unpaid'), C.get('mc_optin'),C.get('mc_discount'),C.get('mc_monster'),C.get('is_young_entrant'), C.get('date_of_birth') ])
 
     return response
 

@@ -15,6 +15,18 @@ def clean_db_users(db_users):
             entries = 0
             projects = 0
             entry_objects = user.entry_set.all()
+        N_P1 = 0
+        N_P2 = 0
+        N_E = 0
+        for e in entry_objects:
+            if e.category == 'P1':
+                N_P1+=1
+            elif e.category == 'P2':
+                N_P2+=1
+            else:
+                N_E+=1
+     
+                
         output[user.email] = {
                 'name': '%s %s'%(user.first_name,user.last_name),
                 'id': str(user.id),
@@ -25,6 +37,9 @@ def clean_db_users(db_users):
                 'entry_objects': entry_objects,
                 'projects': projects,
                 'uploads': user.entry_set.count(),
+                'np1': N_P1,
+                'np2': N_P2,
+                'ne': N_E,
                 'in_db': True,
                 'is_young_entrant': user.is_young_entrant,
                 'date_of_birth': user.date_of_birth,
