@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load filter_extras %}
+
+{% load active_link_tags %}
+{% block extra_menu_item %}
+{% if ENTRIES_CLOSED %}
+<li class="nav-item"><a class="nav-link {% active_link 'secondround' %}" href="/secondround">
+    <div class="d-flex align-items-center"><span class="nav-link-text ps-1">RAW Verficiation</span>
+    </div>
+  </a>
+</li>
+{% endif %}
+{% endblock %}
+
+
+{% block extra_css %}
+<style type="text/css">
+ .evidencefiles .my-2 > div > div >  label { display:none; }
+ .evidencefiles .my-2  div.populated input[type='file'] {
+  color: transparent;
+}
+
+.populated { display: inline; }
+.unpopulated { dusplay: inline; }
+
+</style>
+{% endblock %}
+
+{% block extra_js %}
+
+
+{% endblock %}
+
+{% block content %}
+
+
+<div class="card">
+  <div class="card-body position-relative">
+    {% if messages %}
+    <div>
+
+      {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+      {% endfor %}
+    </div>
+    {% endif %}
+ <h2>Single Images</h2>
+
+<p>Comgratulations on getting into the second round. We now need to be able to assess your raw files (or other confirmation of images).</p>
+  <p>If you have more than one raw file or other confirmation files, please use <a href="https://wetransfer.com/">Wetransfer</a> to upload them and add the link in the wetransfer field. Use the update button to store any changes.</p>
+  <p>Please <a href="mailto:info@naturallandscapeawards.com">email us</a> if you have any questions.</p>
+
+
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"></script>
+
+
+<form action="/secondround/" method="post" enctype="multipart/form-data" style="display:block;" id="entries-form">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    {{ formset.non_form_errors.as_ul }}
+
+
+
+<div class="card-body p-0 overflow-hidden evidencefiles">
+  <div class="row g-0">
+    {% for form in formset.forms %}
+
+    {% for field in form.visible_fields %}
+
+      {# Include the hidden fields in the form #}
+      {% if forloop.first %}
+        {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+        {% endfor %}
+
+    <div class="col-12 p-card{% cycle '' ' bg-100' %}">
+      <div class="row">
+        <div class="col-sm-5 col-md-4">
+          <div class="position-relative h-sm-100">
+
+
+
+
+            <a class="d-block h-100" href="https://r8a7z2p5.stackpathcdn.com/{{ form.instance.photo }}">
+              <img class="img-fluid  absolute-sm-centered" src="https://r8a7z2p5.stackpathcdn.com/{{ form.instance.photo }}" alt="" />
+            </a>
+
+
+
+
+          </div>
+        </div>
+        <div class="col-sm-7 col-md-8">
+          <div class="row">
+            <div class="col-lg-12 d-flex justify-content-between flex-column">
+
+
+<h5 class="mt-3 mt-sm-0"><em class="text-muted"><span style="display:inline-block;width: 100px; font-style: normal" class="font-weight-bold font-weight-normal">Entry File:</span> {{form.instance.filename|limit_length_tooltip}} ({{form.instance.category}}) </em></h5>
+
+<div class="my-2">
+{% else %}
+{% endif %}
+{% if forloop.counter == 1 %}
+<em class="text-muted"><span style="display:inline-block;width: 120px; font-style: normal; padding:5px 0 5px 0" class="font-weight-bold font-weight-normal">Verification #1:</span>
+{% if form.ef1_filename.value != 'raws/default-entry.png' %}
+<div class="populated">
+  {{form.ef1_filename.value|limit_length_tooltip}}
+{% else %}
+<div class="unpopulated">
+{% endif %}
+</em>
+{% endif %}
+{% if forloop.counter == 2 %}
+<em class="text-muted"><span style="display:inline-block;width: 120px; font-style: normal; padding:5px 0 5px 0" class="font-weight-bold font-weight-normal">Verification #2:</span>
+{% if form.ef1_filename.value != 'raws/default-entry.png' %}
+<div class="populated">
+{{form.ef2_filename.value|limit_length_tooltip}}
+{% else %}
+<div class="unpopulated">
+{% endif %}
+</em>
+{% endif %}
+{% if forloop.counter == 3 %}
+<em class="text-muted"><span style="display:inline-block;width: 150px; font-style: normal" class="font-weight-bold font-weight-normal">Verification #3:</span>
+{% if form.ef3_filename.value != 'raws/default-entry.png' %}
+<div class="populated">
+{{form.ef3_filename.value|limit_length_tooltip}}
+{% else %}
+<div class="unpopulated">
+{% endif %}
+</em>
+{% endif %}
+{% if forloop.counter == 4 %}
+<em class="text-muted"><span style="display:inline-block;width: 150px; font-style: normal" class="font-weight-bold font-weight-normal">Verification #4:</span>
+{% if form.ef4_filename.value != 'raws/default-entry.png' %}
+<div class="populated">
+{{form.ef4_filename.value|limit_length_tooltip}}
+{% else %}
+<div class="unpopulated">
+{% endif %}
+</em>
+{% endif %}
+{% if forloop.counter == 5 %}
+<em class="text-muted"><span style="display:inline-block;width: 150px; font-style: normal" class="font-weight-bold font-weight-normal">Verification #5:</span>
+{% if form.ef5_filename.value != 'raws/default-entry.png' %}
+<div class="populated">
+{{form.ef5_filename.value|limit_length_tooltip}}
+{% else %}
+<div class="unpopulated">
+{% endif %}
+</em>
+{% endif %}
+
+
+
+{{ field.errors }}
+
+  {{ field | as_crispy_field }}
+<span style="display:block; margin-bottom:0.8rem"></span>
+</div>
+{% if forloop.last %}
+   </div>
+{% endif %}
+
+{% endfor %}
+
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    <input type="submit" value="Update" class="btn btn-outline-primary btn-lg mt-3">
+    <p class="fs--1 text-center">Pressing UPDATE ensures we have the latest version of your files, there is no SUBMIT button</p>
+  </div>
+</div>
+</form>
+
+
+<div id="uploading">
+  <div id="progress" class="bar">
+    <div id="progressbar">&nbsp;</div>
+    <div id="percents"></div>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Your Upload has Started</h4>
+      </div>
+      <div class="modal-body">
+        <p>Depending on your connection, this may take a few minutes. Please be patient. If you have any problems, drop us an email at <a href="mailto:info@naturallandscapeawards.com">info@naturallandscapeawards.com</a></p>
+      </div>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+$('#entries-form').on('submit', function(e){
+  $('#myModal').modal('show');
+});
+</script>
+</div>
+</div>
+
+
+
+
+
+
+
+{% endblock %}

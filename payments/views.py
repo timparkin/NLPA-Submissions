@@ -10,7 +10,7 @@ import datetime
 import json
 from userauth.models import CustomUser as User
 import logging
-from nlpa.settings.config import entry_products, portfolio_products, GOOGLEANALYTICS
+from nlpa.settings.config import entry_products, portfolio_products, GOOGLEANALYTICS, ENTRIES_CLOSED
 
 logger = logging.getLogger(__name__)
 
@@ -308,7 +308,7 @@ def success_youth(request):
     request.user.save()
     request.session['nextpage'] = 'entries'
 
-    return render(request, 'success_youth.html')    
+    return render(request, 'success_youth.html')
 
 @csrf_exempt
 def stripe_webhook(request):

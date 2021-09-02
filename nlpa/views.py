@@ -18,14 +18,25 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django_thumbor import generate_url
 from mailchimp3 import MailChimp
 from .data import  *
+from nlpa.settings.config import ENTRIES_CLOSED
 
 
 
 class HomePageView(TemplateView):
     template_name = 'home.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(HomePageView, self).get_context_data(**kwargs)
+        context.update({'ENTRIES_CLOSED': ENTRIES_CLOSED})
+        return context
+
 class FAQPageView(TemplateView):
     template_name = 'faq.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(FAQPageView, self).get_context_data(**kwargs)
+        context.update({'ENTRIES_CLOSED': ENTRIES_CLOSED})
+        return context
 
 
 @login_required
@@ -38,7 +49,8 @@ def get_paymentplan(request):
     #request.user.payment_status = 'checkout.session.completed'
     #request.user.save()
 
-
+    if ENTRIES_CLOSED:
+        return HttpResponseRedirect('/')
 
 
     payment_status = request.user.payment_status
@@ -76,6 +88,10 @@ def get_paymentplan(request):
 
 @login_required
 def get_paymentupgrade(request):
+
+    if ENTRIES_CLOSED:
+        return HttpResponseRedirect('/secondround')
+
 
     if request.user.payment_plan is not None:
         payment_plan = json.loads(request.user.payment_plan)
