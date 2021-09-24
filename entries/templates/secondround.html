@@ -45,12 +45,20 @@
       {% endfor %}
     </div>
     {% endif %}
- <h2>Single Images</h2>
 
-<p>Comgratulations on getting into the second round. We now need to be able to assess your raw files (or other confirmation of images).</p>
-  <p>If you have more than one raw file or other confirmation files, please use <a href="https://wetransfer.com/">Wetransfer</a> to upload them and add the link in the wetransfer field. Use the update button to store any changes.</p>
+ <h2>RAW Verification</h2>
+{% if formset.forms %}
+
+<p>Congratulations on making it to the RAW verification process! For each photo, please upload one or more RAW files (.arw, .cr2, .nef, etc.) for judging verification. If you have more than five files for your image (e.g. if it is a panorama/exposure blend/focus stack/etc), please select the five that best represent your photograph. We may request the rest later. To submit, first click on “Choose file” and add each file (up to 5 per final photo), and then click “Update.” Then files will then upload, which may take a few minutes depending on your connection. If you have any trouble please contact us at <a href="mailto:info@naturallandscapeawards.com">info@naturallandscapeawards.com</a></p>
+<p>When you press "update", any files that have the 'clear' box ticked will be removed. You don't need to use this facility if you are just replacing files.</p>
+<p>If you can see the name of your raw file(s) next to your entry after youu have pressed 'update', then the raw files have been successflly uploaded. You can check for sure by reopening the page to see if the raw file is still listed next to your image.</p>
+<p>If you are having problems uploading all of your files in one go, please try uploading in smaller batches or one file at a time. Our upload system uses Amazon S3 file storage which can be slow. Many thanks for your patience!</p>
+
   <p>Please <a href="mailto:info@naturallandscapeawards.com">email us</a> if you have any questions.</p>
+{% else %}
+<p>You have not been asked for RAW files at this time.</p>
 
+{% endif %}
 
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"></script>
 
@@ -102,7 +110,7 @@
 {% else %}
 {% endif %}
 {% if forloop.counter == 1 %}
-<em class="text-muted"><span style="display:inline-block;width: 120px; font-style: normal; padding:5px 0 5px 0" class="font-weight-bold font-weight-normal">Verification #1:</span>
+<em class="text-muted"><span style="display:inline-block;width: 150px; font-style: normal;" class="font-weight-bold font-weight-normal">Verification #1:</span>
 {% if form.ef1_filename.value != 'raws/default-entry.png' %}
 <div class="populated">
   {{form.ef1_filename.value|limit_length_tooltip}}
@@ -112,7 +120,7 @@
 </em>
 {% endif %}
 {% if forloop.counter == 2 %}
-<em class="text-muted"><span style="display:inline-block;width: 120px; font-style: normal; padding:5px 0 5px 0" class="font-weight-bold font-weight-normal">Verification #2:</span>
+<em class="text-muted"><span style="display:inline-block;width: 150px; font-style: normal;" class="font-weight-bold font-weight-normal">Verification #2:</span>
 {% if form.ef1_filename.value != 'raws/default-entry.png' %}
 <div class="populated">
 {{form.ef2_filename.value|limit_length_tooltip}}
@@ -173,8 +181,10 @@
       </div>
     </div>
     {% endfor %}
+{% if formset.forms %}
     <input type="submit" value="Update" class="btn btn-outline-primary btn-lg mt-3">
     <p class="fs--1 text-center">Pressing UPDATE ensures we have the latest version of your files, there is no SUBMIT button</p>
+{% endif %}
   </div>
 </div>
 </form>
@@ -208,6 +218,8 @@
 $('#entries-form').on('submit', function(e){
   $('#myModal').modal('show');
 });
+
+
 </script>
 </div>
 </div>

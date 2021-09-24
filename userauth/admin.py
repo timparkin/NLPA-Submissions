@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser
 
 class CustomUserAdmin(UserAdmin):
+    change_form_template = 'loginas/change_form.html'
     add_form = UserCreationForm
     form = UserChangeForm
     model = CustomUser

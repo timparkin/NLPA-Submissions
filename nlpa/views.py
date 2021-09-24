@@ -20,7 +20,7 @@ from mailchimp3 import MailChimp
 from .data import  *
 from nlpa.settings.config import ENTRIES_CLOSED
 
-
+import pandas as pd
 
 class HomePageView(TemplateView):
     template_name = 'home.html'
@@ -250,7 +250,7 @@ def datamining_child(request):
     # return render(request, 'datamining_csv.html', {'db_user_list': db_user_list, 'db_users': db_users, 'mc_users': mc_users, 'ss_users': ss_users, 'sc_users': sc_users, 'sessions': sessions })
 
     writer = csv.writer(response)
-    writer.writerow(['email','name','id', 'entries', 'projects', 'uploads','np1','np2','np12','ne','misent','misproj','in_db','in_mailchimp','in_stripe','payment_status','paid','unpaid','mc_optin','mc_discount','mc_monster','is_young_entrant','date_of_birth'])
+    writer.writerow(['email','name','id', 'entries', 'projects', 'uploads','np1','np2','np12','ne','misent','misproj','in_db','in_mailchimp','in_stripe','payment_status','paid','unpaid','mc_optin','mc_discount','mc_monster','is_young_entrant','date_of_birth','locales'])
     for C in db_user_list:
         entries = int(C.get('entries',0))
         projects = int(C.get('projects',0))
@@ -269,7 +269,7 @@ def datamining_child(request):
             missing_projects = 0
          
 
-        writer.writerow([ C.get('email'), C.get('name'), C.get('id'), C.get('entries'), C.get('projects'),  C.get('uploads'), C.get('np1'), C.get('np2'), C.get('np1',0)+C.get('np2',0), C.get('ne'), missing_entries, missing_projects, C.get('in_db'), C.get('in_mailchimp'), C.get('in_stripe'), C.get('payment_status'), C.get('paid'), C.get('unpaid'), C.get('mc_optin'),C.get('mc_discount'),C.get('mc_monster'),C.get('is_young_entrant'), C.get('date_of_birth') ])
+        writer.writerow([ C.get('email'), C.get('name'), C.get('id'), C.get('entries'), C.get('projects'),  C.get('uploads'), C.get('np1'), C.get('np2'), C.get('np1',0)+C.get('np2',0), C.get('ne'), missing_entries, missing_projects, C.get('in_db'), C.get('in_mailchimp'), C.get('in_stripe'), C.get('payment_status'), C.get('paid'), C.get('unpaid'), C.get('mc_optin'),C.get('mc_discount'),C.get('mc_monster'),C.get('is_young_entrant'), C.get('date_of_birth'), C.get('locales') ])
 
     return response
 
@@ -500,6 +500,54 @@ def datamining_child_users(request):
         C.get('is_young_entrant'),
         C.get('date_of_birth'),
 
+        ])
+
+    return response
+
+
+@staff_member_required
+def set_second_round_flag(request):
+    df = pd.read_csv('/var/www/submit.naturallandscapeawards.com/NLPA-Submissions/finals_export_ids.csv') 
+    out = []
+    for i in range(len(df)): 
+    #for i in range(1):
+        row = df.loc[i]
+        email = row['email']
+        id = row['id']
+        entry_id = row['entry_id']
+        out.append(
+         {
+         'email': email,
+         'id': id,
+         'entry_id': entry_id,
+         }
+        )
+        entry_id = int(entry_id)
+        
+
+        #in_second_round
+        entry = Entry.objects.get(id=entry_id)
+        entry.in_second_round = True
+        entry.save()
+   
+
+
+    # Prepare Response
+    response = HttpResponse()
+    response['Content-Disposition'] = 'attachment; filename="reponse.csv"'
+    
+    writer = csv.writer(response)
+    writer.writerow([
+        'email',
+        'id',
+        'entry_id',
+        ])
+
+    for C in out:
+        writer.writerow([
+        C.get('email'),
+        C.get('id'),
+        C.get('entry_id'),
         ])
 
     return response

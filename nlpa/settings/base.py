@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'loginas',
 
     'payments.apps.PaymentsConfig',
     'entries.apps.EntriesConfig',
@@ -102,6 +103,7 @@ AUTHENTICATION_BACKENDS = (
 
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
+
 )
 
 

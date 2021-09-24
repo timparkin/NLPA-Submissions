@@ -26,11 +26,14 @@ def clean_db_users(db_users):
             else:
                 N_E+=1
      
-                
-        output[user.email] = {
+        if user.email == '':
+            email = user.id
+        else:
+            email = user.email                
+        output[email] = {
                 'name': '%s %s'%(user.first_name,user.last_name),
                 'id': str(user.id),
-                'email': user.email,
+                'email': email,
                 'username': user.username,
                 'payment_status': user.payment_status,
                 'entries': entries,
@@ -106,7 +109,8 @@ def clean_ss_users(ss_users, db_users):
         data =  {
             'ss_email': email,
             'id': c['client_reference_id'],
-            'in_stripe': True
+            'in_stripe': True,
+            'locales': '',
             }
         if c['payment_status'] == 'paid':
             data['paid'] = c['amount_total']
