@@ -31,8 +31,9 @@ urlpatterns = [
     path('072348-datamining/', views.datamining, name='datamining'),
     path('072348-datamining/nlpa_combined_mailing_list.csv', views.datamining_child, name='datamining_child'),
     path('072348-datamining/nlpa_combined_entries.csv', views.datamining_child_entries, name='datamining_child_entries'),
+    path('072348-datamining/nlpa_missing_raws.csv', views.missing_raws, name='missing_raws'),
     path('072348-datamining/nlpa_combined_users.csv', views.datamining_child_users, name='datamining_child_users'),
-    path('072348-datamining/set_second_round_flag.csv', views.set_second_round_flag, name='set_second_round_flag'),
+
 
 
 

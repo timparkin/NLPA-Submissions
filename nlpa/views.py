@@ -20,7 +20,7 @@ from mailchimp3 import MailChimp
 from .data import  *
 from nlpa.settings.config import ENTRIES_CLOSED
 
-import pandas as pd
+
 
 class HomePageView(TemplateView):
     template_name = 'home.html'
@@ -250,7 +250,7 @@ def datamining_child(request):
     # return render(request, 'datamining_csv.html', {'db_user_list': db_user_list, 'db_users': db_users, 'mc_users': mc_users, 'ss_users': ss_users, 'sc_users': sc_users, 'sessions': sessions })
 
     writer = csv.writer(response)
-    writer.writerow(['email','name','id', 'entries', 'projects', 'uploads','np1','np2','np12','ne','misent','misproj','in_db','in_mailchimp','in_stripe','payment_status','paid','unpaid','mc_optin','mc_discount','mc_monster','is_young_entrant','date_of_birth','locales'])
+    writer.writerow(['email','name','id', 'entries', 'projects', 'uploads','np1','np2','np12','ne','misent','misproj','in_db','in_mailchimp','in_stripe','payment_status','paid','unpaid','mc_optin','mc_discount','mc_monster','is_young_entrant','date_of_birth'])
     for C in db_user_list:
         entries = int(C.get('entries',0))
         projects = int(C.get('projects',0))
@@ -267,9 +267,9 @@ def datamining_child(request):
             missing_projects = 1
         else:
             missing_projects = 0
-         
 
-        writer.writerow([ C.get('email'), C.get('name'), C.get('id'), C.get('entries'), C.get('projects'),  C.get('uploads'), C.get('np1'), C.get('np2'), C.get('np1',0)+C.get('np2',0), C.get('ne'), missing_entries, missing_projects, C.get('in_db'), C.get('in_mailchimp'), C.get('in_stripe'), C.get('payment_status'), C.get('paid'), C.get('unpaid'), C.get('mc_optin'),C.get('mc_discount'),C.get('mc_monster'),C.get('is_young_entrant'), C.get('date_of_birth'), C.get('locales') ])
+
+        writer.writerow([ C.get('email'), C.get('name'), C.get('id'), C.get('entries'), C.get('projects'),  C.get('uploads'), C.get('np1'), C.get('np2'), C.get('np1',0)+C.get('np2',0), C.get('ne'), missing_entries, missing_projects, C.get('in_db'), C.get('in_mailchimp'), C.get('in_stripe'), C.get('payment_status'), C.get('paid'), C.get('unpaid'), C.get('mc_optin'),C.get('mc_discount'),C.get('mc_monster'),C.get('is_young_entrant'), C.get('date_of_birth') ])
 
     return response
 
@@ -433,6 +433,249 @@ def datamining_child_entries(request):
 
     return response
 
+
+@staff_member_required
+def missing_raws(request):
+    # Prepare Response
+    response = HttpResponse()
+    response['Content-Disposition'] = 'attachment; filename="nlpa_missing_raws.csv"'
+
+    # GET DB USERS
+    db_users = clean_db_users(User.objects.all())
+
+    # GET MAILCHIMP USERS
+    mailchimp_api_key = settings.MAILCHIMP_API_KEY
+    client = MailChimp(mc_api=mailchimp_api_key,mc_user='naturallandscapeawards')
+    mc_users = clean_mc_users(client.lists.members.all('06156c9627',get_all=True, fields="members.email_address,members.id,members.tags"))
+
+
+    # STRIPE SESSION USERS
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    email_by_cus_id, ss_users, sessions = clean_ss_users(stripe.checkout.Session.list(limit=100), db_users)
+
+    # STRIPE CUSTOMERS
+    sc_users = clean_sc_users(stripe.Customer.list(limit=100))
+
+
+    for email, mc_user in mc_users.items():
+        if email in  db_users:
+            db_users[email].update(mc_user)
+        else:
+            db_users[email] = mc_user
+
+    for email, ss_user in ss_users.items():
+        if email in db_users:
+            db_users[email].update(ss_user)
+        else:
+            db_users[email] = ss_user
+
+    for email, sc_user in sc_users.items():
+        if email in db_users:
+            db_users[email].update(sc_user)
+        else:
+            db_users[email] = sc_user
+
+    db_user_list = []
+    for email, db_user in db_users.items():
+        db_user_list.append(db_user)
+
+ # Entry Object attributes
+ # 'category',
+ # 'datetime',
+ # 'filename',
+ # 'id',
+ # 'internal_notes',
+ # 'photo',
+ # 'photo_dimensions',
+ # 'photo_size',
+ # 'project_id',
+ # 'title',
+ # 'user',
+ # 'user_id',
+ # 'year'
+
+
+    users_entries = []
+    for user in db_user_list:
+        if 'entry_objects' in user:
+
+            for entry in user['entry_objects']:
+                try:
+                    eu1 = entry.evidence_file_1.url
+                except ValueError as e:
+                    eu1 = ''
+                try:
+                    eu2 = entry.evidence_file_2.url
+                except ValueError as e:
+                    eu2 = ''
+                try:
+                    eu3 = entry.evidence_file_3.url
+                except ValueError as e:
+                    eu3 = ''
+                try:
+                    eu4 = entry.evidence_file_4.url
+                except ValueError as e:
+                    eu4 = ''
+                try:
+                    eu5 = entry.evidence_file_5.url
+                except ValueError as e:
+                    eu5 = ''
+
+                user_entry = {
+                  'entry_id':  entry.id,
+                  'entry_category': entry.category,
+                  'entry_datetime': entry.datetime,
+                  'entry_filename': entry.filename,
+                  'entry_url': entry.photo.url,
+                  'entry_photo_dimensions': entry.photo_dimensions,
+                  'entry_photo_size': entry.photo_size,
+                  'in_second_round': entry.in_second_round,
+                  'evidence_file_1': entry.evidence_file_1.name[5:],
+                  'evidence_file_2': entry.evidence_file_2.name[5:],
+                  'evidence_file_3': entry.evidence_file_3.name[5:],
+                  'evidence_file_4': entry.evidence_file_4.name[5:],
+                  'evidence_file_5': entry.evidence_file_5.name[5:],
+                  'evidence_url_1': eu1,
+                  'evidence_url_2': eu2,
+                  'evidence_url_3': eu3,
+                  'evidence_url_4': eu4,
+                  'evidence_url_5': eu5,
+
+                }
+                user_entry.update(user)
+                users_entries.append(user_entry)
+        else:
+            user_entry = {
+              'entry_id':  '',
+              'entry_category': '',
+              'entry_datetime': '',
+              'entry_filename': '',
+              'entry_url': '',
+              'entry_photo_dimensions': '',
+              'entry_photo_size': '',
+              'entry_photo_size': '',
+              'entry_photo_size': '',
+              'entry_photo_size': '',
+              'in_second_round': '',
+              'evidence_file_1': '',
+              'evidence_file_2': '',
+              'evidence_file_3': '',
+              'evidence_file_4': '',
+              'evidence_file_5': '',
+              'evidence_url_1': '',
+              'evidence_url_2': '',
+              'evidence_url_3': '',
+              'evidence_url_4': '',
+              'evidence_url_5': '',
+
+            }
+            user_entry.update(user)
+            users_entries.append(user_entry)
+
+
+    # return render(request, 'datamining_csv.html', {'db_user_list': db_user_list, 'db_users': db_users, 'mc_users': mc_users, 'ss_users': ss_users, 'sc_users': sc_users, 'sessions': sessions })
+
+    writer = csv.writer(response)
+    writer.writerow([
+        'email',
+        'mc_email',
+        'ss_email',
+        'sc_email',
+        'name',
+        'id',
+        'entries',
+        'projects',
+        'uploads',
+        'in_db',
+        'in_mailchimp',
+        'in_stripe',
+        'city',
+        'country',
+        'postcode',
+        'paid',
+        'unpaid',
+        'mc_optin',
+        'mc_discount',
+        'mc_monster',
+        'is_young_entrant',
+        'date_of_birth',
+        'project_title_one',
+        'project_description_one',
+        'project_title_two',
+        'project_description_two',
+        'entry_id',
+        'entry_category',
+        'entry_datetime',
+        'entry_filename',
+        'entry_url',
+        'entry_photo_dimensions',
+        'entry_photo_size',
+        'in_second_round',
+        'evidence_file_1',
+        'evidence_file_2',
+        'evidence_file_3',
+        'evidence_file_4',
+        'evidence_file_5',
+        'evidence_url_1',
+        'evidence_url_2',
+        'evidence_url_3',
+        'evidence_url_4',
+        'evidence_url_5',
+        ])
+
+
+    for C in users_entries:
+        if C.get('in_second_round'):
+        #if True:
+            writer.writerow([
+            C.get('email'),
+            C.get('mc_email'),
+            C.get('ss_email'),
+            C.get('sc_email'),
+            C.get('name'),
+            C.get('id'),
+            C.get('entries'),
+            C.get('projects'),
+            C.get('uploads'),
+            C.get('in_db'),
+            C.get('in_mailchimp'),
+            C.get('in_stripe'),
+            C.get('city'),
+            C.get('country'),
+            C.get('postcode'),
+            C.get('paid'),
+            C.get('unpaid'),
+            C.get('mc_optin'),
+            C.get('mc_discount'),
+            C.get('mc_monster'),
+            C.get('is_young_entrant'),
+            C.get('date_of_birth'),
+            C.get('project_title_one'),
+            C.get('project_description_one'),
+            C.get('project_title_two'),
+            C.get('project_description_two'),
+            C.get('entry_id'),
+            C.get('entry_category'),
+            C.get('entry_datetime'),
+            C.get('entry_filename'),
+            C.get('entry_url'),
+            C.get('entry_photo_dimensions'),
+            C.get('entry_photo_size'),
+            C.get('in_second_round'),
+            C.get('evidence_file_1'),
+            C.get('evidence_file_2'),
+            C.get('evidence_file_3'),
+            C.get('evidence_file_4'),
+            C.get('evidence_file_5'),
+            C.get('evidence_url_1'),
+            C.get('evidence_url_2'),
+            C.get('evidence_url_3'),
+            C.get('evidence_url_4'),
+            C.get('evidence_url_5'),
+            ])
+
+    return response
+
 @staff_member_required
 def datamining_child_users(request):
     # Prepare Response
@@ -500,54 +743,6 @@ def datamining_child_users(request):
         C.get('is_young_entrant'),
         C.get('date_of_birth'),
 
-        ])
-
-    return response
-
-
-@staff_member_required
-def set_second_round_flag(request):
-    df = pd.read_csv('/var/www/submit.naturallandscapeawards.com/NLPA-Submissions/finals_export_ids.csv') 
-    out = []
-    for i in range(len(df)): 
-    #for i in range(1):
-        row = df.loc[i]
-        email = row['email']
-        id = row['id']
-        entry_id = row['entry_id']
-        out.append(
-         {
-         'email': email,
-         'id': id,
-         'entry_id': entry_id,
-         }
-        )
-        entry_id = int(entry_id)
-        
-
-        #in_second_round
-        entry = Entry.objects.get(id=entry_id)
-        entry.in_second_round = True
-        entry.save()
-   
-
-
-    # Prepare Response
-    response = HttpResponse()
-    response['Content-Disposition'] = 'attachment; filename="reponse.csv"'
-    
-    writer = csv.writer(response)
-    writer.writerow([
-        'email',
-        'id',
-        'entry_id',
-        ])
-
-    for C in out:
-        writer.writerow([
-        C.get('email'),
-        C.get('id'),
-        C.get('entry_id'),
         ])
 
     return response

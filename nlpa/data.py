@@ -1,11 +1,14 @@
 import json
 import copy
 from userauth.models import CustomUser as User
+from allauth.account.admin import EmailAddress
 
 def clean_db_users(db_users):
 
     output = {}
     for user in db_users:
+        primary_emails = EmailAddress.objects.filter(user=user.id, primary=True)
+        email = primary_emails[0].email
         if user.payment_plan is not None:
             pp = json.loads(user.payment_plan)
             entries = pp['entries']
@@ -25,11 +28,7 @@ def clean_db_users(db_users):
                 N_P2+=1
             else:
                 N_E+=1
-     
-        if user.email == '':
-            email = user.id
-        else:
-            email = user.email                
+
         output[email] = {
                 'name': '%s %s'%(user.first_name,user.last_name),
                 'id': str(user.id),
@@ -94,15 +93,14 @@ def clean_ss_users(ss_users, db_users):
         db_user_by_id[db_user['id']] = db_user
 
     for c in ss_users.auto_paging_iter():
-
-
+        #print(c['amount_total'])
         try:
             cid = c['client_reference_id']
-            email = db_user_by_id[ cid ]['email']
-        except:
-            if c.get('customer_details'):
+            if c['customer_details'] is not None:
                 email = c['customer_details']['email']
             else:
+                email = db_user_by_id[ cid ]['email']
+        except:
                 email = '%s?'%c['client_reference_id']
         # this is used to get back to db account email adress from purchae email address (hopefully)
         email_by_cus_id[c['customer']] = email
@@ -135,11 +133,25 @@ def clean_sc_users(sc_users):
     output = {}
     for c in sc_users.auto_paging_iter():
 
-        output[c['email']] = {
-            'sc_email': c['email'],
-            'user_id': c['id'],
-            'name': c['name'],
-            }
+
+        if c['address'] is not None:
+            output[c['email']] = {
+                'sc_email': c['email'],
+                'user_id': c['id'],
+                'name': c['name'],
+                'city': c.get('address',{}).get('city'),
+                'country': c.get('address',{}).get('country'),
+                'postcode': c.get('address',{}).get('postal_code'),
+                }
+        else:
+            output[c['email']] = {
+                'sc_email': c['email'],
+                'user_id': c['id'],
+                'name': c['name'],
+                'city': '',
+                'country': '',
+                'postcode': '',
+                }
 
     return output
 
