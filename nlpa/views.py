@@ -436,6 +436,7 @@ def datamining_child_entries(request):
 
 @staff_member_required
 def missing_raws(request):
+    just_missing = request.GET.get('just_missing',None) is not None
     # Prepare Response
     response = HttpResponse()
     response['Content-Disposition'] = 'attachment; filename="nlpa_missing_raws.csv"'
@@ -625,7 +626,31 @@ def missing_raws(request):
 
 
     for C in users_entries:
-        if C.get('in_second_round'):
+        if C.get('in_second_round') and just_missing:
+            eu1 = C.get('evidence_url_1')
+            eu2 = C.get('evidence_url_2')
+            eu3 = C.get('evidence_url_3')
+            eu4 = C.get('evidence_url_4')
+            eu5 = C.get('evidence_url_5')
+            # print('** %s'%C.get('entry_filename'))
+            # print('1: %s'%eu1)
+            # print('2: %s'%eu2)
+            # print('3: %s'%eu3)
+            # print('4: %s'%eu4)
+            # print('5: %s'%eu5)
+
+
+            e1 = eu1 and 'default-entry.png' not in eu1
+            e2 = eu2 and 'default-entry.png' not in eu2
+            e3 = eu3 and 'default-entry.png' not in eu3
+            e4 = eu4 and 'default-entry.png' not in eu4
+            e5 = eu5 and 'default-entry.png' not in eu5
+            include_entry = e1 or e2 or e3 or e4 or e5
+            # print('=== %s'%include_entry)
+        else:
+            include_entry = False
+
+        if C.get('in_second_round') and not include_entry:
         #if True:
             writer.writerow([
             C.get('email'),
