@@ -437,6 +437,8 @@ def datamining_child_entries(request):
 @staff_member_required
 def missing_raws(request):
     just_missing = request.GET.get('just_missing',None) is not None
+    get_all = request.GET.get('get_all',None) is not None
+   
     # Prepare Response
     response = HttpResponse()
     response['Content-Disposition'] = 'attachment; filename="nlpa_missing_raws.csv"'
@@ -583,7 +585,10 @@ def missing_raws(request):
         'ss_email',
         'sc_email',
         'name',
+        'sc_name',
         'id',
+	'user_id',
+	'cr_id',
         'entries',
         'projects',
         'uploads',
@@ -592,6 +597,7 @@ def missing_raws(request):
         'in_stripe',
         'city',
         'country',
+        'locales',
         'postcode',
         'paid',
         'unpaid',
@@ -650,7 +656,7 @@ def missing_raws(request):
         else:
             include_entry = False
 
-        if C.get('in_second_round') and not include_entry:
+        if (C.get('in_second_round') and not include_entry) or get_all:
         #if True:
             writer.writerow([
             C.get('email'),
@@ -658,7 +664,10 @@ def missing_raws(request):
             C.get('ss_email'),
             C.get('sc_email'),
             C.get('name'),
+            C.get('sc_name'),
             C.get('id'),
+            C.get('user_id'),
+            C.get('cr_id'),
             C.get('entries'),
             C.get('projects'),
             C.get('uploads'),
@@ -667,6 +676,7 @@ def missing_raws(request):
             C.get('in_stripe'),
             C.get('city'),
             C.get('country'),
+            C.get('locales'),
             C.get('postcode'),
             C.get('paid'),
             C.get('unpaid'),

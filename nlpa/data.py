@@ -3,6 +3,14 @@ import copy
 from userauth.models import CustomUser as User
 from allauth.account.admin import EmailAddress
 
+
+# # STRIPE SESSION USERS
+#    stripe.api_key = settings.STRIPE_SECRET_KEY
+#    email_by_cus_id, ss_users, sessions = clean_ss_users(stripe.checkout.Session.list(limit=100), db_users)
+#
+#    # STRIPE CUSTOMERS
+#    sc_users = clean_sc_users(stripe.Customer.list(limit=100))
+
 def clean_db_users(db_users):
 
     output = {}
@@ -106,9 +114,9 @@ def clean_ss_users(ss_users, db_users):
         email_by_cus_id[c['customer']] = email
         data =  {
             'ss_email': email,
-            'id': c['client_reference_id'],
+            'cr_id': c['client_reference_id'],
             'in_stripe': True,
-            'locales': '',
+            'locales': c['locale'],
             }
         if c['payment_status'] == 'paid':
             data['paid'] = c['amount_total']
@@ -138,7 +146,7 @@ def clean_sc_users(sc_users):
             output[c['email']] = {
                 'sc_email': c['email'],
                 'user_id': c['id'],
-                'name': c['name'],
+                'sc_name': c['name'],
                 'city': c.get('address',{}).get('city'),
                 'country': c.get('address',{}).get('country'),
                 'postcode': c.get('address',{}).get('postal_code'),
@@ -147,7 +155,7 @@ def clean_sc_users(sc_users):
             output[c['email']] = {
                 'sc_email': c['email'],
                 'user_id': c['id'],
-                'name': c['name'],
+                'sc_name': c['name'],
                 'city': '',
                 'country': '',
                 'postcode': '',
