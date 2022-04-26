@@ -3,7 +3,7 @@ from django import forms
 
 
 
-ENTRY_CHOICES = [ ('0', 'No Entries'), ('6', 'Six Entries'), ('12', 'Twelve Entries'), ('18', 'Eighteen Entries')]
+ENTRY_CHOICES = [ ('0', 'No Entries'), ('1', 'One Entry'), ('6', 'Six Entries'), ('12', 'Twelve Entries'), ('18', 'Eighteen Entries')]
 PORTFOLIO_CHOICES = [('0','No Portfolios'), ('1','One Portfolio'), ('2','Two Portfolios')]
 
 
