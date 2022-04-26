@@ -120,5 +120,4 @@ gunicorn --bind 0.0.0.0:8000 nlpa.wsgi
 
 
 
-
 # if you do this again, try dropping the migrations
