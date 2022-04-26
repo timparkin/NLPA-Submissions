@@ -1,4 +1,4 @@
-Installing Wagtail
+xInstalling Wagtail
 ==================
 
 multipass launch bionic
@@ -81,24 +81,44 @@ FULL INSTALL
 multipass launch 18.04 -m 2G -d 20G -n submit
 
 sudo apt update
-sudo apt install python3-pip
-sudo apt install postgresql postgresql-contrib
-sudo apt install libpq-dev python3-dev
+sudo apt install python3-pip postgresql postgresql-contrib libpq-dev python3-dev
 sudo pip3 install virtualenv
 virtualenv nlpa
 source nlpa/bin/activate
+
 sudo -u postgres createuser --interactive  --pwprompt
 sudo -u postgres createdb nlpa
+$ sudo su postgres
+$ psql
+..create database nlpa;
+..alter role nlpa SET client_encoding TO 'utf8';
+..alter role nlpa SET default_transaction_isolation TO 'read committed';
+..alter role nlpa SET timezone TO 'UTC';
+..grant all privileges on database nlpa to nlpa;
+$ psql nlpa < nlpa_2021_09_23_07_00_am.pgdump
+
+# in nlpa/settings/config.py set DEBUG=True, ALLOWED_HOSTS=<ip address>, 
+
 
 git clone https://github.com/timparkin/NLPA-Submissions.git
 pip install -r requirements
+
+# Replace "import cStringIO" with "from io import BytesIO as cStringIO"
+# and remove print statements from
+# /home/ubuntu/nlpa/lib/python3.6/site-packages/django_thumbs/db/models.py
+
+# change DEBUG=False to True in config.py
+sudo apt-get install nginx
+pip3 install gunicorn psycopg2-binary
+
+gunicorn --bind 0.0.0.0:8000 nlpa.wsgi
+
+
 ./manage.py makemigrations
 ./manage.py migrate
 ./manage.py createsuperuser
 
 
-#from io import BytesIO as cStringIO
-#and remove print statements from
-#/home/ubuntu/nlpa/lib/python3.6/site-packages/django_thumbs/db/models.py
+
 
 # if you do this again, try dropping the migrations
