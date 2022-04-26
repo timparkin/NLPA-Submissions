@@ -15,6 +15,7 @@
 
 
     <div class="row g-0">
+
       <div class="col-12 mb-3">
         <div class="row justify-content-center justify-content-sm-between">
           <div class="col-sm-auto text-center">
@@ -26,40 +27,55 @@
           </div>
           <div class="col-sm-auto"><p><strong style="color: #900">Please enter discount code on the final payment page</strong></p></div>
           <div class="col-sm-auto d-flex justify-content-center mt-1 mt-sm-0">
-                  <h5 class="fw-medium"><span class="fw-small badge badge-soft-success rounded-pill ms-2" id="youth_enabled_tag" style="display:none;">youth discount enabled</span> total = $<span id="total">90</span></h5>
+            <h5 class="fw-medium"><span class="fw-small badge badge-soft-success rounded-pill ms-2" id="youth_enabled_tag" style="display:none;">youth discount enabled</span> total = $<span id="total">90</span></h5>
           </div>
         </div>
       </div>
-      <div class="col-lg-3 border-top border-bottom" id="choice-six">
+
+      <div class="col-lg-2 border-top border-bottom" id="choice-one">
+        <div class="h-100">
+          <div class="text-center p-4">
+            <h3 class="fw-normal my-0">1 Image</h3>
+            <p class="mt-3">If you just want to try things out, choose this option which lets you enter one image.</p>
+            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>15
+            </h2><span class="btn btn-outline-primary">choose</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-2 border-top border-bottom" id="choice-six">
         <div class="h-100">
           <div class="text-center p-4">
             <h3 class="fw-normal my-0">6 Images</h3>
-            <p class="mt-3">If you just want to try things out, choose this option which lets you enter six images.</p>
+            <p class="mt-3">Our budgt plan, choose this option which lets you enter six images.</p>
             <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>40
-            </h2><span class="btn btn-outline-primary">Choose</span>
+            </h2><span class="btn btn-outline-primary">choose</span>
           </div>
         </div>
       </div>
+
       <div class="col-lg-3 border-top border-bottom dark__bg-1000 px-4 px-lg-0" style="background-color: rgba(115, 255, 236, 0.18);" id="choice-twelve">
         <div class="h-100">
           <div class="text-center p-4">
             <h3 class="fw-normal my-0">12 Images</h3>
             <p class="mt-3">Our normal plan lets you enter twelve images for five dollars an image</p>
             <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>60
-            </h2><span class="btn btn-outline-primary">Choose</span>
+            </h2><span class="btn btn-outline-primary">choose</span>
           </div>
         </div>
       </div>
-      <div class="col-lg-3 border-top border-bottom" id="choice-eighteen">
+
+      <div class="col-lg-2 border-top border-bottom" id="choice-eighteen">
         <div class="h-100">
           <div class="text-center p-4">
             <h3 class="fw-normal my-0">18 Images</h3>
             <p class="mt-3">If you want to enter a few extra images, this plan gives you six more for eighteen in total</p>
             <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>100
-            </h2><span class="btn btn-outline-primary">Choose</span>
+            </h2><span class="btn btn-outline-primary">choose</span>
           </div>
         </div>
       </div>
+
       <div class="col-lg-3 border-top border-bottom">
         <div class="h-100">
           <div class="text-center p-4">
@@ -71,6 +87,10 @@
           </div>
         </div>
       </div>
+
+
+
+
       <form action="/paymentplan/" method="post" id="form-entry">
         <div style="display:none">
           {% csrf_token %}
@@ -97,6 +117,7 @@
 
 var entry_price_dict = {
   '0': 0.0,
+  '1': 15.0,
   '6': 40.0,
   '12': 60.0,
   '18': 100.0
@@ -143,6 +164,7 @@ function set_total() {
   $("#total").text( (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()])*discount );
 }
 
+one = "#choice-one .btn";
 six = "#choice-six .btn";
 twelve = "#choice-twelve .btn";
 eighteen = "#choice-eighteen .btn";
@@ -181,8 +203,24 @@ $(document).ready(function(){
     set_total();
   });
 
+  $('#choice-one .btn').unbind('click');
+  $("#choice-one .btn").click(function () {
+    disable_entry(six);
+    disable_entry(twelve);
+    disable_entry(eighteen);
+    if ($("#form-entry input:checked").val() == "6") {
+      set_entry_val(0);
+      disable_entry(one);
+    } else {
+      set_entry_val(1);
+      enable_entry(one);
+    }
+    set_total();
+  });
+
   $('#choice-six .btn').unbind('click');
   $("#choice-six .btn").click(function () {
+    disable_entry(one);
     disable_entry(twelve);
     disable_entry(eighteen);
     if ($("#form-entry input:checked").val() == "6") {
@@ -197,6 +235,7 @@ $(document).ready(function(){
 
   $('#choice-twelve .btn').unbind('click');
   $("#choice-twelve .btn").click(function () {
+    disable_entry(one);
     disable_entry(six);
     disable_entry(eighteen);
     if ($("#form-entry input:checked").val() == "12") {
@@ -212,6 +251,7 @@ $(document).ready(function(){
 
   $('#choice-eighteen .btn').unbind('click');
   $("#choice-eighteen .btn").click(function () {
+    disable_entry(one);
     disable_entry(six);
     disable_entry(twelve);
     if ($("#form-entry input:checked").val() == "18") {
@@ -268,21 +308,31 @@ window.onload=window.onpageshow= function() {
      enable_portfolio(p2);
    }
    if ($("#form-entry input:checked").val() == '0') {
+     disable_entry(one);
+     disable_entry(six);
+     disable_entry(twelve);
+     disable_entry(eighteen);
+   }
+   if ($("#form-entry input:checked").val() == '1') {
+     enable_entry(one);
      disable_entry(six);
      disable_entry(twelve);
      disable_entry(eighteen);
    }
    if ($("#form-entry input:checked").val() == '6') {
+     disable_entry(one);
      enable_entry(six);
      disable_entry(twelve);
      disable_entry(eighteen);
    }
    if ($("#form-entry input:checked").val() == '12') {
+     disable_entry(one);
      disable_entry(six);
      enable_entry(twelve);
      disable_entry(eighteen);
    }
    if ($("#form-entry input:checked").val() == '18') {
+     disable_entry(one);
      disable_entry(six);
      disable_entry(twelve);
      enable_entry(eighteen);
