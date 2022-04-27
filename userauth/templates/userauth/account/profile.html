@@ -17,6 +17,26 @@
                 {{ request.user.last_name|default:'' }}
             </div>
         </div>
+        <div class="row">
+            <div class="col border">
+                <small>{% trans "Website" %}:</small><br>
+                {{ request.user.website|default:'' }}
+            </div>
+            <div class="col border">
+                <small>{% trans "Facebook" %}:</small><br>
+                {{ request.user.facebook|default:'' }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col border">
+                <small>{% trans "Instagram" %}:</small><br>
+                {{ request.user.instagram|default:'' }}
+            </div>
+            <div class="col border">
+                <small>{% trans "Twitter" %}:</small><br>
+                {{ request.user.twitter|default:'' }}
+            </div>
+        </div>
         {% comment %}
         <div class="row">
             <div class="col border">

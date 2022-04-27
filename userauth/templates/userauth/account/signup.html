@@ -38,11 +38,32 @@
                {{ form.date_of_birth | as_crispy_field }}
            </div>
         </div>
+        <div class="row  align-items-end">
+           <div class="col-lg-12 col-md-12">
+              <h4 style="margin-top:20px;">Social Media</h4>
+           </div>
+        </div>
+        <div class="row">
+           <div class="col-lg-6 col-md-12">
+               {{ form.website | as_crispy_field }}
+           </div>
+           <div class="col-lg-6 col-md-12">
+               {{ form.facebook | as_crispy_field }}
+           </div>
+        </div>
+        <div class="row">
+           <div class="col-lg-6 col-md-12">
+               {{ form.instagram | as_crispy_field }}
+           </div>
+           <div class="col-lg-6 col-md-12">
+               {{ form.twitter | as_crispy_field }}
+           </div>
+        </div>
 
 
     <button type="submit" class="btn btn-outline-primary mt-4 w-50 mx-auto" id="signupbutton">{% trans "Sign Up" %}</button>
 </form>
-<p class="small my-3">We ask youth entrants for their date of birth. This gives them access to a free entry. Proof of age and permission from a parent or guardian will be requested if the youth entrant makes the final stages.</p>
+
 
 {% endblock %}
 

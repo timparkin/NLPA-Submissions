@@ -119,7 +119,10 @@ def get_paymentupgrade(request):
     # build plan plantext
     plantext = "Your current plan is "
     if entries >0:
-        plantext += "%s single entries"%entries
+        if entries == 1:
+            plantext += "%s single entry"%entries
+        else:
+            plantext += "%s single entries"%entries
     if portfolios>0:
         if entries >0:
             plantext += " and "
@@ -438,7 +441,7 @@ def datamining_child_entries(request):
 def missing_raws(request):
     just_missing = request.GET.get('just_missing',None) is not None
     get_all = request.GET.get('get_all',None) is not None
-   
+
     # Prepare Response
     response = HttpResponse()
     response['Content-Disposition'] = 'attachment; filename="nlpa_missing_raws.csv"'

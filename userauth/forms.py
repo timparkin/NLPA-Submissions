@@ -8,6 +8,7 @@ from crispy_forms.layout import Submit, Layout, Row, Column
 from wagtail.users.forms import UserCreationForm, UserEditForm
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
+
 import locale
 import logging
 
@@ -75,6 +76,10 @@ class SignupForm(forms.Form):
     first_name = forms.CharField(max_length=30)
     last_name = forms.CharField(max_length=30)
     email=forms.EmailField(required=True)
+    website=forms.CharField(max_length=60)
+    facebook=forms.CharField(max_length=60, required=False)
+    instagram=forms.CharField(max_length=60, required=False)
+    twitter=forms.CharField(max_length=60, required=False)
     password1 = forms.CharField(widget=forms.PasswordInput)
     date_of_birth = forms.DateField(required=False,label="Date of Birth (if youth entrant)", widget=forms.TextInput(attrs={'class':'datetimepicsker','placeholder':'dd/mm/yyyy', 'type':'date', 'data-options':'{"disableMobile":true, "format":"dd/mm/yyyy"}'}))
 
@@ -90,6 +95,10 @@ class SignupForm(forms.Form):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.date_of_birth = self.cleaned_data['date_of_birth']
+        user.website = self.cleaned_data['website']
+        user.facebook = self.cleaned_data['facebook']
+        user.instagram = self.cleaned_data['instagram']
+        user.twitter = self.cleaned_data['twitter']
         print('user dob %s'% user.date_of_birth)
         print('user age %s'% relativedelta(date(2020, 12, 31), user.date_of_birth).years)
         user.is_young_entrant == 'False'
@@ -108,4 +117,4 @@ class CustomUserUpdateForm(forms.ModelForm):
         model = CustomUser
         #fields = ['first_name', 'last_name', 'display_name', 'date_of_birth', 'address1', 'address2', 'zip_code', 'city', 'country', 'mobile_phone', 'additional_information', 'photo',]
         #widgets = {'date_of_birth': forms.DateInput(attrs={'type':'date'})}
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['first_name', 'last_name', 'email', 'website', 'facebook', 'instagram', 'twitter']

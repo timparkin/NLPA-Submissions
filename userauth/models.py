@@ -18,13 +18,15 @@ class CustomUser(AbstractUser):
     region = models.CharField(verbose_name=_("State/Region/County"), max_length=1024, blank=True, null=True)
     zip_code = models.CharField(verbose_name=_("Postal Code"), max_length=12, blank=True, null=True)
     country = CountryField(blank=True, null=True)
+
     phone_regex = RegexValidator(regex=r"^\+(?:[0-9]●?){6,14}[0-9]$", message=_("Enter a valid international mobile phone number starting with +(country code)"))
     mobile_phone = models.CharField(validators=[phone_regex], verbose_name=_("Mobile phone"), max_length=17, blank=True, null=True)
     additional_information = models.CharField(verbose_name=_("Additional information"), max_length=4096, blank=True, null=True)
     bio = models.CharField(verbose_name=_("Short Bio"), max_length=4096, blank=True, null=True)
-    instagram = models.CharField(verbose_name=_("Instagram"), max_length=1024, blank=True, null=True)
-    twitter = models.CharField(verbose_name=_("Twitter"), max_length=1024, blank=True, null=True)
-    Facebook = models.CharField(verbose_name=_("Facebook"), max_length=1024, blank=True, null=True)
+    instagram = models.CharField(verbose_name=_("Instagram"), max_length=1024, blank=True, null=True, default='')
+    twitter = models.CharField(verbose_name=_("Twitter"), max_length=1024, blank=True, null=True, default='')
+    Facebook = models.CharField(verbose_name=_("Facebook"), max_length=1024, blank=True, null=True, default='')
+    facebook = models.CharField(verbose_name=_("Facebook"), max_length=1024, blank=True, null=True, default='')
     marketing_prefs = models.CharField(verbose_name=_("Marketing Preferences"), max_length=4096, blank=True, null=True)
     photo = models.ImageField(verbose_name=_("Photo"), upload_to='photos/', default='photos/default-user-avatar.png')
     website = models.CharField(verbose_name=_("Main Website"), max_length=1024, blank=True, null=True)
@@ -52,3 +54,22 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.email})"
+
+class Year(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    year = models.IntegerField(verbose_name=_("Competition Year"), blank=True, null=True)
+    payment_status = models.CharField(verbose_name=_("Payment Status"), max_length=1024, blank=True, null=True)
+    payment_plan = models.CharField(verbose_name=_("Payment Plan"), max_length=1024, blank=True, null=True)
+    payment_upgrade_status = models.CharField(verbose_name=_("Payment Upgrade Status"), max_length=1024, blank=True, null=True)
+    payment_upgrade_plan = models.CharField(verbose_name=_("Payment Upgrade Plan"), max_length=1024, blank=True, null=True)
+    is_young_entrant = models.CharField(verbose_name=_("Is Young Entrant"), max_length=1024, blank=True, null=False, default='False')
+    project_title_one = models.CharField(verbose_name=_("Project Title One"), max_length=1024, blank=True, null=True)
+    project_description_one = models.TextField(verbose_name=_("Project Description One"), blank=True, null=True)
+    project_title_two = models.CharField(verbose_name=_("Project Title Two"), max_length=1024, blank=True, null=True)
+    project_description_two = models.TextField(verbose_name=_("Project Description Two"), blank=True, null=True)
+
+    def __str__(self):
+        return self.year
+
+    class Meta:
+        ordering = ['year']
