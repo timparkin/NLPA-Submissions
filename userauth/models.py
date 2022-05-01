@@ -69,7 +69,7 @@ class Year(models.Model):
     project_description_two = models.TextField(verbose_name=_("Project Description Two"), blank=True, null=True)
 
     def __str__(self):
-        return self.year
+        return str(self.year)
 
     class Meta:
         ordering = ['year']

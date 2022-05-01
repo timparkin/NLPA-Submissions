@@ -8,7 +8,7 @@ import csv
 import stripe
 
 from nlpa.forms import PaymentPlanForm
-from userauth.models import CustomUser as User
+from userauth.models import CustomUser as User, Year
 from entries.models import Entry
 import json
 

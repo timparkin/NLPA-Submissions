@@ -141,6 +141,9 @@ cython_debug/
 # media uploads
 /media
 config.py
+config-live.py
+config-test.py
+*pgdump
 bfg.jar
 passwords.txt
 
@@ -157,3 +160,4 @@ faq_lines.txt
 stripe-customers.csv
 nlpa.pgdump
 thumbor
+*DS_Store
