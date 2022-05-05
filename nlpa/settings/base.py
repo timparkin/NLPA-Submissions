@@ -158,7 +158,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = '/data/www/nlpa'
 MEDIA_URL = '/media/'
 
 # Wagtail settings
@@ -195,7 +195,7 @@ ACCOUNT_SIGNUP_FORM_CLASS = 'userauth.forms.SignupForm'
 
 AWS_STORAGE_BUCKET_NAME = 'nlpa-website-bucket'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-DEFAULT_FILE_STORAGE = 'nlpa.custom_storages.CustomS3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 THUMBNAILS = {
     'METADATA': {
@@ -206,7 +206,7 @@ THUMBNAILS = {
         'host': 'localhost',
     },
     'STORAGE': {
-        'BACKEND': 'nlpa.custom_storages.CustomS3Boto3Storage',
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
         # You can also use Amazon S3 or any other Django storage backends
     },
     'SIZES': {
