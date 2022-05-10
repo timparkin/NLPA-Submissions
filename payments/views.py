@@ -315,6 +315,7 @@ def stripe_webhook(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
     endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
     payload = request.body
+    print(payload)
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     event = None
     try:
@@ -323,14 +324,17 @@ def stripe_webhook(request):
         )
     except ValueError as e:
         # Invalid payload
+        print('invalid payload')
         return HttpResponse(status=400)
     except stripe.error.SignatureVerificationError as e:
+        print('verification error')
         return HttpResponse(status=400)
 
     try:
         user_id = int(event['data']['object']['client_reference_id'])
         user = User.objects.get(id=user_id)
     except User.DoesNotExist:
+        print('no user')
         return HttpResponse(status=400)
 
     # Handle the checkout.session.completed event

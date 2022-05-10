@@ -13,4 +13,5 @@ urlpatterns = [
     path('success_youth/', views.success_youth, name='success_youth'),
     path('cancelled/', views.cancelled, name='cancelled'),
     path('webhook/', views.stripe_webhook),
+    path('stripe_webhooks/', views.stripe_webhook),
 ]

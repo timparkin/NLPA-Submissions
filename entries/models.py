@@ -11,16 +11,13 @@ from thumbnails.fields import ImageField
 class Entry(models.Model):
 
     class Categories(models.TextChoices):
-        grand_landscape = 'GL', _('Grand Landscape')
-        intimate = 'IA', _('Intimate and Abstract')
-        nightscape = 'N', _('Nightscape')
-        aerial = 'A', _('Aerial')
-#        portfolio_1 = 'P1', _('Portfolio One')
-#        portfolio_2 = 'P2', _('Portfolio Two')
+        grand_scenic = 'GS', _('Grand Scenic')
+        intimate_landscapes = 'IL', _('Intimate Landscapes')
+        abstracts_and_details = 'AD', _('Abstracts & Details')
 
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
-    category = models.CharField(verbose_name=_("Category"), max_length=128, choices=Categories.choices, default=Categories.grand_landscape, blank=True, null=True)
+    category = models.CharField(verbose_name=_("Category"), max_length=128, choices=Categories.choices, default=Categories.grand_scenic, blank=True, null=True)
     filename = models.CharField(verbose_name=_("Filename"), max_length=128, default='', blank=True, null=True)
     photo_size = models.CharField(verbose_name=_("Photo Size"), max_length=1024, default='', blank=True, null=True)
     photo_dimensions = models.CharField(verbose_name=_("Photo Dimensions"), max_length=1024, default='', blank=True, null=True)

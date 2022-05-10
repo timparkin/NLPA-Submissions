@@ -59,14 +59,12 @@ class ValidateRawsModelFormset(BaseInlineFormSet):
 
 
 
-category_list = ['GL', 'IA', 'N', 'A']
+category_list = ['GS', 'IL', 'AD']
 
 entries_categories = (
-        ('GL','Grand Landscape'),
-        ('IA','Intimate & Abstract'),
-        ('N','Nightscape'),
-        ('A','Aerial'),
-
+        ('GS','Grand Scenic'),
+        ('IL','Intimate Landscapes'),
+        ('AD','Abstracts & Details'),
 )
 
 class ImageWidget(forms.widgets.ClearableFileInput):

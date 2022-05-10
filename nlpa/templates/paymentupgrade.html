@@ -12,8 +12,6 @@
       {% endfor %}
     </div>
     {% endif %}
-
-
     <div class="row g-0">
       <div class="col-12 mb-3">
         <div class="row justify-content-center justify-content-sm-between">
@@ -30,53 +28,76 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3 border-top border-bottom" id="choice-six" style="{% if request.session.entries > 6 %}opacity:0.5{% endif %}">
-        <div class="h-100">
+
+
+
+      <div class="col-lg-2 border-top border-bottom" id="choice-one" style="{% if request.session.entries > 1 %}opacity:0.5{% endif %}">
+        <div class="h-100" style="position:relative; margin-bottom:90px;">
           <div class="text-center p-4">
-            <h3 class="fw-normal my-0">6 Images</h3>
-            <p class="mt-3">If you just want to try things out, choose this option which lets you enter six images.</p>
-            <h2 class="fw-medium my-4">
-              {% if request.session.entries == 0 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>40{% endif %}
-              {% if request.session.entries == 6 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>0{% endif %}
-              {% if request.session.entries > 6 %}n/a{% endif %}
-            </h2>{% if request.session.entries <= 6 %}<span class="btn {% if request.session.entries == 6 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}">Choose</span>{% endif %}
+            <h3 class="fw-normal my-0">1 Image</h3>
+            <p class="mt-3">If you just want to try things out, choose this option which lets you enter one image.</p>
+            <h2 class="fw-medium my-4" style="position: absolute; bottom:40px; left:30%;">
+               {% if request.session.entries == 0 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>15{% endif %}
+               {% if request.session.entries == 1 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>0{% endif %}
+               {% if request.session.entries > 6 %}n/a{% endif %}
+            </h2>{% if request.session.entries <= 1 %}<span class="btn {% if request.session.entries == 1 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}" style="position: absolute; bottom:30px; left:30%;">Choose</span>{% endif %}
           </div>
         </div>
       </div>
+
+      <div class="col-lg-2 border-top border-bottom" id="choice-six" style="{% if request.session.entries > 6 %}opacity:0.5{% endif %}">
+        <div class="h-100" style="position:relative; margin-bottom:90px;">
+          <div class="text-center p-4">
+            <h3 class="fw-normal my-0">6 Images</h3>
+            <p class="mt-3">Our budget plan, choose this option which lets you enter six images.</p>
+            <h2 class="fw-medium my-4" style="position: absolute; bottom:40px; left:30%;">
+              {% if request.session.entries == 0 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>40{% endif %}
+              {% if request.session.entries == 1 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>25{% endif %}
+              {% if request.session.entries == 6 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>0{% endif %}
+              {% if request.session.entries > 6 %}n/a{% endif %}
+            </h2>{% if request.session.entries <= 6 %}<span class="btn {% if request.session.entries == 6 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}" style="position: absolute; bottom:30px; left:30%;">Choose</span>{% endif %}
+          </div>
+        </div>
+      </div>
+
       <div class="col-lg-3 border-top border-bottom dark__bg-1000 px-4 px-lg-0" style="background-color: rgba(115, 255, 236, 0.18);{% if request.session.entries > 12 %}opacity:0.5{% endif %}" id="choice-twelve">
-        <div class="h-100">
+        <div class="h-100" style="position:relative; margin-bottom:90px;">
           <div class="text-center p-4">
             <h3 class="fw-normal my-0">12 Images</h3>
             <p class="mt-3">Our normal plan lets you enter twelve images for five dollars an image</p>
-            <h2 class="fw-medium my-4">
+            <h2 class="fw-medium my-4" style="position: absolute; bottom:40px; left:30%;">
               {% if request.session.entries == 0 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>60{% endif %}
+              {% if request.session.entries == 1 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>45{% endif %}
               {% if request.session.entries == 6 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>20{% endif %}
               {% if request.session.entries == 12 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>0{% endif %}
               {% if request.session.entries > 12 %}n/a{% endif %}
-            </h2>{% if request.session.entries <= 12 %}<span class="btn {% if request.session.entries == 12 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}">Choose</span>{% endif %}
+            </h2>{% if request.session.entries <= 12 %}<span class="btn {% if request.session.entries == 12 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}" style="position: absolute; bottom:30px; left:30%;">Choose</span>{% endif %}
           </div>
         </div>
       </div>
-      <div class="col-lg-3 border-top border-bottom" id="choice-eighteen" style="{% if request.session.entries > 18 %}opacity:0.5{% endif %}">
-        <div class="h-100">
+
+      <div class="col-lg-2 border-top border-bottom" id="choice-eighteen" style="{% if request.session.entries > 18 %}opacity:0.5{% endif %}">
+        <div class="h-100" style="position:relative; margin-bottom:90px;">
           <div class="text-center p-4">
             <h3 class="fw-normal my-0">18 Images</h3>
             <p class="mt-3">If you want to enter a few extra images, this plan gives you six more for eighteen in total</p>
-            <h2 class="fw-medium my-4">
+            <h2 class="fw-medium my-4" style="position: absolute; bottom:40px; left:30%;">
               {% if request.session.entries == 0 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>100{% endif %}
+              {% if request.session.entries == 1 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>85{% endif %}
               {% if request.session.entries == 6 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>60{% endif %}
               {% if request.session.entries == 12 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>40{% endif %}
               {% if request.session.entries == 18 %}<sup class="fw-normal fs-2 me-1">&dollar;</sup>0{% endif %}
-            </h2>{% if request.session.entries <= 18 %}<span class="btn {% if request.session.entries == 18 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}">Choose</span>{% endif %}
+            </h2>{% if request.session.entries <= 18 %}<span class="btn {% if request.session.entries == 18 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}" style="position: absolute; bottom:30px; left:30%;">Choose</span>{% endif %}
           </div>
         </div>
       </div>
+
       <div class="col-lg-3 border-top border-bottom">
-        <div class="h-100">
+        <div class="h-100" style="position:relative; margin-bottom:90px;">
           <div class="text-center p-4">
             <h3 class="fw-normal my-0">Projects</h3>
             <p class="mt-3">You can also enter up to two projects of between 6 and 10 images</p>
-            <h2 class="fw-medium my-4"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>30 <small class="fs--1 text-700">/ project</small>
+            <h2 class="fw-medium my-4" style="position: absolute; bottom:40px; left:30%;"> <sup class="fw-normal fs-2 me-1">&dollar;</sup>30 <small class="fs--1 text-700">/ project</small>
             </h2>
              {% if request.session.portfolios <= 0 %}<span class="btn {% if request.session.portfolios == 0 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}" id="choice-portfolio-0">0</span>{% endif %}
              {% if request.session.portfolios <= 1 %}<span class="btn {% if request.session.portfolios == 1 %}btn-outline-dark{% else %}btn-outline-primary{% endif %}" id="choice-portfolio-1">1</span>{% endif %}
@@ -84,6 +105,7 @@
           </div>
         </div>
       </div>
+
       <form action="/paymentupgrade/" method="post" id="form-entry">
         <div style="display:none">
           {% csrf_token %}
@@ -108,6 +130,7 @@
 
 var entry_price_dict = {
   '0': 0.0,
+  '0': 15.0,
   '6': 40.0,
   '12': 60.0,
   '18': 100.0
@@ -120,11 +143,13 @@ var portfolio_price_dict = {
 
 var discount=1.0;
 
+one = "#choice-one .btn";
 six = "#choice-six .btn";
 twelve = "#choice-twelve .btn";
 eighteen = "#choice-eighteen .btn";
 
 vmap = {
+  1: one,
   6: six,
   12: twelve,
   18: eighteen
@@ -198,7 +223,7 @@ function set_total() {
   $("#total").text( total );
   if (total == 0) {
   $("#totalbottom").val('Upgrade');
-  } else { 
+  } else {
   $("#totalbottom").val('Upgrade for $' + (entry_price_dict[$("#form-entry input:checked").val()] + portfolio_price_dict[$("#form-entry option:selected").val()] - {{request.session.total_price}})*discount) ;
   }
 }
@@ -234,8 +259,25 @@ $(document).ready(function(){
     set_total();
   });
 
+  $('#choice-one .btn').unbind('click');
+  $("#choice-one .btn").click(function () {
+    disable_entry(six);
+    disable_entry(twelve);
+    disable_entry(eighteen);
+    if ($("#form-entry input:checked").val() == "1") {
+      set_entry_val(0);
+      disable_entry(one);
+    } else {
+      set_entry_val(6);
+      enable_entry(one);
+    }
+    set_total();
+  });
+
+
   $('#choice-six .btn').unbind('click');
   $("#choice-six .btn").click(function () {
+    disable_entry(one);
     disable_entry(twelve);
     disable_entry(eighteen);
     if ($("#form-entry input:checked").val() == "6") {
@@ -250,6 +292,7 @@ $(document).ready(function(){
 
   $('#choice-twelve .btn').unbind('click');
   $("#choice-twelve .btn").click(function () {
+    disable_entry(one);
     disable_entry(six);
     disable_entry(eighteen);
     if ($("#form-entry input:checked").val() == "12") {
@@ -265,6 +308,7 @@ $(document).ready(function(){
 
   $('#choice-eighteen .btn').unbind('click');
   $("#choice-eighteen .btn").click(function () {
+    disable_entry(one);
     disable_entry(six);
     disable_entry(twelve);
     if ($("#form-entry input:checked").val() == "18") {
@@ -321,21 +365,31 @@ window.onload=window.onpageshow= function() {
      enable_portfolio(p2);
    }
    if ($("#form-entry input:checked").val() == '0') {
+     disable_entry(one);
+     disable_entry(six);
+     disable_entry(twelve);
+     disable_entry(eighteen);
+   }
+   if ($("#form-entry input:checked").val() == '1') {
+     enable_entry(one);
      disable_entry(six);
      disable_entry(twelve);
      disable_entry(eighteen);
    }
    if ($("#form-entry input:checked").val() == '6') {
+     disable_entry(one);
      enable_entry(six);
      disable_entry(twelve);
      disable_entry(eighteen);
    }
    if ($("#form-entry input:checked").val() == '12') {
+     disable_entry(one);
      disable_entry(six);
      enable_entry(twelve);
      disable_entry(eighteen);
    }
    if ($("#form-entry input:checked").val() == '18') {
+     disable_entry(one);
      disable_entry(six);
      disable_entry(twelve);
      enable_entry(eighteen);

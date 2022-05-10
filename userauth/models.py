@@ -43,7 +43,6 @@ class CustomUser(AbstractUser):
     panels = [
         FieldPanel('payment_status'),
         FieldPanel('payment_plan'),
-
     ]
 
     class Meta:
