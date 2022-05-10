@@ -161,3 +161,4 @@ stripe-customers.csv
 nlpa.pgdump
 thumbor
 *DS_Store
+mailtrap_apikey.py
