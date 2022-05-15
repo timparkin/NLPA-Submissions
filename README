@@ -97,7 +97,7 @@ $ psql
 ..grant all privileges on database nlpa to nlpa;
 $ psql nlpa < nlpa_2021_09_23_07_00_am.pgdump
 
-# in nlpa/settings/config.py set DEBUG=True, ALLOWED_HOSTS=<ip address>, 
+# in nlpa/settings/config.py set DEBUG=True, ALLOWED_HOSTS=<ip address>,
 
 
 git clone https://github.com/timparkin/NLPA-Submissions.git
@@ -121,3 +121,31 @@ gunicorn --bind 0.0.0.0:8000 nlpa.wsgi
 
 
 # if you do this again, try dropping the migrations
+
+Don't forget to update users
+
+from userauth.models import CustomUser as User, Year
+
+users = User.objects.all()
+for user in users:
+    years = Year.objects.filter(user=user, year='2021')
+	  if not years:
+	      year = Year.objects.create(user=user, year='2021')
+    		year.payment_status = user.payment_status
+    		year.payment_plan = user.payment_plan
+    		year.payment_upgrade_status = user.payment_upgrade_status
+    		year.payment_upgrade_plan = user.payment_upgrade_plan
+    		year.is_young_entrant = user.is_young_entrant
+    		year.project_title_one = user.project_title_one
+    		year.project_description_one = user.project_description_one
+    		year.project_title_two = user.project_title_two
+    		year.project_description_two = user.project_description_two
+    		year.save()
+    else:
+        year.payment_status = ''
+        etc
+
+# Check user
+from userauth.models import CustomUser as User, Year
+user = User.objects.filter(email='info+20220505f@timparkin.co.uk')[0]
+print(user.payment_status)
