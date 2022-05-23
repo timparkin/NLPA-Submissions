@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'Grota Sans Alt Rd';
-    src: url('/static/fonts/GrotaSansAltRd-Medium.woff2') format('woff2'),
-        url('/static/fonts/GrotaSansAltRd-Medium.woff') format('woff');
+    src: url('/static/public/fonts/GrotaSansAltRd-Medium.woff2') format('woff2'),
+        url('/static/public/fonts/GrotaSansAltRd-Medium.woff') format('woff');
     font-weight: 500;
     font-style: normal;
     font-display: swap;
@@ -9,8 +9,8 @@
 
 @font-face {
     font-family: 'Grota Sans Alt Rd Semi';
-    src: url('/static/fonts/GrotaSansAltRd-SemiBold.woff2') format('woff2'),
-        url('/static/fonts/GrotaSansAltRd-SemiBold.woff') format('woff');
+    src: url('/static/public/fonts/GrotaSansAltRd-SemiBold.woff2') format('woff2'),
+        url('/static/public/fonts/GrotaSansAltRd-SemiBold.woff') format('woff');
     font-weight: 600;
     font-style: normal;
     font-display: swap;
@@ -18,8 +18,8 @@
 
 @font-face {
     font-family: 'Grota Sans Alt Rd Bold';
-    src: url('/static/fonts/GrotaSansAltRd-Bold.woff2') format('woff2'),
-        url('/static/fonts/GrotaSansAltRd-Bold.woff') format('woff');
+    src: url('/static/public/fonts/GrotaSansAltRd-Bold.woff2') format('woff2'),
+        url('/static/public/fonts/GrotaSansAltRd-Bold.woff') format('woff');
     font-weight: bold;
     font-style: normal;
     font-display: swap;
