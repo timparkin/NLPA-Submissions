@@ -32,4 +32,10 @@ class Command(BaseCommand):
             user.project_title_two = None
             user.project_description_two = None
             user.save()
+
+            entries = user.entry_set.all()
+            for entry in entries:
+                if entry.year is None:
+                    entry.year = CURRENT_YEAR-1
+                    entry.save()
         self.stdout.write(self.style.SUCCESS('Successfully updated "%s" users' % count))
