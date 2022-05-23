@@ -19,9 +19,11 @@ from nlpa.custom_storages import create_custom_storage, CustomS3Boto3Storage
 
 from django.forms import BaseInlineFormSet
 
+from django.db.models import Q
+
 from django.core.exceptions import ValidationError
 from django.core.files.images import get_image_dimensions
-from nlpa.settings.config import entry_products, portfolio_products, ENTRIES_CLOSED
+from nlpa.settings.config import entry_products, portfolio_products, ENTRIES_CLOSED, CURRENT_YEAR
 
 class ValidateImagesModelFormset(BaseInlineFormSet):
     def clean(self):
@@ -115,7 +117,7 @@ def get_entries(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        form = EntryInlineFormSet(request.POST, request.FILES, instance=user, queryset=Entry.objects.filter(category__in=category_list))
+        form = EntryInlineFormSet(request.POST, request.FILES, instance=user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category__in=category_list))
 
         # check whether it's valid:
         if form.is_valid():
@@ -136,6 +138,7 @@ def get_entries(request):
                 f.photo_dimensions = '%s x %s'%(f.photo.width, f.photo.height)
                 f.photo_size = f.photo.size
                 f.filename = f.photo.name
+                f.year = CURRENT_YEAR
 
             form.save()
 
@@ -146,7 +149,8 @@ def get_entries(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = EntryInlineFormSet(instance=user, queryset=Entry.objects.filter(category__in=category_list))
+
+        form = EntryInlineFormSet(instance=user, queryset=Entry.objects.filter( year=CURRENT_YEAR, category__in=category_list ))
 
     return render(request, 'entries.html', {'formset': form, 'ENTRIES_CLOSED': ENTRIES_CLOSED})
 
@@ -205,8 +209,8 @@ class GetPortfolios(LoginRequiredMixin, View):
         if ENTRIES_CLOSED:
             return HttpResponseRedirect('/secondround')
 
-        ctxt['portfolio1'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P1'))
-        ctxt['portfolio2'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(category='P2'))
+        ctxt['portfolio1'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P1'))
+        ctxt['portfolio2'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P2'))
 
         ctxt['description_form1'] = ProjectDescription(initial={'title': request.user.project_title_one,'description': request.user.project_description_one})
         ctxt['description_form2'] = ProjectDescription(initial={'title': request.user.project_title_two,'description': request.user.project_description_two})
@@ -252,7 +256,7 @@ class GetPortfolios(LoginRequiredMixin, View):
 
 
         if 'portfolio1' in request.POST:
-            portfolio1 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(category='P1'))
+            portfolio1 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P1'))
             if portfolio1.is_valid():
                 myformset = portfolio1.save(commit=False)
                 for f in myformset:
@@ -272,6 +276,7 @@ class GetPortfolios(LoginRequiredMixin, View):
                     f.photo_dimensions = '%s x %s'%(f.photo.width, f.photo.height)
                     f.photo_size = f.photo.size
                     f.filename = f.photo.name
+                    f.year = CURRENT_YEAR
                 portfolio1.save()
             else:
                 ctxt['portfolio1'] = portfolio1
@@ -291,7 +296,7 @@ class GetPortfolios(LoginRequiredMixin, View):
 
         if 'portfolio2' in request.POST:
             description2 = ProjectDescription(request.POST)
-            portfolio2 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(category='P2'))
+            portfolio2 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P2'))
             if portfolio2.is_valid():
                 myformset = portfolio2.save(commit=False)
                 for f in myformset:
@@ -310,6 +315,8 @@ class GetPortfolios(LoginRequiredMixin, View):
                     f.photo_dimensions = '%s x %s'%(f.photo.width, f.photo.height)
                     f.photo_size = f.photo.size
                     f.filename = f.photo.name
+                    f.year = CURRENT_YEAR
+                    
                 portfolio2.save()
             else:
                 ctxt['portfolio2'] = portfolio2
@@ -319,6 +326,66 @@ class GetPortfolios(LoginRequiredMixin, View):
 
         return HttpResponseRedirect('/portfolios/')
 
+
+
+#
+# First thing - get all the entries and portfolios including descriptions etc..
+# Build an email template showing all submitted images and categories extra_css
+#
+#
+
+class ConfirmationEmail(LoginRequiredMixin, View):
+    template_name = 'confirmationemail.html'
+
+    def get_context_data(self, **kwargs):
+        if self.request.user.payment_plan is not None:
+            kwargs['payment_plan'] = json.loads(self.request.user.payment_plan)
+        else:
+            kwargs['payment_plan'] = None
+
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        ctxt = {}
+        return render(request, self.template_name, self.get_context_data(**ctxt))
+
+    def post(self, request, *args, **kwargs):
+        ctxt = {}
+        user = request.user
+        payment_plan = json.loads(user.payment_plan)
+        entries = int(payment_plan['entries'])
+        portfolios = int(payment_plan['portfolios'])
+        plantext = "Your current plan is "
+        if entries >0:
+            if entries == 1:
+                plantext += "%s single entry"%entries
+            else:
+                plantext += "%s single entries"%entries
+        if portfolios>0:
+            if entries >0:
+                plantext += " and "
+            if portfolios == 1:
+                plantext += "%s project entry"%portfolios
+            else:
+                plantext += "%s project entries"%portfolios
+
+        user_dict = {
+            'name': '%s %s'%(user.first_name,user.last_name),
+            'id': user.id,
+            'email': user.email,
+            'username': user.username,
+            'payment_status': user.payment_status,
+            'payment_plan': user.payment_plan,
+            'project_title_one': user.project_title_one,
+            'project_description_one': user.project_description_one,
+            'project_title_two': user.project_title_two,
+            'project_description_two': user.project_description_two,
+            'entries': user.entry_set.all()
+        }
+
+
+
+        return HttpResponseRedirect('/confirmationemail/')
 
 
 
@@ -374,7 +441,7 @@ def get_raws(request):
     if request.method == 'POST':
 
         # create a form instance and populate it with data from the request:
-        form = EntryInlineFormSet(request.POST, request.FILES, instance=user, queryset=Entry.objects.filter(in_second_round=True))
+        form = EntryInlineFormSet(request.POST, request.FILES, instance=user, queryset=Entry.objects.filter(year=CURRENT_YEAR, in_second_round=True))
 
         # check whether it's valid:
         if form.is_valid():
@@ -428,6 +495,6 @@ def get_raws(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = EntryInlineFormSet(instance=user, queryset=Entry.objects.filter(in_second_round=True))
+        form = EntryInlineFormSet(instance=user, queryset=Entry.objects.filter(year=CURRENT_YEAR, in_second_round=True))
 
     return render(request, 'secondround.html', {'formset': form, 'ENTRIES_CLOSED': ENTRIES_CLOSED})
