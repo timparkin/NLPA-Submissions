@@ -290,7 +290,7 @@ def success(request):
 
     # NEED TO CHECK WHEThER THIS IS AN UPGRADE OR JUST A PURCHASE AND SET PAYMENT PLAN ACCORDINGLY
     if request.user.payment_upgrade_status is not None:
-        if 'checkingout' in request.user.payment_upgrade_status:
+        if 'checkingout' in request.user.payment_upgrade_status or 'checkout.session.completed' in request.user.payment_upgrade_status:
             request.user.payment_plan = request.user.payment_upgrade_plan
 
     request.user.save()
@@ -340,7 +340,7 @@ def stripe_webhook(request):
     # Handle the checkout.session.completed event
     if event['type'] == 'checkout.session.completed':
         if user.payment_upgrade_status:
-            if 'checkout' in user.payment_upgrade_status or 'pending' in user.payment_upgrade_status:
+            if 'checkingout' in user.payment_upgrade_status or 'checkout' in user.payment_upgrade_status or 'pending' in user.payment_upgrade_status:
                 user.payment_upgrade_status='checkout.session.completed %s'%datetime.datetime.now()
         user.payment_status='checkout.session.completed %s'%datetime.datetime.now()
         user.save()
