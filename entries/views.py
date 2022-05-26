@@ -209,11 +209,11 @@ class GetPortfolios(LoginRequiredMixin, View):
         if ENTRIES_CLOSED:
             return HttpResponseRedirect('/secondround')
 
-        ctxt['portfolio1'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P1'))
-        ctxt['portfolio2'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P2'))
+        ctxt['portfolio1'] = EntryInlineFormSet(prefix='1',instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P1'))
+        ctxt['portfolio2'] = EntryInlineFormSet(prefix='2',instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P2'))
 
-        ctxt['description_form1'] = ProjectDescription(initial={'title': request.user.project_title_one,'description': request.user.project_description_one})
-        ctxt['description_form2'] = ProjectDescription(initial={'title': request.user.project_title_two,'description': request.user.project_description_two})
+        ctxt['description_form1'] = ProjectDescription(prefix='1',initial={'title': request.user.project_title_one,'description': request.user.project_description_one})
+        ctxt['description_form2'] = ProjectDescription(prefix='2',initial={'title': request.user.project_title_two,'description': request.user.project_description_two})
         ctxt['payment_plan_portfolios'] = int(json.loads(self.request.user.payment_plan)['portfolios'])
         ctxt['ENTRIES_CLOSED'] = ENTRIES_CLOSED
 
@@ -242,47 +242,46 @@ class GetPortfolios(LoginRequiredMixin, View):
             return HttpResponseRedirect('/secondround')
 
 
-        if 'description1' in request.POST:
-            description_form1 = ProjectDescription(request.POST)
-            if description_form1.is_valid():
-                title1 = description_form1.cleaned_data['title']
-                description1 = description_form1.cleaned_data['description']
-                request.user.project_title_one = title1
-                request.user.project_description_one = description1
-                request.user.save()
-            else:
-                ctxt['description_form1'] = ProjectDescription(initial={'title': request.user.project_title_one,'description': request.user.project_description_one})
+        description_form1 = ProjectDescription(request.POST,prefix='1')
+        if description_form1.is_valid():
+            title1 = description_form1.cleaned_data['title']
+            description1 = description_form1.cleaned_data['description']
+            request.user.project_title_one = title1
+            request.user.project_description_one = description1
+            request.user.save()
+        else:
+            ctxt['description_form1'] = ProjectDescription(prefix='1',initial={'title': request.user.project_title_one,'description': request.user.project_description_one})
 
 
 
-        if 'portfolio1' in request.POST:
-            portfolio1 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P1'))
-            if portfolio1.is_valid():
-                myformset = portfolio1.save(commit=False)
-                for f in myformset:
-                    f.category = 'P1'
-                    name = f.photo.name
-                    tagdata = {
-                        'filename': name,
-                        'user_email': request.user.email,
-                        'category': f.category,
-                        'is_young_entrant': request.user.is_young_entrant
-                        }
-                    if hasattr(f.photo.storage,'custom'):
-                        f.photo.storage.custom[ name ] = tagdata
-                    else:
-                        f.photo.storage.custom = { name : tagdata }
+        portfolio1 = EntryInlineFormSet(request.POST, request.FILES, prefix='1', instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P1'))
+        if portfolio1.is_valid():
+            myformset = portfolio1.save(commit=False)
+            for f in myformset:
+                f.category = 'P1'
+                name = f.photo.name
+                tagdata = {
+                    'filename': name,
+                    'user_email': request.user.email,
+                    'category': f.category,
+                    'is_young_entrant': request.user.is_young_entrant
+                    }
+                if hasattr(f.photo.storage,'custom'):
+                    f.photo.storage.custom[ name ] = tagdata
+                else:
+                    f.photo.storage.custom = { name : tagdata }
 
-                    f.photo_dimensions = '%s x %s'%(f.photo.width, f.photo.height)
-                    f.photo_size = f.photo.size
-                    f.filename = f.photo.name
-                    f.year = CURRENT_YEAR
-                portfolio1.save()
-            else:
-                ctxt['portfolio1'] = portfolio1
+                f.photo_dimensions = '%s x %s'%(f.photo.width, f.photo.height)
+                f.photo_size = f.photo.size
+                f.filename = f.photo.name
+                f.year = CURRENT_YEAR
+            portfolio1.save()
+        else:
+            ctxt['portfolio1'] = portfolio1
 
-        if 'description2' in request.POST:
-            description_form2 = ProjectDescription(request.POST)
+
+        if '2-title' in request.POST:
+            description_form2 = ProjectDescription(request.POST,prefix='2')
             if description_form2.is_valid():
                 title2 = description_form2.cleaned_data['title']
                 description2 = description_form2.cleaned_data['description']
@@ -290,13 +289,11 @@ class GetPortfolios(LoginRequiredMixin, View):
                 request.user.project_description_two = description2
                 request.user.save()
             else:
-                ctxt['description_form2'] = ProjectDescription(initial={'title': request.user.project_title_two,'description': request.user.project_description_two})
+                ctxt['description_form2'] = ProjectDescription(prefix='2',initial={'title': request.user.project_title_two,'description': request.user.project_description_two})
 
 
 
-        if 'portfolio2' in request.POST:
-            description2 = ProjectDescription(request.POST)
-            portfolio2 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P2'))
+            portfolio2 = EntryInlineFormSet(request.POST, request.FILES, prefix='2', instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P2'))
             if portfolio2.is_valid():
                 myformset = portfolio2.save(commit=False)
                 for f in myformset:
@@ -316,10 +313,11 @@ class GetPortfolios(LoginRequiredMixin, View):
                     f.photo_size = f.photo.size
                     f.filename = f.photo.name
                     f.year = CURRENT_YEAR
-                    
+
                 portfolio2.save()
             else:
                 ctxt['portfolio2'] = portfolio2
+
         ctxt['payment_plan_portfolios'] = int(json.loads(self.request.user.payment_plan)['portfolios'])
 
         ctxt['ENTRIES_CLOSED'] = ENTRIES_CLOSED
