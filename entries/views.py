@@ -41,8 +41,10 @@ class ValidateImagesModelFormset(BaseInlineFormSet):
                     long_edge = w
                 else:
                     long_edge = h
-                if long_edge <1600:
-                    f.add_error('photo','The long side of the image is %i pixels. We recommend 2048.' % long_edge)
+                if long_edge <3000:
+                    f.add_error('photo','The long side of the image is %i pixels. The minimum is 3000.' % long_edge)
+                if long_edge >4000:
+                    f.add_error('photo','The long side of the image is %i pixels. The maximum is 4000.' % long_edge)
 
 class ValidateRawsModelFormset(BaseInlineFormSet):
     def clean(self):
