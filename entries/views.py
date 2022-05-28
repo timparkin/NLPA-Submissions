@@ -429,7 +429,7 @@ class ConfirmationEmail(LoginRequiredMixin, View):
         project_two_entries_perfect = 0
         project_two_entries_acceptable = 0
         project_two_entries_too_small = 0
-        for entry in project_entries_one:
+        for entry in project_entries_two:
             if 'x' in entry.photo_dimensions:
                 wtext,htext = entry.photo_dimensions.split(' x ')
                 w = int(wtext)
