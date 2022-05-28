@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% load active_link_tags %}
+{% load filter_extras %}
 {% block extra_menu_item %}
 {% if ENTRIES_CLOSED %}
 <li class="nav-item"><a class="nav-link {% active_link 'secondround' %}" href="/secondround">
@@ -67,7 +68,7 @@
     {% endif %}
     {% endif %}
 
-{% load filter_extras %}
+
     <div class="card-body p-0 overflow-hidden">
       <div class="row g-0">
 
