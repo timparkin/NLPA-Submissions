@@ -36,12 +36,272 @@
     </div>
     {% endif %}
 
-    <h2>Confirmation Email</h2>
+    <h2>Entry Checkup</h2>
 
+
+    {% if email_sent %}
     <p>We have sent a confirmation email to {{email}}</p>
+    {% endif %}
+
+    <p>This page lets you know if there are any problems with your entries. Please use the "Single images" and "Projects" link on the left hand menu to change or add images in order to fix any errors</p>
+
+    {% if entries_complete  %}
+    <p><strong>Entries: You have a full set of entries submitted. {% if entries_size_error != 0 %}({{entries_size_error}} are incorrectly sized ){% endif %}</strong></p>
+    {% else %}
+    <p><strong style="color: #800000">Entries: You have uploaded {{num_entries}} out of your purchased {{ entries_plan}} entries. {% if entries_size_error != 0 %}({{entries_size_error}} are incorrectly sized ){% endif %}</strong></p>
+    {% endif %}
+
+    {% if portfolios_plan >= 1  %}
+    {% if project_one_complete  %}
+    <p><strong>Project One: You have enough images submitted. {% if project_one_entries_size_error != 0 %}({{project_one_entries_size_error}} are incorrectly sized ){% endif %}</strong></p>
+    {% else %}
+    <p><strong style="color: #800000">Project One: You have uploaded {{num_portfolio_one}} out of your minimum 6 entries.  {% if project_one_entries_size_error != 0 %}({{project_one_entries_size_error}} are incorrectly sized ){% endif %}</strong></p>
+    {% endif %}
+    {% endif %}
+
+    {% if portfolios_plan >= 2  %}
+    {% if project_two_complete  %}
+    <p><strong>Project Two: You have enough images submitted. {% if project_one_entries_size_error != 0 %}({{project_one_entries_size_error}} are incorrectly sized ){% endif %}</strong></p>
+    {% else %}
+    <p><strong style="color: #800000">Project Two: You have uploaded {{num_portfolio_two}} out of your minimum 6 entries. {% if project_two_entries_size_error != 0 %}({{project_two_entries_size_error}} are incorrectly sized ){% endif %}</strong></p>
+    {% endif %}
+    {% endif %}
+
+{% load filter_extras %}
+    <div class="card-body p-0 overflow-hidden">
+      <div class="row g-0">
+
+        <h3>Entries</h3>
+        {% if entries_complete  %}
+        <p><strong>You have a full set of entries submitted</strong></p>
+        {% else %}
+        <p><strong>You have uploaded {{num_entries}} out of your purchased {{ entries_plan}} entries.</strong></p>
+        {% endif %}
+
+
+
+        <p>Out of these entries: </p>
+        <ul>
+          {%if entries_perfect > 0 %}
+          <li style="color: #003300">{{entries_perfect|isare}} the recommended size of 4000px on the long edge</li>
+          {%endif%}
+          {%if entries_acceptable > 0 %}
+          <li style="color: #d0730d">{{entries_acceptable|isare}} above 3000px on the long edge and hence acceptable</li>
+          {%endif%}
+          {%if entries_exceed_max > 0 %}
+          <li style="color: #800000">{{entries_exceed_max|isare}} above the 4000px max size</li>
+          {%endif%}
+          {%if entries_too_small > 0 %}
+          <li style="color: #800000">{{entries_too_small|isare}} below the minumum 3000px</li>
+          {%endif%}
+        </ul>
+
+    {% for entry in entries %}
+
+    <div class="col-12 p-card{% cycle '' ' bg-100' %}">
+      <div class="row">
+        <div class="col-sm-3 col-md-2">
+          <div class="position-relative h-sm-100">
+
+            <a class="d-block h-100" href="/media/{{ entry.photo.value }}">
+              <img class="img-fluid  absolute-sm-centered" src="/media/{{ entry.photo }}" alt="" />
+            </a>
+
+          </div>
+        </div>
+        <div class="col-sm-9 col-md-10">
+          <div class="row">
+            <div class="col-lg-12 d-flex justify-content-between flex-column">
+
+
+    <h5 class="mt-3 mt-sm-0">Image {{forloop.counter}}</h5><em class="text-muted"><span style="display:inline-block;width: 100px; font-style: normal" class="font-weight-bold font-weight-normal">Filename:</span> {{entry.filename|limit_length_tooltip}}</em>
+
+    <span><span style="display:inline-block;width: 100px" class="font-weight-bold">Dimensions:</span> {{entry.photo_dimensions}} {{ entry.photo_dimensions|is_big_enough }}</span>
+    <span><span style="display:inline-block;width: 100px;" class="font-weight-bold">Filesize:</span> {{entry.photo_size|filesizeformat}} </span>
+    <span><span style="display:inline-block;width: 100px;" class="font-weight-bold">Category:</span> {{category_text_map|get_item:entry.category}} </span>
+
+
+    <div class="my-2">
+
+
+
+      <span style="display:block; margin-bottom:0.8rem"></span>
+      {% if forloop.last %}
+         </div>
+      {% endif %}
+
+
+
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+          {% endfor %}
+
+
+
+
+<h3>Project One</h3>
+
+{% if project_one_complete  %}
+<p><strong>You have enough images submitted for this project.</strong></p>
+{% else %}
+<p><strong>You have uploaded {{num_portfolio_one}} of the minimum 6 entries.</strong></p>
+{% endif %}
+
+
+
+<p>Out of these entries: </p>
+<ul>
+  {%if project_one_entries_perfect > 0 %}
+  <li style="color: #003300">{{project_one_entries_perfect|isare}} the recommended size of 4000px on the long edge</li>
+  {%endif%}
+  {%if project_one_entries_acceptable > 0 %}
+  <li style="color: #d0730d">{{project_one_entries_acceptable|isare}} above 3000px on the long edge but not the recommended 4000px</li>
+  {%endif%}
+  {%if project_one_entries_exceed_max > 0 %}
+  <li style="color: #800000">{{project_one_entries_exceed_max|isare}} above the 4000px max size</li>
+  {%endif%}
+  {%if project_one_entries_too_small > 0 %}
+  <li style="color: #800000">{{project_one_entries_too_small|isare}} below the minumum 3000px</li>
+  {%endif%}
+</ul>
+
+
+<h3>{{project_title_one}}</h3>
+<p>{{project_description_one}}</p>
+
+
+
+
+{% for entry in project_entries_one %}
+
+<div class="col-12 p-card{% cycle '' ' bg-100' %}">
+  <div class="row">
+    <div class="col-sm-3 col-md-2">
+      <div class="position-relative h-sm-100">
+
+        <a class="d-block h-100" href="/media/{{ entry.photo.value }}">
+          <img class="img-fluid  absolute-sm-centered" src="/media/{{ entry.photo }}" alt="" />
+        </a>
+
+      </div>
+    </div>
+    <div class="col-sm-9 col-md-10">
+      <div class="row">
+        <div class="col-lg-12 d-flex justify-content-between flex-column">
+
+
+<h5 class="mt-3 mt-sm-0">Image {{forloop.counter}}</h5><em class="text-muted"><span style="display:inline-block;width: 100px; font-style: normal" class="font-weight-bold font-weight-normal">Filename:</span> {{entry.filename|limit_length_tooltip}}</em>
+
+<span><span style="display:inline-block;width: 100px" class="font-weight-bold">Dimensions:</span> {{entry.photo_dimensions}} {{ entry.photo_dimensions|is_big_enough }}</span>
+<span><span style="display:inline-block;width: 100px;" class="font-weight-bold">Filesize:</span> {{entry.photo_size|filesizeformat}} </span>
+
+
+<div class="my-2">
+
+
+
+  <span style="display:block; margin-bottom:0.8rem"></span>
+  {% if forloop.last %}
+     </div>
+  {% endif %}
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      {% endfor %}
+
+
+      <h3>Project Two</h3>
+
+      {% if project_two_complete  %}
+      <p><strong>You have enough images submitted for this project.</strong></p>
+      {% else %}
+      <p><strong>You have uploaded {{num_portfolio_two}} of the minimum 6 entries.</strong></p>
+      {% endif %}
+
+
+
+      <p>Out of these entries: </p>
+      <ul>
+        {%if project_two_entries_perfect > 0 %}
+        <li style="color: #003300">{{project_two_entries_perfect|isare}} the recommended size of 4000px on the long edge</li>
+        {%endif%}
+        {%if project_two_entries_acceptable > 0 %}
+        <li style="color: #d0730d">{{project_two_entries_acceptable|isare}} above 3000px on the long edge but not the recommended 4000px</li>
+        {%endif%}
+        {%if project_two_entries_exceed_max > 0 %}
+        <li style="color: #800000">{{project_two_entries_exceed_max|isare}} above the 4000px max size</li>
+        {%endif%}
+        {%if project_two_entries_too_small > 0 %}
+        <li style="color: #800000">{{project_two_entries_too_small|isare}} below the minumum 3000px</li>
+        {%endif%}
+      </ul>
+
+      <h3>{{project_title_two}}</h3>
+      <p>{{project_description_two}}</p>
+
+
+
+
+      {% for entry in project_entries_two %}
+
+      <div class="col-12 p-card{% cycle '' ' bg-100' %}">
+        <div class="row">
+          <div class="col-sm-3 col-md-2">
+            <div class="position-relative h-sm-100">
+
+              <a class="d-block h-100" href="/media/{{ entry.photo.value }}">
+                <img class="img-fluid  absolute-sm-centered" src="/media/{{ entry.photo }}" alt="" />
+              </a>
+
+            </div>
+          </div>
+          <div class="col-sm-9 col-md-10">
+            <div class="row">
+              <div class="col-lg-12 d-flex justify-content-between flex-column">
+
+
+      <h5 class="mt-3 mt-sm-0">Image {{forloop.counter}}</h5><em class="text-muted"><span style="display:inline-block;width: 100px; font-style: normal" class="font-weight-bold font-weight-normal">Filename:</span> {{entry.filename|limit_length_tooltip}}</em>
+
+      <span><span style="display:inline-block;width: 100px" class="font-weight-bold">Dimensions:</span> {{entry.photo_dimensions}} {{ entry.photo_dimensions|is_big_enough }}</span>
+      <span><span style="display:inline-block;width: 100px;" class="font-weight-bold">Filesize:</span> {{entry.photo_size|filesizeformat}} </span>
+
+
+      <div class="my-2">
+
+
+
+        <span style="display:block; margin-bottom:0.8rem"></span>
+        {% if forloop.last %}
+           </div>
+        {% endif %}
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+            {% endfor %}
+
+
+
+
+</div>
+</div>
+
 
   </div>
-</div>
+
 
 
 

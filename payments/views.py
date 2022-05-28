@@ -295,6 +295,14 @@ def success(request):
 
     request.user.save()
 
+
+    user_dict = {
+    'email': request.user.email,
+    'name': '%s %s'%(request.user.first_name,request.user.last_name)
+    }
+
+    welcome.send_email(user_dict)
+
     request.session['nextpage'] = 'entries'
 
     return render(request, 'success.html')
