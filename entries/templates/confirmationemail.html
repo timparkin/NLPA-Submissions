@@ -46,14 +46,14 @@
     <p>This page lets you know if there are any problems with your entries. Please use the "Single images" and "Projects" link on the left hand menu to change or add images in order to fix any errors</p>
 
     {% if entries_complete  %}
-    <p><strong>Entries: You have a full set of entries submitted. {% if entries_size_error != 0 %}({{entries_size_error}} are incorrectly sized ){% endif %}</strong></p>
+    <p><strong>Entries: You have a full set of entries submitted. {% if entries_size_error != 0 %}({{entries_size_error|isare}} incorrectly sized ){% endif %}</strong></p>
     {% else %}
     <p><strong style="color: #800000">Entries: You have uploaded {{num_entries}} out of your purchased {{ entries_plan}} entries. {% if entries_size_error != 0 %}({{entries_size_error}} are incorrectly sized ){% endif %}</strong></p>
     {% endif %}
 
     {% if portfolios_plan >= 1  %}
     {% if project_one_complete  %}
-    <p><strong>Project One: You have enough images submitted. {% if project_one_entries_size_error != 0 %}({{project_one_entries_size_error}} are incorrectly sized ){% endif %}</strong></p>
+    <p><strong>Project One: You have enough images submitted. {% if project_one_entries_size_error != 0 %}({{project_one_entries_size_error|isare}} incorrectly sized ){% endif %}</strong></p>
     {% else %}
     <p><strong style="color: #800000">Project One: You have uploaded {{num_portfolio_one}} out of your minimum 6 entries.  {% if project_one_entries_size_error != 0 %}({{project_one_entries_size_error}} are incorrectly sized ){% endif %}</strong></p>
     {% endif %}
@@ -61,7 +61,7 @@
 
     {% if portfolios_plan >= 2  %}
     {% if project_two_complete  %}
-    <p><strong>Project Two: You have enough images submitted. {% if project_one_entries_size_error != 0 %}({{project_one_entries_size_error}} are incorrectly sized ){% endif %}</strong></p>
+    <p><strong>Project Two: You have enough images submitted. {% if project_one_entries_size_error != 0 %}({{project_one_entries_size_error|isare}} incorrectly sized ){% endif %}</strong></p>
     {% else %}
     <p><strong style="color: #800000">Project Two: You have uploaded {{num_portfolio_two}} out of your minimum 6 entries. {% if project_two_entries_size_error != 0 %}({{project_two_entries_size_error}} are incorrectly sized ){% endif %}</strong></p>
     {% endif %}
