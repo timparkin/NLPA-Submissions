@@ -16,6 +16,8 @@ import glob
 
 from jinja2 import Template
 
+from nlpa.settings.config import EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_PORT
+
 
 # Files Needed
 #  - cert-email-template.html
@@ -43,7 +45,7 @@ def send_email(data):
     # Create an instance of MIMEMultipart object, pass 'related' as the constructor parameter.
     msgRoot = MIMEMultipart('related')
     # Set the email subject.
-    msgRoot['Subject'] = 'Results for {} from the Natural Landscape Photography Awards'.format(name)
+    msgRoot['Subject'] = 'Welcome to the Natural Landscape Photography Awards'.format(name)
     # Set the email from email address.
     msgRoot['From'] = strFrom
     # Set the email to email address.
@@ -148,12 +150,12 @@ def send_email(data):
     # Create an smtplib.SMTP object to send the email.
     smtp = smtplib.SMTP()
     # Connect to the SMTP server.
-    smtp.connect('smtp.mandrillapp.com',587)
+    smtp.connect(EMAIL_HOST,EMAIL_PORT)
     # Login to the SMTP server with username and password.
-    smtp.login('onlandscape', '5fsiQVBElAkYtbcbFmXx1g')
+    smtp.login(EMAIL_HOST_USER , EMAIL_HOST_PASSWORD)
     # Send email with the smtp object sendmail method.
 
     smtp.sendmail(strFrom, strTo, msgRoot.as_string())
     # Quit the SMTP server after sending the email.
-    print('sending')
+    print('sending to %s'%tdata['email'])
     smtp.quit()

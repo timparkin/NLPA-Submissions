@@ -12,6 +12,8 @@ from userauth.models import CustomUser as User
 import logging
 from nlpa.settings.config import entry_products, portfolio_products, GOOGLEANALYTICS, ENTRIES_CLOSED
 
+from . import welcome
+
 logger = logging.getLogger(__name__)
 
 
