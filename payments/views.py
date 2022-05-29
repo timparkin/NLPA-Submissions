@@ -12,6 +12,8 @@ from userauth.models import CustomUser as User
 import logging
 from nlpa.settings.config import entry_products, portfolio_products, GOOGLEANALYTICS, ENTRIES_CLOSED
 
+from . import welcome
+
 logger = logging.getLogger(__name__)
 
 
@@ -294,6 +296,14 @@ def success(request):
             request.user.payment_plan = request.user.payment_upgrade_plan
 
     request.user.save()
+
+
+    user_dict = {
+    'email': request.user.email,
+    'name': '%s %s'%(request.user.first_name,request.user.last_name)
+    }
+
+    welcome.send_email(user_dict)
 
     request.session['nextpage'] = 'entries'
 

@@ -5,7 +5,7 @@ from django.http.response import JsonResponse, HttpResponse, HttpResponseRedirec
 from django.shortcuts import render
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.views.decorators.csrf import csrf_exempt
 
 from django.forms.models import inlineformset_factory
 from django.utils.safestring import mark_safe
@@ -25,6 +25,8 @@ from django.core.exceptions import ValidationError
 from django.core.files.images import get_image_dimensions
 from nlpa.settings.config import entry_products, portfolio_products, ENTRIES_CLOSED, CURRENT_YEAR
 
+from . import confirmation
+
 class ValidateImagesModelFormset(BaseInlineFormSet):
     def clean(self):
         super().clean()
@@ -41,8 +43,10 @@ class ValidateImagesModelFormset(BaseInlineFormSet):
                     long_edge = w
                 else:
                     long_edge = h
-                if long_edge <1600:
-                    f.add_error('photo','The long side of the image is %i pixels. We recommend 2048.' % long_edge)
+                if long_edge <3000:
+                    f.add_error('photo','The long side of the image is %i pixels. The minimum is 3000.' % long_edge)
+                if long_edge >4000:
+                    f.add_error('photo','The long side of the image is %i pixels. The maximum is 4000.' % long_edge)
 
 class ValidateRawsModelFormset(BaseInlineFormSet):
     def clean(self):
@@ -209,11 +213,11 @@ class GetPortfolios(LoginRequiredMixin, View):
         if ENTRIES_CLOSED:
             return HttpResponseRedirect('/secondround')
 
-        ctxt['portfolio1'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P1'))
-        ctxt['portfolio2'] = EntryInlineFormSet(instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P2'))
+        ctxt['portfolio1'] = EntryInlineFormSet(prefix='1',instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P1'))
+        ctxt['portfolio2'] = EntryInlineFormSet(prefix='2',instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P2'))
 
-        ctxt['description_form1'] = ProjectDescription(initial={'title': request.user.project_title_one,'description': request.user.project_description_one})
-        ctxt['description_form2'] = ProjectDescription(initial={'title': request.user.project_title_two,'description': request.user.project_description_two})
+        ctxt['description_form1'] = ProjectDescription(prefix='1',initial={'title': request.user.project_title_one,'description': request.user.project_description_one})
+        ctxt['description_form2'] = ProjectDescription(prefix='2',initial={'title': request.user.project_title_two,'description': request.user.project_description_two})
         ctxt['payment_plan_portfolios'] = int(json.loads(self.request.user.payment_plan)['portfolios'])
         ctxt['ENTRIES_CLOSED'] = ENTRIES_CLOSED
 
@@ -242,47 +246,46 @@ class GetPortfolios(LoginRequiredMixin, View):
             return HttpResponseRedirect('/secondround')
 
 
-        if 'description1' in request.POST:
-            description_form1 = ProjectDescription(request.POST)
-            if description_form1.is_valid():
-                title1 = description_form1.cleaned_data['title']
-                description1 = description_form1.cleaned_data['description']
-                request.user.project_title_one = title1
-                request.user.project_description_one = description1
-                request.user.save()
-            else:
-                ctxt['description_form1'] = ProjectDescription(initial={'title': request.user.project_title_one,'description': request.user.project_description_one})
+        description_form1 = ProjectDescription(request.POST,prefix='1')
+        if description_form1.is_valid():
+            title1 = description_form1.cleaned_data['title']
+            description1 = description_form1.cleaned_data['description']
+            request.user.project_title_one = title1
+            request.user.project_description_one = description1
+            request.user.save()
+        else:
+            ctxt['description_form1'] = ProjectDescription(prefix='1',initial={'title': request.user.project_title_one,'description': request.user.project_description_one})
 
 
 
-        if 'portfolio1' in request.POST:
-            portfolio1 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P1'))
-            if portfolio1.is_valid():
-                myformset = portfolio1.save(commit=False)
-                for f in myformset:
-                    f.category = 'P1'
-                    name = f.photo.name
-                    tagdata = {
-                        'filename': name,
-                        'user_email': request.user.email,
-                        'category': f.category,
-                        'is_young_entrant': request.user.is_young_entrant
-                        }
-                    if hasattr(f.photo.storage,'custom'):
-                        f.photo.storage.custom[ name ] = tagdata
-                    else:
-                        f.photo.storage.custom = { name : tagdata }
+        portfolio1 = EntryInlineFormSet(request.POST, request.FILES, prefix='1', instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P1'))
+        if portfolio1.is_valid():
+            myformset = portfolio1.save(commit=False)
+            for f in myformset:
+                f.category = 'P1'
+                name = f.photo.name
+                tagdata = {
+                    'filename': name,
+                    'user_email': request.user.email,
+                    'category': f.category,
+                    'is_young_entrant': request.user.is_young_entrant
+                    }
+                if hasattr(f.photo.storage,'custom'):
+                    f.photo.storage.custom[ name ] = tagdata
+                else:
+                    f.photo.storage.custom = { name : tagdata }
 
-                    f.photo_dimensions = '%s x %s'%(f.photo.width, f.photo.height)
-                    f.photo_size = f.photo.size
-                    f.filename = f.photo.name
-                    f.year = CURRENT_YEAR
-                portfolio1.save()
-            else:
-                ctxt['portfolio1'] = portfolio1
+                f.photo_dimensions = '%s x %s'%(f.photo.width, f.photo.height)
+                f.photo_size = f.photo.size
+                f.filename = f.photo.name
+                f.year = CURRENT_YEAR
+            portfolio1.save()
+        else:
+            ctxt['portfolio1'] = portfolio1
 
-        if 'description2' in request.POST:
-            description_form2 = ProjectDescription(request.POST)
+
+        if '2-title' in request.POST:
+            description_form2 = ProjectDescription(request.POST,prefix='2')
             if description_form2.is_valid():
                 title2 = description_form2.cleaned_data['title']
                 description2 = description_form2.cleaned_data['description']
@@ -290,13 +293,11 @@ class GetPortfolios(LoginRequiredMixin, View):
                 request.user.project_description_two = description2
                 request.user.save()
             else:
-                ctxt['description_form2'] = ProjectDescription(initial={'title': request.user.project_title_two,'description': request.user.project_description_two})
+                ctxt['description_form2'] = ProjectDescription(prefix='2',initial={'title': request.user.project_title_two,'description': request.user.project_description_two})
 
 
 
-        if 'portfolio2' in request.POST:
-            description2 = ProjectDescription(request.POST)
-            portfolio2 = EntryInlineFormSet(request.POST, request.FILES, instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P2'))
+            portfolio2 = EntryInlineFormSet(request.POST, request.FILES, prefix='2', instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P2'))
             if portfolio2.is_valid():
                 myformset = portfolio2.save(commit=False)
                 for f in myformset:
@@ -316,10 +317,11 @@ class GetPortfolios(LoginRequiredMixin, View):
                     f.photo_size = f.photo.size
                     f.filename = f.photo.name
                     f.year = CURRENT_YEAR
-                    
+
                 portfolio2.save()
             else:
                 ctxt['portfolio2'] = portfolio2
+
         ctxt['payment_plan_portfolios'] = int(json.loads(self.request.user.payment_plan)['portfolios'])
 
         ctxt['ENTRIES_CLOSED'] = ENTRIES_CLOSED
@@ -347,6 +349,153 @@ class ConfirmationEmail(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         ctxt = {}
+        user = request.user
+        payment_plan = json.loads(user.payment_plan)
+        entries_plan = int(payment_plan['entries'])
+        portfolios_plan = int(payment_plan['portfolios'])
+        plantext = "Your current plan is "
+        if entries_plan >0:
+            if entries_plan == 1:
+                plantext += "%s single entry"%entries_plan
+            else:
+                plantext += "%s single entries"%entries_plan
+        if portfolios_plan>0:
+            if entries_plan >0:
+                plantext += " and "
+            if portfolios_plan == 1:
+                plantext += "%s project entry"%portfolios_plan
+            else:
+                plantext += "%s project entries"%portfolios_plan
+
+        entries = request.user.entry_set.filter( year=CURRENT_YEAR, category__in=category_list )
+        num_entries = len(entries)
+        project_entries_one = request.user.entry_set.filter( year=CURRENT_YEAR, category='P1' )
+        num_portfolio_one = len(project_entries_one)
+        project_entries_two = request.user.entry_set.filter( year=CURRENT_YEAR, category='P2' )
+        num_portfolio_two = len(project_entries_two)
+
+
+        entries_complete = (num_entries == entries_plan)
+
+        if portfolios_plan >= 1:
+            project_one_complete = (num_portfolio_one >= 6)
+        else:
+            project_one_complete = None
+
+        if portfolios_plan >= 2:
+            project_two_complete = (num_portfolio_two >= 6)
+        else:
+            project_two_complete = None
+
+        entries_exceed_max = 0
+        entries_perfect = 0
+        entries_acceptable = 0
+        entries_too_small = 0
+        for entry in entries:
+            print(entry.photo_dimensions)
+            if 'x' in entry.photo_dimensions:
+                wtext,htext = entry.photo_dimensions.split(' x ')
+                w = int(wtext)
+                h = int(htext)
+            if w>4000 or h>4000:
+                entries_exceed_max +=1
+            elif (w==4000 and h<=4000) or (w<=4000 and h==4000):
+                entries_perfect +=1
+            elif w>=3000 or h>=3000:
+                entries_acceptable +=1
+            else:
+                entries_too_small +=1
+
+
+        project_one_entries_exceed_max = 0
+        project_one_entries_perfect = 0
+        project_one_entries_acceptable = 0
+        project_one_entries_too_small = 0
+        for entry in project_entries_one:
+            if 'x' in entry.photo_dimensions:
+                wtext,htext = entry.photo_dimensions.split(' x ')
+                w = int(wtext)
+                h = int(htext)
+            if w>4000 or h>4000:
+                project_one_entries_exceed_max +=1
+            elif (w==4000 and h<=4000) or (w<=4000 and h==4000):
+                project_one_entries_perfect +=1
+            elif w>=3000 or h>=3000:
+                project_one_entries_acceptable +=1
+            else:
+                project_one_entries_too_small +=1
+
+        project_two_entries_exceed_max = 0
+        project_two_entries_perfect = 0
+        project_two_entries_acceptable = 0
+        project_two_entries_too_small = 0
+        for entry in project_entries_two:
+            if 'x' in entry.photo_dimensions:
+                wtext,htext = entry.photo_dimensions.split(' x ')
+                w = int(wtext)
+                h = int(htext)
+            if w>4000 or h>4000:
+                project_two_entries_exceed_max +=1
+            elif (w==4000 and h<=4000) or (w<=4000 and h==4000):
+                project_two_entries_perfect +=1
+            elif w>=3000 or h>=3000:
+                project_two_entries_acceptable +=1
+            else:
+                project_two_entries_too_small +=1
+
+        category_text_map = {}
+        for e in entries_categories:
+            category_text_map[e[0]] = e[1]
+
+
+
+        ctxt.update({
+            'name': '%s %s'%(user.first_name,user.last_name),
+            'id': user.id,
+            'email': user.email,
+            'username': user.username,
+            'payment_status': user.payment_status,
+            'payment_plan': user.payment_plan,
+            'plantext': plantext,
+            'entries_plan': entries_plan,
+            'portfolios_plan': portfolios_plan,
+            'project_title_one': user.project_title_one,
+            'project_description_one': user.project_description_one,
+            'project_title_two': user.project_title_two,
+            'project_description_two': user.project_description_two,
+            'entries': entries,
+            'project_entries_one': project_entries_one,
+            'project_entries_two': project_entries_two,
+            'num_entries': num_entries,
+            'num_portfolio_one': num_portfolio_one,
+            'num_portfolio_two': num_portfolio_two,
+
+            'entries_exceed_max': entries_exceed_max,
+            'entries_perfect': entries_perfect,
+            'entries_acceptable': entries_acceptable,
+            'entries_too_small': entries_too_small,
+
+            'project_one_complete': project_one_complete,
+            'project_two_complete': project_two_complete,
+            'project_one_entries_exceed_max': project_one_entries_exceed_max,
+            'project_one_entries_perfect': project_one_entries_perfect,
+            'project_one_entries_acceptable': project_one_entries_acceptable,
+            'project_one_entries_too_small': project_one_entries_too_small,
+            'project_two_entries_exceed_max': project_two_entries_exceed_max,
+            'project_two_entries_perfect': project_two_entries_perfect,
+            'project_two_entries_acceptable': project_two_entries_acceptable,
+            'project_two_entries_too_small': project_two_entries_too_small,
+
+            'entries_size_error': entries_exceed_max+entries_too_small,
+            'project_one_entries_size_error': project_one_entries_exceed_max+project_one_entries_too_small,
+            'project_two_entries_size_error': project_two_entries_exceed_max+project_two_entries_too_small,
+
+            'category_text_map': category_text_map,
+        })
+
+
+
+
         return render(request, self.template_name, self.get_context_data(**ctxt))
 
     def post(self, request, *args, **kwargs):
@@ -380,10 +529,10 @@ class ConfirmationEmail(LoginRequiredMixin, View):
             'project_description_one': user.project_description_one,
             'project_title_two': user.project_title_two,
             'project_description_two': user.project_description_two,
-            'entries': user.entry_set.all()
+            'entries': user.entry_set.filter( year=CURRENT_YEAR, category__in=category_list )
         }
 
-
+        confirmation.send_email(user_dict)
 
         return HttpResponseRedirect('/confirmationemail/')
 

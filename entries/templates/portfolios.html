@@ -32,24 +32,22 @@
 <p>You can upload/replace images up until the 31st August. You do not need to upload all your entries at once. Files will be automatically renamed for anonymity after final submission. Individual image titles are not required. Use the update button to store any changes. Projects must have a minimum of 6 images and a maximum of 10.</p>
 <p>Project descriptions should concisely explain the project’s intentions (150 words max).</p>
 <p>If you're having trouble uploading all the images at once, please try one at a time</p>
+<p>Don't forget, we recommend 4000px on the long side for your images and a minimum of 3000px.</p>
 <p>Check the <a href="https://naturallandscapeawards.com/submissions/">Submission Requirements</a> and <a href="https://naturallandscapeawards.com/rules/">Rules</a>.</p>
 {% load filter_extras %}
 
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"></script>
 
+<form action="/portfolios/" method="post" enctype="multipart/form-data" style="display:block;">
+
 
 {% if payment_plan_portfolios > 0 %}
  <h3>Project One</h3>
 
-<form action="/portfolios/" method="post" enctype="multipart/form-data" style="display:block;">
     {% csrf_token %}
     {{ description_form1|crispy }}
-    <input type="hidden" name="description1" value="true" />
-    <input type="submit" value="Save Description" class="btn btn-outline-primary btn-lg mt-3">
-</form>
 <h4 class="mt-3">Project Images</h4>
 
-<form action="/portfolios/" method="post" enctype="multipart/form-data" style="display:block;">
     {% csrf_token %}
     {{ portfolio1.management_form }}
     {{ portfolio1.non_form_errors.as_ul }}
@@ -128,28 +126,21 @@
       </div>
     </div>
     {% endfor %}
-    <input type="hidden" name="portfolio1" value="true" />
-    <input type="submit" value="Update" class="btn btn-outline-primary btn-lg mt-3">
   </div>
 </div>
-</form>
+
 
 
 
 
 {% endif %}
 {% if payment_plan_portfolios > 1 %}
- <h3 class="mt-5">Projecet Two</h3>
+ <h3 class="mt-5">Project Two</h3>
 
- <form action="/portfolios/" method="post" enctype="multipart/form-data" style="display:block;">
      {% csrf_token %}
      {{ description_form2|crispy }}
-     <input type="hidden" name="description2" value="true" />
-     <input type="submit" value="Save Description" class="btn btn-outline-primary btn-lg mt-3">
- </form>
  <h4 class="mt-3">Project Images</h4>
 
-<form action="/portfolios/" method="post" enctype="multipart/form-data" style="display:block;">
     {% csrf_token %}
     {{ portfolio2.management_form }}
     {{ portfolio2.non_form_errors.as_ul }}
@@ -227,13 +218,12 @@
       </div>
     </div>
     {% endfor %}
-    <input type="hidden" name="portfolio2" value="true" />
-    <input type="submit" value="Update" class="btn btn-outline-primary btn-lg mt-3">
-    <p class="fs--1 text-center">Pressing UPDATE ensures we have the latest version of your files, there is no SUBMIT button</p>
   </div>
 </div>
-</form>
 {% endif %}
+<input type="submit" value="Update" class="btn btn-outline-primary btn-lg mt-3">
+<p class="fs--1 text-center">Pressing UPDATE ensures we have the latest version of your files, there is no SUBMIT button</p>
+</form>
 
 
 </div>
