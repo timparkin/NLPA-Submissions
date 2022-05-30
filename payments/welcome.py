@@ -62,7 +62,8 @@ def send_email(data):
 
 
     # Create a MIMEText object to contains the email Html content. There is also an image in the Html content. The image cid is image1.
-    html_email = Template(open('payments/welcome.html').read())
+    #html_email = Template(open('payments/welcome.html').read())
+    html_email = Template(open('/var/www/submit.naturallandscapeawards.com/NLPA-Submissions/payments/welcome.html').read())
 
 
 
@@ -99,7 +100,7 @@ def send_email(data):
         }
 
     # Create a MIMEText object, this object contains the plain text content.
-    txt_email = open('payments/welcome.txt').read()
+    txt_email = open('/var/www/submit.naturallandscapeawards.com/NLPA-Submissions/payments/welcome.txt').read()
     txt_email = Template(txt_email)
 
     msgText = MIMEText(txt_email.render(**tdata))
@@ -109,7 +110,7 @@ def send_email(data):
 
     # ADDING EMBEDDED IMAGES!!!
     # Open a file object to read the image file, the image file is located in the file path it provide.
-    target_filename = "payments/nlpa-logo.png"
+    target_filename = "/var/www/submit.naturallandscapeawards.com/NLPA-Submissions/payments/nlpa-logo.png"
     fp = open(target_filename, 'rb')
     # Create a MIMEImage object with the above file object.
     msgImage = MIMEImage(fp.read())
