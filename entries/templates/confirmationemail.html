@@ -145,6 +145,7 @@
 
 
 
+{% if portfolios_plan >= 1  %}
 
 <h3>Project One</h3>
 
@@ -219,8 +220,8 @@
       </div>
       </div>
       {% endfor %}
-
-
+{% endif %}
+{% if portfolios_plan >= 2  %}
       <h3>Project Two</h3>
 
       {% if project_two_complete  %}
@@ -293,7 +294,7 @@
             </div>
             </div>
             {% endfor %}
-
+{% endif %}
 
 
 
