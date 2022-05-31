@@ -54,9 +54,9 @@
 
     {% if portfolios_plan >= 1  %}
     {% if project_one_complete  %}
-    <p><strong>Project One: You have enough images submitted. {% if project_one_entries_size_error != 0 %}({{project_one_entries_size_error|isare}} incorrectly sized ){% endif %}</strong></p>
+    <p><strong>Project One: You have enough images submitted. {% if project_one_entries_size_error != 0 %}<span style="color: #600">({{project_one_entries_size_error|isare}} incorrectly sized )</span>{% endif %}</strong></p>
     {% else %}
-    <p><strong style="color: #800000">Project One: You have uploaded {{num_portfolio_one}} out of your minimum 6 entries.  {% if project_one_entries_size_error != 0 %}({{project_one_entries_size_error|isare}} incorrectly sized ){% endif %}</strong></p>
+    <p><strong style="color: #800000">Project One: You have uploaded {{num_portfolio_one}} out of your minimum 6 entries.  {% if project_one_entries_size_error != 0 %}<span style="color: #600">({{project_one_entries_size_error|isare}} incorrectly sized )</span>{% endif %}</strong></p>
     {% endif %}
     {% endif %}
 
@@ -80,8 +80,8 @@
         {% endif %}
 
 
-
-        <p>Out of these entries: </p>
+        {% if num_entries != 0 %}
+        <p>Out of these images: </p>
         <ul>
           {%if entries_perfect > 0 %}
           <li style="color: #003300">{{entries_perfect|isare}} the recommended size of 4000px on the long edge</li>
@@ -96,6 +96,7 @@
           <li style="color: #800000">{{entries_too_small|isare}} below the minumum 3000px</li>
           {%endif%}
         </ul>
+{% endif %}
 
     {% for entry in entries %}
 
@@ -147,17 +148,18 @@
 
 {% if portfolios_plan >= 1  %}
 
-<h3>Project One</h3>
+<h2>Project One Checkup</h2>
 
 {% if project_one_complete  %}
 <p><strong>You have enough images submitted for this project.</strong></p>
 {% else %}
-<p><strong>You have uploaded {{num_portfolio_one}} of the minimum 6 entries.</strong></p>
+<p><strong>You have uploaded {{num_portfolio_one}} of the minimum 6 images.</strong></p>
 {% endif %}
 
 
 
-<p>Out of these entries: </p>
+        {% if num_portfolio_one != 0 %}
+<p>Out of these images: </p>
 <ul>
   {%if project_one_entries_perfect > 0 %}
   <li style="color: #003300">{{project_one_entries_perfect|isare}} the recommended size of 4000px on the long edge</li>
@@ -172,10 +174,18 @@
   <li style="color: #800000">{{project_one_entries_too_small|isare}} below the minumum 3000px</li>
   {%endif%}
 </ul>
+  {%endif%}
 
-
+{% if not project_title_one %}
+<h3 style="color:#800">Project Title Needed</h3>
+{% else %}
 <h3>{{project_title_one}}</h3>
+{% endif %}
+{% if not project_title_one %}
+<p style="color:#800">Project Description Needed</p>
+{% else %}
 <p>{{project_description_one}}</p>
+{% endif %}
 
 
 
@@ -222,16 +232,17 @@
       {% endfor %}
 {% endif %}
 {% if portfolios_plan >= 2  %}
-      <h3>Project Two</h3>
+<h2>Project Two Checkup</h2>
 
       {% if project_two_complete  %}
       <p><strong>You have enough images submitted for this project.</strong></p>
       {% else %}
-      <p><strong>You have uploaded {{num_portfolio_two}} of the minimum 6 entries.</strong></p>
+      <p><strong>You have uploaded {{num_portfolio_two}} of the minimum 6 images.</strong></p>
       {% endif %}
 
 
 
+        {% if num_portfolio_two != 0 %}
       <p>Out of these entries: </p>
       <ul>
         {%if project_two_entries_perfect > 0 %}
@@ -247,10 +258,19 @@
         <li style="color: #800000">{{project_two_entries_too_small|isare}} below the minumum 3000px</li>
         {%endif%}
       </ul>
+        {%endif%}
 
-      <h3>{{project_title_two}}</h3>
-      <p>{{project_description_two}}</p>
 
+{% if not project_title_two %}
+<h3 style="color:#800">Project Title Needed</h3>
+{% else %}
+<h3>{{project_title_two}}</h3>
+{% endif %}
+{% if not project_title_two %}
+<p style="color:#800">Project Description Needed</p>
+{% else %}
+<p>{{project_description_two}}</p>
+{% endif %}
 
 
 
