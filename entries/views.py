@@ -105,7 +105,7 @@ def get_entries(request):
                             Entry,
                             fields=('photo','filename', 'category','photo_size','photo_dimensions'),
 #                            formset=ValidateImagesModelFormset,
-                            can_delete=False,
+                            can_delete=True,
                             max_num=int(payment_plan['entries']),
                             validate_max=True,
                             min_num=int(payment_plan['entries']),
@@ -127,6 +127,8 @@ def get_entries(request):
         if form.is_valid():
             # process the data in form.cleaned_data as required
             myformset = form.save(commit=False)
+            if len(myformset) > int(payment_plan['entries']):
+                raise ValueError("%s entries when payment_plan is %s"%(len(myformset),payment_plan['entries']))
             for f in myformset:
                 name = f.photo.name
                 tagdata = {
@@ -196,7 +198,7 @@ class GetPortfolios(LoginRequiredMixin, View):
         EntryInlineFormSet = inlineformset_factory(User,
                                 Entry,
                                 fields=('photo','filename','photo_size','photo_dimensions'),
-                                can_delete=False,
+                                can_delete=True,
                                 max_num=10,
                                 validate_max=True,
                                 min_num=10,
@@ -231,7 +233,7 @@ class GetPortfolios(LoginRequiredMixin, View):
         EntryInlineFormSet = inlineformset_factory(User,
                                 Entry,
                                 fields=('photo','filename','photo_size','photo_dimensions'),
-                                can_delete=False,
+                                can_delete=True,
                                 max_num=10,
                                 validate_max=True,
                                 min_num=10,
@@ -261,6 +263,9 @@ class GetPortfolios(LoginRequiredMixin, View):
         portfolio1 = EntryInlineFormSet(request.POST, request.FILES, prefix='1', instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P1'))
         if portfolio1.is_valid():
             myformset = portfolio1.save(commit=False)
+            if len(myformset) > 10:
+                raise ValueError("%s entries when project_one max is 10"%(len(myformset)))
+
             for f in myformset:
                 f.category = 'P1'
                 name = f.photo.name
@@ -300,6 +305,9 @@ class GetPortfolios(LoginRequiredMixin, View):
             portfolio2 = EntryInlineFormSet(request.POST, request.FILES, prefix='2', instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P2'))
             if portfolio2.is_valid():
                 myformset = portfolio2.save(commit=False)
+                if len(myformset) > 10:
+                    raise ValueError("%s entries when project_one max is 10"%(len(myformset)))
+
                 for f in myformset:
                     f.category = 'P2'
                     name = f.photo.name
@@ -568,7 +576,7 @@ def get_raws(request):
                                     'evidence_file_5',
                                     'ef5_filename',
                                     ),
-                            can_delete=False,
+                            can_delete=True,
                             #formset = ValidateRawsModelFormset,
                             widgets={
 
