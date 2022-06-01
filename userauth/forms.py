@@ -76,7 +76,7 @@ class SignupForm(forms.Form):
     first_name = forms.CharField(max_length=30)
     last_name = forms.CharField(max_length=30)
     email=forms.EmailField(required=True)
-    website=forms.CharField(max_length=60)
+    website=forms.CharField(max_length=60, required=False)
     facebook=forms.CharField(max_length=60, required=False)
     instagram=forms.CharField(max_length=60, required=False)
     twitter=forms.CharField(max_length=60, required=False)

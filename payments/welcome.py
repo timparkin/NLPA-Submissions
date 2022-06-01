@@ -39,7 +39,7 @@ def send_email(data):
 
 
     strTo = formataddr((data['name'], data['email']))
-    strTo = 'info@timparkin.co.uk'
+    #strTo = 'info@timparkin.co.uk'
     name = data['name']
 
     # Create an instance of MIMEMultipart object, pass 'related' as the constructor parameter.
