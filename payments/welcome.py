@@ -154,8 +154,10 @@ def send_email(data):
     # Login to the SMTP server with username and password.
     smtp.login(EMAIL_HOST_USER , EMAIL_HOST_PASSWORD)
     # Send email with the smtp object sendmail method.
-
-    smtp.sendmail(strFrom, strTo, msgRoot.as_string())
+    try:
+        smtp.sendmail(strFrom, strTo, msgRoot.as_string())
+    except smtplib.SMTPRecipientsRefused:
+        print('failed SMTP to %s'%strTo)
     # Quit the SMTP server after sending the email.
     print('sending to %s'%tdata['email'])
     smtp.quit()
