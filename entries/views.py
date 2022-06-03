@@ -558,6 +558,16 @@ class PreviousYears(LoginRequiredMixin, View):
         return kwargs
 
     def get(self, request, *args, **kwargs):
+
+        category_list = ['GL', 'IA', 'N', 'A']
+
+        entries_categories = (
+		('GL','Grand Landscape'),
+		('IA','Intimate & Abstract'),
+		('N','Nightscape'),
+		('A','Aerial'),
+	)
+
         ctxt = {}
         user = request.user
         view_year = request.GET.get('year',CURRENT_YEAR-1)
@@ -585,7 +595,7 @@ class PreviousYears(LoginRequiredMixin, View):
             else:
                 plantext += "%s project entries"%portfolios_plan
 
-        entries = request.user.entry_set.filter( year=view_year, category__in=category_list )
+        entries = request.user.entry_set.filter( year=view_year, category__in=['GL', 'IA', 'N', 'A'] )
         num_entries = len(entries)
         project_entries_one = request.user.entry_set.filter( year=view_year, category='P1' )
         num_portfolio_one = len(project_entries_one)

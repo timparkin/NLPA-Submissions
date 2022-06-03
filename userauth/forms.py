@@ -81,7 +81,7 @@ class SignupForm(forms.Form):
     instagram=forms.CharField(max_length=60, required=False)
     twitter=forms.CharField(max_length=60, required=False)
     password1 = forms.CharField(widget=forms.PasswordInput)
-    date_of_birth = forms.DateField(required=False,label="Date of Birth (if youth entrant)", widget=forms.TextInput(attrs={'class':'datetimepicsker','placeholder':'dd/mm/yyyy', 'type':'date', 'data-options':'{"disableMobile":true, "format":"dd/mm/yyyy"}'}))
+    date_of_birth = forms.DateField(required=False,label="Date of Birth", widget=forms.TextInput(attrs={'class':'datetimepicsker','placeholder':'dd/mm/yyyy', 'type':'date', 'data-options':'{"disableMobile":true, "format":"dd/mm/yyyy"}'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -102,9 +102,6 @@ class SignupForm(forms.Form):
         print('user dob %s'% user.date_of_birth)
         print('user age %s'% relativedelta(date(2020, 12, 31), user.date_of_birth).years)
         user.is_young_entrant == 'False'
-        if user.date_of_birth is not None:
-            if relativedelta(date(2020, 12, 31), user.date_of_birth).years  < 18:
-                user.is_young_entrant = 'True'
 
         if user.is_young_entrant == 'True':
             print('user under 18')
