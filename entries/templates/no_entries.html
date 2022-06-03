@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% load active_link_tags %}
+{% load filter_extras %}
+{% block extra_menu_item %}
+{% if ENTRIES_CLOSED %}
+<li class="nav-item"><a class="nav-link {% active_link 'secondround' %}" href="/secondround">
+    <div class="d-flex align-items-center"><span class="nav-link-text ps-1">RAW Verficiation</span>
+    </div>
+  </a>
+</li>
+{% endif %}
+{% endblock %}
+
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block extra_js %}
+
+
+{% endblock %}
+
+{% block content %}
+
+
+<div class="card">
+  <div class="card-body position-relative">
+    {% if messages %}
+    <div>
+
+      {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <h2>View Previous Years Entries</h2>
+
+
+    <div class="card-body p-0 overflow-hidden">
+      <div class="row g-0">
+
+        <h3>Entries</h3>
+
+        <p>You had no entries for this year</p>
+
+
+
+</div>
+</div>
+</div>
+
+  </div>
+
+
+
+
+
+
+
+
+{% endblock %}

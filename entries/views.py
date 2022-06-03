@@ -11,7 +11,7 @@ from django.forms.models import inlineformset_factory
 from django.utils.safestring import mark_safe
 
 from entries.models import Entry
-from userauth.models import CustomUser as User
+from userauth.models import CustomUser as User, Year
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import json
@@ -544,6 +544,177 @@ class ConfirmationEmail(LoginRequiredMixin, View):
 
         return HttpResponseRedirect('/confirmationemail/')
 
+
+class PreviousYears(LoginRequiredMixin, View):
+    template_name = 'previousyears.html'
+    no_entries_template_name = 'no_entries.html'
+
+    def get_context_data(self, **kwargs):
+        if self.request.user.payment_plan is not None:
+            kwargs['payment_plan'] = json.loads(self.request.user.payment_plan)
+        else:
+            kwargs['payment_plan'] = None
+
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        ctxt = {}
+        user = request.user
+        view_year = request.GET.get('year',CURRENT_YEAR-1)
+        try:
+            user_year = user.year_set.get(year=view_year)
+        except Year.DoesNotExist:
+            return render(request, self.no_entries_template_name, self.get_context_data(**ctxt))
+
+
+
+        payment_plan = json.loads(user_year.payment_plan)
+        entries_plan = int(payment_plan['entries'])
+        portfolios_plan = int(payment_plan['portfolios'])
+        plantext = "Your current plan is "
+        if entries_plan >0:
+            if entries_plan == 1:
+                plantext += "%s single entry"%entries_plan
+            else:
+                plantext += "%s single entries"%entries_plan
+        if portfolios_plan>0:
+            if entries_plan >0:
+                plantext += " and "
+            if portfolios_plan == 1:
+                plantext += "%s project entry"%portfolios_plan
+            else:
+                plantext += "%s project entries"%portfolios_plan
+
+        entries = request.user.entry_set.filter( year=view_year, category__in=category_list )
+        num_entries = len(entries)
+        project_entries_one = request.user.entry_set.filter( year=view_year, category='P1' )
+        num_portfolio_one = len(project_entries_one)
+        project_entries_two = request.user.entry_set.filter( year=view_year, category='P2' )
+        num_portfolio_two = len(project_entries_two)
+
+
+        entries_complete = (num_entries == entries_plan)
+
+        if portfolios_plan >= 1:
+            project_one_complete = (num_portfolio_one >= 6)
+        else:
+            project_one_complete = None
+
+        if portfolios_plan >= 2:
+            project_two_complete = (num_portfolio_two >= 6)
+        else:
+            project_two_complete = None
+
+        entries_exceed_max = 0
+        entries_perfect = 0
+        entries_acceptable = 0
+        entries_too_small = 0
+        for entry in entries:
+            print(entry.photo_dimensions)
+            if 'x' in entry.photo_dimensions:
+                wtext,htext = entry.photo_dimensions.split(' x ')
+                w = int(wtext)
+                h = int(htext)
+            if w>4000 or h>4000:
+                entries_exceed_max +=1
+            elif (w==4000 and h<=4000) or (w<=4000 and h==4000):
+                entries_perfect +=1
+            elif w>=3000 or h>=3000:
+                entries_acceptable +=1
+            else:
+                entries_too_small +=1
+
+
+        project_one_entries_exceed_max = 0
+        project_one_entries_perfect = 0
+        project_one_entries_acceptable = 0
+        project_one_entries_too_small = 0
+        for entry in project_entries_one:
+            if 'x' in entry.photo_dimensions:
+                wtext,htext = entry.photo_dimensions.split(' x ')
+                w = int(wtext)
+                h = int(htext)
+            if w>4000 or h>4000:
+                project_one_entries_exceed_max +=1
+            elif (w==4000 and h<=4000) or (w<=4000 and h==4000):
+                project_one_entries_perfect +=1
+            elif w>=3000 or h>=3000:
+                project_one_entries_acceptable +=1
+            else:
+                project_one_entries_too_small +=1
+
+        project_two_entries_exceed_max = 0
+        project_two_entries_perfect = 0
+        project_two_entries_acceptable = 0
+        project_two_entries_too_small = 0
+        for entry in project_entries_two:
+            if 'x' in entry.photo_dimensions:
+                wtext,htext = entry.photo_dimensions.split(' x ')
+                w = int(wtext)
+                h = int(htext)
+            if w>4000 or h>4000:
+                project_two_entries_exceed_max +=1
+            elif (w==4000 and h<=4000) or (w<=4000 and h==4000):
+                project_two_entries_perfect +=1
+            elif w>=3000 or h>=3000:
+                project_two_entries_acceptable +=1
+            else:
+                project_two_entries_too_small +=1
+
+        category_text_map = {}
+        for e in entries_categories:
+            category_text_map[e[0]] = e[1]
+
+
+
+        ctxt.update({
+            'name': '%s %s'%(user.first_name,user.last_name),
+            'id': user.id,
+            'email': user.email,
+            'username': user.username,
+            'payment_status': user.payment_status,
+            'payment_plan': user.payment_plan,
+            'plantext': plantext,
+            'entries_plan': entries_plan,
+            'portfolios_plan': portfolios_plan,
+            'project_title_one': user.project_title_one,
+            'project_description_one': user.project_description_one,
+            'project_title_two': user.project_title_two,
+            'project_description_two': user.project_description_two,
+            'entries': entries,
+            'project_entries_one': project_entries_one,
+            'project_entries_two': project_entries_two,
+            'num_entries': num_entries,
+            'num_portfolio_one': num_portfolio_one,
+            'num_portfolio_two': num_portfolio_two,
+
+            'entries_exceed_max': entries_exceed_max,
+            'entries_perfect': entries_perfect,
+            'entries_acceptable': entries_acceptable,
+            'entries_too_small': entries_too_small,
+
+            'project_one_complete': project_one_complete,
+            'project_two_complete': project_two_complete,
+            'project_one_entries_exceed_max': project_one_entries_exceed_max,
+            'project_one_entries_perfect': project_one_entries_perfect,
+            'project_one_entries_acceptable': project_one_entries_acceptable,
+            'project_one_entries_too_small': project_one_entries_too_small,
+            'project_two_entries_exceed_max': project_two_entries_exceed_max,
+            'project_two_entries_perfect': project_two_entries_perfect,
+            'project_two_entries_acceptable': project_two_entries_acceptable,
+            'project_two_entries_too_small': project_two_entries_too_small,
+
+            'entries_size_error': entries_exceed_max+entries_too_small,
+            'project_one_entries_size_error': project_one_entries_exceed_max+project_one_entries_too_small,
+            'project_two_entries_size_error': project_two_entries_exceed_max+project_two_entries_too_small,
+
+            'category_text_map': category_text_map,
+        })
+
+
+
+
+        return render(request, self.template_name, self.get_context_data(**ctxt))
 
 
 @login_required

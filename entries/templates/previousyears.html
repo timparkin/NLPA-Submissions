@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% load active_link_tags %}
+{% load filter_extras %}
+{% block extra_menu_item %}
+{% if ENTRIES_CLOSED %}
+<li class="nav-item"><a class="nav-link {% active_link 'secondround' %}" href="/secondround">
+    <div class="d-flex align-items-center"><span class="nav-link-text ps-1">RAW Verficiation</span>
+    </div>
+  </a>
+</li>
+{% endif %}
+{% endblock %}
+
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block extra_js %}
+
+
+{% endblock %}
+
+{% block content %}
+
+
+<div class="card">
+  <div class="card-body position-relative">
+    {% if messages %}
+    <div>
+
+      {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <h2>View Previous Years Entries</h2>
+
+
+    <div class="card-body p-0 overflow-hidden">
+      <div class="row g-0">
+
+        <h3>Entries</h3>
+
+
+
+
+
+    {% for entry in entries %}
+
+    <div class="col-12 p-card{% cycle '' ' bg-100' %}">
+      <div class="row">
+        <div class="col-sm-3 col-md-2">
+          <div class="position-relative h-sm-100">
+
+            <a class="d-block h-100" href="https://r8a7z2p5.stackpathcdn.com/{{ entry.photo.value }}">
+              <img class="img-fluid  absolute-sm-centered" src="/media/{{ entry.photo }}" alt="" />
+            </a>
+
+          </div>
+        </div>
+        <div class="col-sm-9 col-md-10">
+          <div class="row">
+            <div class="col-lg-12 d-flex justify-content-between flex-column">
+
+
+    <h5 class="mt-3 mt-sm-0">Image {{forloop.counter}}</h5><em class="text-muted"><span style="display:inline-block;width: 100px; font-style: normal" class="font-weight-bold font-weight-normal">Filename:</span> {{entry.filename|limit_length_tooltip}}</em>
+
+    <span><span style="display:inline-block;width: 100px" class="font-weight-bold">Dimensions:</span> {{entry.photo_dimensions}}</span>
+    <span><span style="display:inline-block;width: 100px;" class="font-weight-bold">Filesize:</span> {{entry.photo_size|filesizeformat}} </span>
+    <span><span style="display:inline-block;width: 100px;" class="font-weight-bold">Category:</span> {{category_text_map|get_item:entry.category}} </span>
+
+
+    <div class="my-2">
+
+
+
+      <span style="display:block; margin-bottom:0.8rem"></span>
+      {% if forloop.last %}
+         </div>
+      {% endif %}
+
+
+
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+          {% endfor %}
+
+
+
+{% if portfolios_plan >= 1  %}
+
+<h3>Project One</h3>
+
+<h4>{{project_title_one}}</h4>
+<p>{{project_description_one}}</p>
+
+
+
+
+{% for entry in project_entries_one %}
+
+<div class="col-12 p-card{% cycle '' ' bg-100' %}">
+  <div class="row">
+    <div class="col-sm-3 col-md-2">
+      <div class="position-relative h-sm-100">
+
+        <a class="d-block h-100" href="/media/{{ entry.photo.value }}">
+          <img class="img-fluid  absolute-sm-centered" src="https://r8a7z2p5.stackpathcdn.com/{{ entry.photo }}" alt="" />
+        </a>
+
+      </div>
+    </div>
+    <div class="col-sm-9 col-md-10">
+      <div class="row">
+        <div class="col-lg-12 d-flex justify-content-between flex-column">
+
+
+<h5 class="mt-3 mt-sm-0">Image {{forloop.counter}}</h5><em class="text-muted"><span style="display:inline-block;width: 100px; font-style: normal" class="font-weight-bold font-weight-normal">Filename:</span> {{entry.filename|limit_length_tooltip}}</em>
+
+<span><span style="display:inline-block;width: 100px" class="font-weight-bold">Dimensions:</span> {{entry.photo_dimensions}}</span>
+<span><span style="display:inline-block;width: 100px;" class="font-weight-bold">Filesize:</span> {{entry.photo_size|filesizeformat}} </span>
+
+
+<div class="my-2">
+
+
+
+  <span style="display:block; margin-bottom:0.8rem"></span>
+  {% if forloop.last %}
+     </div>
+  {% endif %}
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      {% endfor %}
+{% endif %}
+{% if portfolios_plan >= 2  %}
+      <h3>Project Two</h3>
+
+
+
+      <h4>{{project_title_two}}</h4>
+      <p>{{project_description_two}}</p>
+
+
+
+
+      {% for entry in project_entries_two %}
+
+      <div class="col-12 p-card{% cycle '' ' bg-100' %}">
+        <div class="row">
+          <div class="col-sm-3 col-md-2">
+            <div class="position-relative h-sm-100">
+
+              <a class="d-block h-100" href="/media/{{ entry.photo.value }}">
+                <img class="img-fluid  absolute-sm-centered" src="https://r8a7z2p5.stackpathcdn.com/{{ entry.photo }}" alt="" />
+              </a>
+
+            </div>
+          </div>
+          <div class="col-sm-9 col-md-10">
+            <div class="row">
+              <div class="col-lg-12 d-flex justify-content-between flex-column">
+
+
+      <h5 class="mt-3 mt-sm-0">Image {{forloop.counter}}</h5><em class="text-muted"><span style="display:inline-block;width: 100px; font-style: normal" class="font-weight-bold font-weight-normal">Filename:</span> {{entry.filename|limit_length_tooltip}}</em>
+
+      <span><span style="display:inline-block;width: 100px" class="font-weight-bold">Dimensions:</span> {{entry.photo_dimensions}}</span>
+      <span><span style="display:inline-block;width: 100px;" class="font-weight-bold">Filesize:</span> {{entry.photo_size|filesizeformat}} </span>
+
+
+      <div class="my-2">
+
+
+
+        <span style="display:block; margin-bottom:0.8rem"></span>
+        {% if forloop.last %}
+           </div>
+        {% endif %}
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+            {% endfor %}
+{% endif %}
+
+
+
+</div>
+</div>
+
+
+  </div>
+
+</div>
+
+
+
+
+
+
+{% endblock %}
