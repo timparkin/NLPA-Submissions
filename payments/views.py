@@ -9,6 +9,7 @@ import stripe
 import datetime
 import json
 from userauth.models import CustomUser as User
+from allauth.account.models import EmailAddress
 import logging
 from nlpa.settings.config import entry_products, portfolio_products, GOOGLEANALYTICS, ENTRIES_CLOSED
 
@@ -297,9 +298,16 @@ def success(request):
 
     request.user.save()
 
+    if request.user.email:
+        email = request.user.email
+    else:
+        email_object = EmailAddress.objects.get(user=request.user, primary=True)
+        email = email_object.email
+        request.user.email = email
+        request.user.save()
 
     user_dict = {
-    'email': request.user.email,
+    'email': email,
     'name': '%s %s'%(request.user.first_name,request.user.last_name)
     }
 

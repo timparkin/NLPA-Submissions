@@ -29,7 +29,7 @@ class CustomUser(AbstractUser):
     facebook = models.CharField(verbose_name=_("Facebook"), max_length=1024, blank=True, null=True, default='')
     marketing_prefs = models.CharField(verbose_name=_("Marketing Preferences"), max_length=4096, blank=True, null=True)
     photo = models.ImageField(verbose_name=_("Photo"), upload_to='photos/', default='photos/default-user-avatar.png')
-    website = models.CharField(verbose_name=_("Main Website"), max_length=1024, blank=True, null=True)
+    website = models.CharField(verbose_name=_("Main Website"), max_length=1024, blank=True, null=True, default='')
     payment_status = models.CharField(verbose_name=_("Payment Status"), max_length=1024, blank=True, null=True)
     payment_plan = models.CharField(verbose_name=_("Payment Plan"), max_length=1024, blank=True, null=True)
     payment_upgrade_status = models.CharField(verbose_name=_("Payment Upgrade Status"), max_length=1024, blank=True, null=True)

@@ -167,12 +167,12 @@ def get_entries(request):
 
 
 class ProjectDescription(forms.Form):
-    title = forms.CharField()
+    title = forms.CharField(required=False)
     description = forms.CharField(help_text="Please enter a description of your project", widget=forms.Textarea(attrs={
                 'rows': '5',
                 'cols': '90',
                 'maxlength': '1000',
-            }))
+            }),required=False)
 
 
 

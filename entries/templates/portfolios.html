@@ -38,7 +38,7 @@
 
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"></script>
 
-<form action="/portfolios/" method="post" enctype="multipart/form-data" style="display:block;">
+<form action="/portfolios/" method="post" enctype="multipart/form-data" style="display:block;" id="portfolio-form">
 
 
 {% if payment_plan_portfolios > 0 %}
@@ -225,6 +225,25 @@
 <p class="fs--1 text-center">Pressing UPDATE ensures we have the latest version of your files, there is no SUBMIT button</p>
 </form>
 
+<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Your Upload has Started</h4>
+      </div>
+      <div class="modal-body">
+        <p>Depending on your connection, this may take a few minutes. Please be patient. If you have any problems, drop us an email at <a href="mailto:info@naturallandscapeawards.com">info@naturallandscapeawards.com</a></p>
+      </div>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+$('#portfolio-form').on('submit', function(e){
+  $('#myModal').modal('show');
+});
+</script>
 
 </div>
 </div>
