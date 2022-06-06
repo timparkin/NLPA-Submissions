@@ -19,8 +19,15 @@ from django_thumbor import generate_url
 from mailchimp3 import MailChimp
 from .data import  *
 from nlpa.settings.config import ENTRIES_CLOSED
+from nlpa.settings.base import MEDIA_ROOT
+
+from django.core.files.storage import FileSystemStorage
 
 
+import os
+from PIL import Image, ImageOps
+from PIL import ImageFont
+from PIL import ImageDraw
 
 class HomePageView(TemplateView):
     template_name = 'home.html'
@@ -161,6 +168,54 @@ def get_paymentupgrade(request):
 
     return render(request, 'paymentupgrade.html', {'form': form})
 
+def get_text_dimensions(text_string, font):
+    # https://stackoverflow.com/a/46220683/9263761
+    ascent, descent = font.getmetrics()
+
+    text_width = font.getmask(text_string).getbbox()[2]
+    text_height = font.getmask(text_string).getbbox()[3] + descent
+
+    return (text_width, text_height)
+
+@staff_member_required
+def socialmedia(request):
+
+    if request.method == 'POST' and request.FILES['upload']:
+        upload = request.FILES['upload']
+        name = "©%s"%request.POST['name']
+        fss = FileSystemStorage()
+        file = fss.save(upload.name, upload)
+        file_url = fss.url(file)
+        mainimage = Image.open(os.path.join(MEDIA_ROOT,file))
+        main_width, main_height = mainimage.size
+        logoimage = Image.open(os.path.join(MEDIA_ROOT,'nlpa_logo.jpg'))
+        logo_width, logo_height = logoimage.size
+
+        if main_width > main_height:
+            main_height = int((2048 / main_width) * main_height)
+            main_width = 2048
+        else:
+            main_width = int((2048 / main_height) * main_width)
+            main_height = 2048
+
+
+        new_im = Image.new(mode="RGB", size=(main_width, main_height + logo_height), color='WHITE')
+        mainimage = mainimage.resize((main_width, main_height))
+        new_im.putdata( mainimage.getdata() )
+        new_im.paste( logoimage,(0,main_height,logo_width,main_height+logo_height))
+
+
+        tw, th = get_text_dimensions(name, font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 80))
+
+
+        draw = ImageDraw.Draw(new_im)
+        draw.text((main_width-(tw+th*0.5),main_height-th*1.5),name, fill='#FFFFFF',font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 80))
+
+        new_im.save(os.path.join(MEDIA_ROOT,file.replace('.jpg','-social.jpg')))
+
+        return render(request, 'socialmedia.html', {'file_url': file_url.replace('.jpg','-social.jpg')})
+
+    return render(request, 'socialmedia.html', {})
 
 @staff_member_required
 def datamining(request):

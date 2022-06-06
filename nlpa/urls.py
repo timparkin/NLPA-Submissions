@@ -36,7 +36,7 @@ urlpatterns = [
 
 
 
-
+    path("socialmedia", views.socialmedia, name="socialmedia"),
 
 
     path('', include('payments.urls')),
