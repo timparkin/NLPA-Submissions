@@ -183,6 +183,12 @@ def socialmedia(request):
     if request.method == 'POST' and request.FILES['upload']:
         upload = request.FILES['upload']
         name = "©%s"%request.POST['name']
+        offset = request.POST['offset']
+        if offset.isnumeric():
+            offset = int(offset)
+        else:
+            offset = 0
+
         fss = FileSystemStorage()
         file = fss.save(upload.name, upload)
         file_url = fss.url(file)
@@ -205,11 +211,11 @@ def socialmedia(request):
         new_im.paste( logoimage,(0,main_height,logo_width,main_height+logo_height))
 
 
-        tw, th = get_text_dimensions(name, font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 80))
+        tw, th = get_text_dimensions(name, font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 60))
 
 
         draw = ImageDraw.Draw(new_im)
-        draw.text((main_width-(tw+th*0.5),main_height-th*1.5),name, fill='#FFFFFF',font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 80))
+        draw.text((main_width-(tw+th*0.5)-offset,main_height-th*1.5),name, fill='#FFFFFF',font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 60))
 
         new_im.save(os.path.join(MEDIA_ROOT,file.replace('.jpg','-social.jpg')))
 

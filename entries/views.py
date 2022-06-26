@@ -358,7 +358,12 @@ class ConfirmationEmail(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         ctxt = {}
         user = request.user
-        payment_plan = json.loads(user.payment_plan)
+
+        if user.payment_plan is not None:
+            payment_plan = json.loads(user.payment_plan)
+        else:
+            payment_plan = {'entries':0,'portfolios':0}
+
         entries_plan = int(payment_plan['entries'])
         portfolios_plan = int(payment_plan['portfolios'])
         plantext = "Your current plan is "
@@ -578,7 +583,10 @@ class PreviousYears(LoginRequiredMixin, View):
 
 
 
-        payment_plan = json.loads(user_year.payment_plan)
+        if user_year.payment_plan is not None:
+            payment_plan = json.loads(user_year.payment_plan)
+        else:
+            return render(request, self.no_entries_template_name, self.get_context_data(**ctxt))
         entries_plan = int(payment_plan['entries'])
         portfolios_plan = int(payment_plan['portfolios'])
         plantext = "Your current plan is "
@@ -719,6 +727,7 @@ class PreviousYears(LoginRequiredMixin, View):
             'project_two_entries_size_error': project_two_entries_exceed_max+project_two_entries_too_small,
 
             'category_text_map': category_text_map,
+            'view_year': view_year,
         })
 
 
