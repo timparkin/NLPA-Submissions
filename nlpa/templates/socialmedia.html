@@ -27,10 +27,19 @@
                {% if file_url %}
                <div class="col-lg-4 col-md-6 col-sm-12 pb-4">
                  <img src="{{ file_url }}" class="img-fluid">
+               </div>
                {% else %}
                {% endif %}
              </div>
 
+             <div class="row">
+               {% if blur_url %}
+               <div class="col-lg-4 col-md-6 col-sm-12 pb-4">
+                 <img src="{{ blur_url }}" class="img-fluid">
+               </div>
+               {% else %}
+               {% endif %}
+             </div>
 
 
           </div>

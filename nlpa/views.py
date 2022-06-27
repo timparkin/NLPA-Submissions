@@ -28,6 +28,7 @@ import os
 from PIL import Image, ImageOps
 from PIL import ImageFont
 from PIL import ImageDraw
+from PIL import ImageFilter
 
 class HomePageView(TemplateView):
     template_name = 'home.html'
@@ -197,16 +198,18 @@ def socialmedia(request):
         logoimage = Image.open(os.path.join(MEDIA_ROOT,'nlpa_logo.jpg'))
         logo_width, logo_height = logoimage.size
 
+        # Build main image
         if main_width > main_height:
             main_height = int((2048 / main_width) * main_height)
             main_width = 2048
         else:
-            main_width = int((2048 / main_height) * main_width)
-            main_height = 2048
+            main_width = int(((2048-logo_height) / main_height) * main_width)
+            main_height = 2048-logo_height
 
 
         new_im = Image.new(mode="RGB", size=(main_width, main_height + logo_height), color='WHITE')
         mainimage = mainimage.resize((main_width, main_height))
+
         new_im.putdata( mainimage.getdata() )
         new_im.paste( logoimage,(0,main_height,logo_width,main_height+logo_height))
 
@@ -219,7 +222,60 @@ def socialmedia(request):
 
         new_im.save(os.path.join(MEDIA_ROOT,file.replace('.jpg','-social.jpg')))
 
-        return render(request, 'socialmedia.html', {'file_url': file_url.replace('.jpg','-social.jpg')})
+        # Build insta image square
+        # Build main image
+
+        image_canvas_height = 3000-logo_height
+        image_canvas_width = 3000
+
+        logo_height = int(logo_height*1.5)
+        logo_width = int(logo_width*1.5)
+        logoimage = logoimage.resize((logo_width,logo_height))
+
+        if main_width > main_height+logo_height:
+            main_height = int((3000 / main_width) * main_height)
+            main_width = 3000
+        else:
+            main_width = int(((3000-logo_height) / main_height) * main_width)
+            main_height = 3000-logo_height
+
+        new_im = Image.new(mode="RGB", size=(3000,3000), color='WHITE')
+        mainimage = mainimage.resize((main_width, main_height))
+
+        # now add blur background to mainimage
+        if main_width<3000:
+            blur_width = 3000
+            blur_height = int( (3000/main_width) * main_height )
+        elif main_height<3000-logo_height:
+            blur_height = 3000-logo_height
+            blur_width = int( (3000/main_height) * main_width )
+        else:
+            blur_width = main_width
+            blur_height = main_height-logo_height
+
+        blurimage = mainimage.resize((blur_width, blur_height)).filter(ImageFilter.GaussianBlur(radius=300))
+        blurimage = blurimage.crop( (0,0,3000,3000-logo_height) )
+        main_x_offset = int((3000-main_width)/2)
+        main_y_offset = int(((3000-logo_height)-main_height)/2)
+
+        new_im.putdata( blurimage.getdata() )
+        new_im.paste( mainimage, (main_x_offset, main_y_offset, main_x_offset+main_width, main_y_offset+main_height) )
+        new_im.paste( logoimage,(0,3000-logo_height,logo_width,3000))
+
+        # Draw name
+        tw, th = get_text_dimensions(name, font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 90))
+        draw = ImageDraw.Draw(new_im)
+
+        draw.text((main_x_offset+main_width-(tw+th*0.5)-offset+2, int((image_canvas_height-(image_canvas_height-main_height)/2)-th*2.5)+2) ,name, fill='#000000',font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 90))
+        draw.text((main_x_offset+main_width-(tw+th*0.5)-offset, int((image_canvas_height-(image_canvas_height-main_height)/2)-th*2.5)) ,name, fill='#FFFFFF',font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 90))
+
+
+        new_im.save(os.path.join(MEDIA_ROOT,file.replace('.jpg','-insta-sq.jpg')))
+
+
+
+
+        return render(request, 'socialmedia.html', {'file_url': file_url.replace('.jpg','-social.jpg'), 'blur_url': file_url.replace('.jpg','-insta-sq.jpg')})
 
     return render(request, 'socialmedia.html', {})
 
