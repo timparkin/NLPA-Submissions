@@ -185,6 +185,7 @@ def socialmedia(request):
         upload = request.FILES['upload']
         name = "©%s"%request.POST['name']
         offset = request.POST['offset']
+        longedge = int(request.POST['longedge'])
         if offset.isnumeric():
             offset = int(offset)
         else:
@@ -195,16 +196,40 @@ def socialmedia(request):
         file_url = fss.url(file)
         mainimage = Image.open(os.path.join(MEDIA_ROOT,file))
         main_width, main_height = mainimage.size
-        logoimage = Image.open(os.path.join(MEDIA_ROOT,'nlpa_logo.jpg'))
-        logo_width, logo_height = logoimage.size
+
+
+
+
+
+        full_height = 2048
+        full_width = 2048
+
+        print((main_width, main_height))
+        if main_width > main_height:
+            #scale_factor = main_height/main_width
+            scale_factor = 1
+        else:
+            scale_factor = main_width/main_height
+
+        masterlogoimage = Image.open(os.path.join(MEDIA_ROOT,'nlpa_logo.jpg'))
+        master_logo_width, master_logo_height = masterlogoimage.size
+
+        print(scale_factor)
+        logo_height = int(master_logo_height * scale_factor)
+        logo_width = int(master_logo_width * scale_factor)
+
+        logoimage = masterlogoimage.resize((logo_width,logo_height))
+
 
         # Build main image
         if main_width > main_height:
-            main_height = int((2048 / main_width) * main_height)
+            main_height = int((full_height / main_width) * main_height)
             main_width = 2048
         else:
             main_width = int(((2048-logo_height) / main_height) * main_width)
-            main_height = 2048-logo_height
+            main_height = full_height-logo_height
+
+
 
 
         new_im = Image.new(mode="RGB", size=(main_width, main_height + logo_height), color='WHITE')
@@ -214,68 +239,131 @@ def socialmedia(request):
         new_im.paste( logoimage,(0,main_height,logo_width,main_height+logo_height))
 
 
-        tw, th = get_text_dimensions(name, font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 60))
+        font_size = int(60*scale_factor)
+        tw, th = get_text_dimensions(name, font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', font_size))
 
 
         draw = ImageDraw.Draw(new_im)
-        draw.text((main_width-(tw+th*0.5)-offset,main_height-th*1.5),name, fill='#FFFFFF',font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 60))
+        draw.text((main_width-(tw+th*0.5)-offset+2,main_height-th*1.5+2),name, fill='#000000',font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', font_size))
+        draw.text((main_width-(tw+th*0.5)-offset,main_height-th*1.5),name, fill='#FFFFFF',font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', font_size))
 
-        new_im.save(os.path.join(MEDIA_ROOT,file.replace('.jpg','-social.jpg')))
+        new_im.save(os.path.join(MEDIA_ROOT,file[:-4]+'-social'+file[-4:]))
+
+
 
         # Build insta image square
         # Build main image
+        scalefactor = longedge/2000
 
-        image_canvas_height = 3000-logo_height
-        image_canvas_width = 3000
+        full_height = longedge
+        full_width = longedge
 
-        logo_height = int(logo_height*1.5)
-        logo_width = int(logo_width*1.5)
-        logoimage = logoimage.resize((logo_width,logo_height))
+        logo_height = int(master_logo_height*scalefactor)
+        logo_width = int(master_logo_width*scalefactor)
+        logoimage = masterlogoimage.resize((logo_width,logo_height))
+
+        image_canvas_height = full_height-logo_height
+        image_canvas_width = full_width
 
         if main_width > main_height+logo_height:
-            main_height = int((3000 / main_width) * main_height)
-            main_width = 3000
+            main_height = int((image_canvas_width / main_width) * main_height)
+            main_width = image_canvas_width
         else:
-            main_width = int(((3000-logo_height) / main_height) * main_width)
-            main_height = 3000-logo_height
+            main_width = int(((image_canvas_height) / main_height) * main_width)
+            main_height = image_canvas_height
 
-        new_im = Image.new(mode="RGB", size=(3000,3000), color='WHITE')
+        new_im = Image.new(mode="RGB", size=(image_canvas_width,image_canvas_width), color='WHITE')
         mainimage = mainimage.resize((main_width, main_height))
 
         # now add blur background to mainimage
-        if main_width<3000:
-            blur_width = 3000
-            blur_height = int( (3000/main_width) * main_height )
-        elif main_height<3000-logo_height:
-            blur_height = 3000-logo_height
-            blur_width = int( (3000/main_height) * main_width )
+        if main_width<image_canvas_width:
+            blur_width = image_canvas_width
+            blur_height = int( (image_canvas_width/main_width) * main_height )
+        elif main_height<image_canvas_height:
+            blur_height = image_canvas_height
+            blur_width = int( (image_canvas_width/main_height) * main_width )
         else:
             blur_width = main_width
             blur_height = main_height-logo_height
 
         blurimage = mainimage.resize((blur_width, blur_height)).filter(ImageFilter.GaussianBlur(radius=300))
-        blurimage = blurimage.crop( (0,0,3000,3000-logo_height) )
-        main_x_offset = int((3000-main_width)/2)
-        main_y_offset = int(((3000-logo_height)-main_height)/2)
+        blurimage = blurimage.crop( (0,0,image_canvas_width,image_canvas_height) )
+        main_x_offset = int((image_canvas_width-main_width)/2)
+        main_y_offset = int(((image_canvas_height)-main_height)/2)
 
         new_im.putdata( blurimage.getdata() )
         new_im.paste( mainimage, (main_x_offset, main_y_offset, main_x_offset+main_width, main_y_offset+main_height) )
-        new_im.paste( logoimage,(0,3000-logo_height,logo_width,3000))
+        new_im.paste( logoimage, (0,image_canvas_height,logo_width,full_height) )
 
         # Draw name
         tw, th = get_text_dimensions(name, font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 90))
         draw = ImageDraw.Draw(new_im)
 
-        draw.text((main_x_offset+main_width-(tw+th*0.5)-offset+2, int((image_canvas_height-(image_canvas_height-main_height)/2)-th*2.5)+2) ,name, fill='#000000',font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 90))
-        draw.text((main_x_offset+main_width-(tw+th*0.5)-offset, int((image_canvas_height-(image_canvas_height-main_height)/2)-th*2.5)) ,name, fill='#FFFFFF',font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 90))
+        draw.text((main_x_offset+main_width-(tw+th*0.5)-offset+2, int((image_canvas_height-(image_canvas_height-main_height)/2)-th*1.5)+2) ,name, fill='#000000',font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 90))
+        draw.text((main_x_offset+main_width-(tw+th*0.5)-offset, int((image_canvas_height-(image_canvas_height-main_height)/2)-th*1.5)) ,name, fill='#FFFFFF',font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 90))
 
 
-        new_im.save(os.path.join(MEDIA_ROOT,file.replace('.jpg','-insta-sq.jpg')))
+        new_im.save(os.path.join(MEDIA_ROOT,file[:-4]+'-insta-sq'+file[-4:]))
+
+        # Build insta image 5x4
+        # Build main image
+
+        full_height = longedge
+        full_width = int(longedge*4/5)
+
+        scale_factor = (longedge/2000)
+
+        logo_height = int(master_logo_height*scale_factor)
+        logo_width = int(master_logo_width*scale_factor)
+        logoimage = masterlogoimage.resize((logo_width,logo_height))
+
+        image_canvas_height = full_height-logo_height
+        image_canvas_width = full_width
+
+        if main_width > main_height+logo_height:
+            main_height = int((image_canvas_width / main_width) * main_height)
+            main_width = image_canvas_width
+        else:
+            main_width = int(((image_canvas_height) / main_height) * main_width)
+            main_height = image_canvas_height
+
+        new_im = Image.new(mode="RGB", size=(full_width,full_height), color='WHITE')
+        mainimage = mainimage.resize((main_width, main_height))
+
+        # now add blur background to mainimage
+        if main_width<image_canvas_width:
+            blur_width = image_canvas_width
+            blur_height = int( (image_canvas_width/main_width) * main_height )
+        elif main_height<image_canvas_height:
+            blur_height = image_canvas_height
+            blur_width = int( (image_canvas_width/main_height) * main_width )
+        else:
+            blur_width = main_width
+            blur_height = main_height-logo_height
+
+        blurimage = mainimage.resize((blur_width, blur_height)).filter(ImageFilter.GaussianBlur(radius=300))
+        blurimage = blurimage.crop( (0,0,image_canvas_width,image_canvas_height) )
+        main_x_offset = int((image_canvas_width-main_width)/2)
+        main_y_offset = int(((image_canvas_height)-main_height)/2)
+
+        new_im.putdata( blurimage.getdata() )
+        new_im.paste( mainimage, (main_x_offset, main_y_offset, main_x_offset+main_width, main_y_offset+main_height) )
+        new_im.paste( logoimage,(0,image_canvas_height,logo_width,full_height))
+
+        # Draw name
+        tw, th = get_text_dimensions(name, font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 70))
+        draw = ImageDraw.Draw(new_im)
+
+        draw.text((main_x_offset+main_width-(tw+th*0.5)-offset+2, int((image_canvas_height-(image_canvas_height-main_height)/2)-th*1.5)+2) ,name, fill='#000000',font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 70))
+        draw.text((main_x_offset+main_width-(tw+th*0.5)-offset, int((image_canvas_height-(image_canvas_height-main_height)/2)-th*1.5)) ,name, fill='#FFFFFF',font=ImageFont.truetype('GrotaSansAltRd-Bold.ttf', 70))
 
 
 
+        new_im.save(os.path.join(MEDIA_ROOT,file[:-4]+'-insta-54'+file[-4:]))
 
-        return render(request, 'socialmedia.html', {'file_url': file_url.replace('.jpg','-social.jpg'), 'blur_url': file_url.replace('.jpg','-insta-sq.jpg')})
+
+
+        return render(request, 'socialmedia.html', {'file_url': file_url[:-4]+'-social'+file[-4:], 'blursq_url': file_url[:-4]+'-insta-sq'+file[-4:], 'blur54_url': file_url[:-4]+'-insta-54'+file[-4:]})
 
     return render(request, 'socialmedia.html', {})
 

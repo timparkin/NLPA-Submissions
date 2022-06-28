@@ -15,6 +15,7 @@
               {% csrf_token %}
                   name: <input type="text" name="name"><br />
                   offset: <input type="text" name="offset"><br />
+                  longedge: <input type="text" name="longedge" value="3000"><br />
                   <input type="file" name="upload" accept="image/*">
                   <br>
                   <button class="btn btn-dark my-4" type="submit">Submit</button>
@@ -33,14 +34,22 @@
              </div>
 
              <div class="row">
-               {% if blur_url %}
+               {% if blursq_url %}
                <div class="col-lg-4 col-md-6 col-sm-12 pb-4">
-                 <img src="{{ blur_url }}" class="img-fluid">
+                 <img src="{{ blursq_url }}" class="img-fluid">
                </div>
                {% else %}
                {% endif %}
              </div>
 
+             <div class="row">
+               {% if blur54_url %}
+               <div class="col-lg-4 col-md-6 col-sm-12 pb-4">
+                 <img src="{{ blur54_url }}" class="img-fluid">
+               </div>
+               {% else %}
+               {% endif %}
+             </div>
 
           </div>
         </div>
