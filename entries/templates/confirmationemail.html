@@ -47,9 +47,9 @@
     <p>This page lets you know if there are any problems with your entries. Please use the "Single images" and "Projects" link on the left hand menu to change or add images in order to fix any errors</p>
 
     {% if entries_complete  %}
-    <p><strong>Entries: You have a full set of entries submitted. {% if entries_size_error != 0 %}({{entries_size_error|isare}} incorrectly sized ){% endif %}</strong></p>
+    <p><strong>Individual Entries: You have a full set of entries submitted. {% if entries_size_error != 0 %}({{entries_size_error|isare}} incorrectly sized ){% endif %}</strong></p>
     {% else %}
-    <p><strong style="color: #800000">Entries: You have uploaded {{num_entries}} out of your purchased {{ entries_plan}} entries. {% if entries_size_error != 0 %}({{entries_size_error|isare}} incorrectly sized ){% endif %}</strong></p>
+    <p><strong style="color: #800000">Individual Entries: You have uploaded {{num_entries}} out of your purchased {{ entries_plan}} entries. {% if entries_size_error != 0 %}({{entries_size_error|isare}} incorrectly sized ){% endif %}</strong></p>
     {% endif %}
 
     {% if portfolios_plan >= 1  %}
@@ -72,11 +72,11 @@
     <div class="card-body p-0 overflow-hidden">
       <div class="row g-0">
 
-        <h3>Entries</h3>
+        <h3>Individual Entries</h3>
         {% if entries_complete  %}
-        <p><strong>You have a full set of entries submitted</strong></p>
+        <p><strong>You have a full set of individual entries submitted</strong></p>
         {% else %}
-        <p><strong>You have uploaded {{num_entries}} out of your purchased {{ entries_plan}} entries.</strong></p>
+        <p><strong>You have uploaded {{num_entries}} out of your purchased {{ entries_plan}} individual entries.</strong></p>
         {% endif %}
 
 
