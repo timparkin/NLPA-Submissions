@@ -766,7 +766,7 @@ def get_raws(request):
                                     'evidence_file_5',
                                     'ef5_filename',
                                     ),
-                            can_delete=True,
+                            can_delete=False,
                             #formset = ValidateRawsModelFormset,
                             widgets={
 

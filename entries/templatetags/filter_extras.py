@@ -16,6 +16,8 @@ register = template.Library()
 def limit_length_tooltip(value):
     if '/' in value:
         value = ''.join(value.split('/')[1:])
+    if value.split('.')[-1] == 'png':
+        value = ''
     if len(value)>40:
         limitvalue = "%s...%s"%(value[:20], value[-20:])
         return mark_safe('<span data-bs-toggle="tooltip" data-bs-placement="top" title="%s">%s</span>'%(value,limitvalue))
