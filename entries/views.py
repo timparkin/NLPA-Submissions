@@ -66,12 +66,13 @@ class ValidateRawsModelFormset(BaseInlineFormSet):
 
 
 category_list = ['GS', 'IL', 'AD']
-
 entries_categories = (
         ('GS','Grand Scenic'),
-        ('IL','Intimate Landscapes'),
-        ('AD','Abstracts & Details'),
+        ('IL','Intimate Landscape'),
+        ('AD','Abstract & Detail'),
+
 )
+
 
 class ImageWidget(forms.widgets.ClearableFileInput):
     template_name = 'django/forms/widgets/clearable_file_input.html'
@@ -564,22 +565,27 @@ class PreviousYears(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
 
-        category_list = ['GL', 'IA', 'N', 'A']
 
-        entries_categories = (
+
+        entries_categories_full = (
 		('GL','Grand Landscape'),
 		('IA','Intimate & Abstract'),
 		('N','Nightscape'),
 		('A','Aerial'),
+        ('GS','Grand Scenic'),
+        ('IL','Intimate Landscape'),
+        ('AD','Abstract & Detail'),
+
 	)
 
         ctxt = {}
         user = request.user
-        view_year = request.GET.get('year',CURRENT_YEAR-1)
+        view_year = int(request.GET.get('year',CURRENT_YEAR-1))
         try:
             user_year = user.year_set.get(year=view_year)
         except Year.DoesNotExist:
             return render(request, self.no_entries_template_name, self.get_context_data(**ctxt))
+
 
 
 
@@ -602,8 +608,16 @@ class PreviousYears(LoginRequiredMixin, View):
                 plantext += "%s project entry"%portfolios_plan
             else:
                 plantext += "%s project entries"%portfolios_plan
+        print(user_year)
+        if user_year.year == 2021:
+            prefix = 'https://r8a7z2p5.stackpathcdn.com/'
+            category_set = ['GL', 'IA', 'N', 'A']
+        else:
+            prefix = 'https://submit.naturallandscapeawards.com/media/'
+            category_set = ['GS', 'IL', 'AD']
+        print(category_set)
 
-        entries = request.user.entry_set.filter( year=view_year, category__in=['GL', 'IA', 'N', 'A'] )
+        entries = request.user.entry_set.filter( year=view_year, category__in=category_set)
         num_entries = len(entries)
         project_entries_one = request.user.entry_set.filter( year=view_year, category='P1' )
         num_portfolio_one = len(project_entries_one)
@@ -680,7 +694,7 @@ class PreviousYears(LoginRequiredMixin, View):
                 project_two_entries_too_small +=1
 
         category_text_map = {}
-        for e in entries_categories:
+        for e in entries_categories_full:
             category_text_map[e[0]] = e[1]
 
 
@@ -690,6 +704,7 @@ class PreviousYears(LoginRequiredMixin, View):
             'id': user.id,
             'email': user.email,
             'username': user.username,
+            'prefix': prefix,
             'payment_status': user.payment_status,
             'payment_plan': user.payment_plan,
             'plantext': plantext,
