@@ -23,7 +23,7 @@
           <p>You have chosen the following entry options for a total of <strong class="lead text-primary fs-2">{{ request.session.total_price }}</strong>:</p>
           <p class="lead">Number of Individual Images = <span class="lead text-primary fs-2">{{ request.session.number_of_entries }}</span></p>
           <p class="lead">Number of Projects = <span class="lead text-primary fs-2">{{ request.session.number_of_portfolios }}</span></p>
-<p><strong style="color: #900">You can enter your discount code on the next page</strong></p>
+<p><strong style="color: #900">You can enter your promotion code on the next page (see "Add Promotion Code")</strong></p>
           {% if request.user.is_young_entrant %}
           {% if request.session.youth_entry %}
 <p class="fw-light">This price includes the 70% discount for your youth entry status with your birthday on <span class="fw-bold">{{ request.user.date_of_birth }}</span>.
