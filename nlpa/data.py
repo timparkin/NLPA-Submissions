@@ -2,6 +2,8 @@ import json
 import copy
 from userauth.models import CustomUser as User
 from allauth.account.admin import EmailAddress
+from nlpa.settings.config import CURRENT_YEAR
+
 
 
 # # STRIPE SESSION USERS
@@ -14,18 +16,28 @@ from allauth.account.admin import EmailAddress
 def clean_db_users(db_users):
 
     output = {}
+
     for user in db_users:
+
         primary_emails = EmailAddress.objects.filter(user=user.id, primary=True)
-        email = primary_emails[0].email
+        if primary_emails:
+            email = primary_emails[0].email
+        else:
+            email = user.email
+
+        # if user.payment_status and 'checking' in user.payment_status:
+        #     print('%s,'%email)
+
         if user.payment_plan is not None:
             pp = json.loads(user.payment_plan)
             entries = pp['entries']
             projects = pp['portfolios']
-            entry_objects = user.entry_set.all()
+            entry_objects = user.entry_set.filter(year=CURRENT_YEAR)
         else:
             entries = 0
             projects = 0
-            entry_objects = user.entry_set.all()
+            entry_objects = user.entry_set.filter(year=CURRENT_YEAR)
+
         N_P1 = 0
         N_P2 = 0
         N_E = 0
@@ -43,10 +55,11 @@ def clean_db_users(db_users):
                 'email': email,
                 'username': user.username,
                 'payment_status': user.payment_status,
+                'payment_plan': user.payment_plan,
                 'entries': entries,
                 'entry_objects': entry_objects,
                 'projects': projects,
-                'uploads': user.entry_set.count(),
+                'uploads': user.entry_set.filter(year=CURRENT_YEAR).count(),
                 'np1': N_P1,
                 'np2': N_P2,
                 'ne': N_E,
@@ -57,6 +70,7 @@ def clean_db_users(db_users):
                 'project_description_one': user.project_description_one,
                 'project_title_two': user.project_title_two,
                 'project_description_two': user.project_description_two,
+                'date_joined': user.date_joined,
                 }
 
     return output

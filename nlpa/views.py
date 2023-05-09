@@ -481,14 +481,19 @@ def datamining_child(request):
 
     return response
 
+#THIS IS PRIMARY
 @staff_member_required
 def datamining_child_entries(request):
+
+    # OPTION TO GET EMPTY ENTRIES
+    GET_EMPTY_ENTRIES = True
     # Prepare Response
     response = HttpResponse()
     response['Content-Disposition'] = 'attachment; filename="nlpa_combined_entries.csv"'
 
     # GET DB USERS
     db_users = clean_db_users(User.objects.all())
+
 
     # GET MAILCHIMP USERS
     mailchimp_api_key = settings.MAILCHIMP_API_KEY
@@ -538,7 +543,10 @@ def datamining_child_entries(request):
 
     users_entries = []
     for user in db_user_list:
-        if 'entry_objects' in user:
+
+
+
+        if 'entry_objects' in user and len(user['entry_objects'])>0:
 
             for entry in user['entry_objects']:
                 user_entry = {
@@ -554,18 +562,21 @@ def datamining_child_entries(request):
                 user_entry.update(user)
                 users_entries.append(user_entry)
         else:
-            user_entry = {
-              'entry_id':  '',
-              'entry_category': '',
-              'entry_datetime': '',
-              'entry_filename': '',
-              'entry_url': '',
-              'entry_photo_dimensions': '',
-              'entry_photo_size': '',
 
-            }
-            user_entry.update(user)
-            users_entries.append(user_entry)
+            if GET_EMPTY_ENTRIES:
+                user_entry = {
+                  'entry_id':  '',
+                  'entry_category': '',
+                  'entry_datetime': '',
+                  'entry_filename': '',
+                  'entry_url': '',
+                  'entry_photo_dimensions': '',
+                  'entry_photo_size': '',
+
+                }
+
+                user_entry.update(user)
+                users_entries.append(user_entry)
 
 
     # return render(request, 'datamining_csv.html', {'db_user_list': db_user_list, 'db_users': db_users, 'mc_users': mc_users, 'ss_users': ss_users, 'sc_users': sc_users, 'sessions': sessions })
@@ -578,6 +589,7 @@ def datamining_child_entries(request):
         'sc_email',
         'name',
         'id',
+        'date_joined',
         'entries',
         'projects',
         'uploads',
@@ -586,6 +598,8 @@ def datamining_child_entries(request):
         'in_stripe',
         'paid',
         'unpaid',
+        'payment_status',
+        'payment_plan',
         'mc_optin',
         'mc_discount',
         'mc_monster',
@@ -606,6 +620,7 @@ def datamining_child_entries(request):
 
 
     for C in users_entries:
+        #if C.get('payment_status') and 'checking' in C.get('payment_status'):
         writer.writerow([
         C.get('email'),
         C.get('mc_email'),
@@ -613,6 +628,7 @@ def datamining_child_entries(request):
         C.get('sc_email'),
         C.get('name'),
         C.get('id'),
+        C.get('date_joined'),
         C.get('entries'),
         C.get('projects'),
         C.get('uploads'),
@@ -621,6 +637,8 @@ def datamining_child_entries(request):
         C.get('in_stripe'),
         C.get('paid'),
         C.get('unpaid'),
+        C.get('payment_status'),
+        C.get('payment_plan'),
         C.get('mc_optin'),
         C.get('mc_discount'),
         C.get('mc_monster'),
