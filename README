@@ -122,30 +122,38 @@ gunicorn --bind 0.0.0.0:8000 nlpa.wsgi
 
 # if you do this again, try dropping the migrations
 
-Don't forget to update users
-
-from userauth.models import CustomUser as User, Year
-
-users = User.objects.all()
-for user in users:
-    years = Year.objects.filter(user=user, year='2021')
-	  if not years:
-	      year = Year.objects.create(user=user, year='2021')
-    		year.payment_status = user.payment_status
-    		year.payment_plan = user.payment_plan
-    		year.payment_upgrade_status = user.payment_upgrade_status
-    		year.payment_upgrade_plan = user.payment_upgrade_plan
-    		year.is_young_entrant = user.is_young_entrant
-    		year.project_title_one = user.project_title_one
-    		year.project_description_one = user.project_description_one
-    		year.project_title_two = user.project_title_two
-    		year.project_description_two = user.project_description_two
-    		year.save()
-    else:
-        year.payment_status = ''
-        etc
-
 # Check user
 from userauth.models import CustomUser as User, Year
 user = User.objects.filter(email='info+20220505f@timparkin.co.uk')[0]
 print(user.payment_status)
+
+
+# How to get running
+
+source nlpa/bin/activate
+cd NLPA-Submissions
+./manage.py runserver_plus 0.0.0.0:8000
+
+http://local.naturallandscapeawards.com:8000/accounts/signup/?next=/
+
+
+# How to copy a database off the live server
+
+# go to /var/lib/postgresql/backups
+# ftp copy latest backup to DeleteMeFiles
+# ftp dump to local.naturallandscapeawards.com:8000 (home)
+# unzip
+
+sudo su - postgres
+psql
+> create database nlpa_2023_05_07;
+psql nlpa_2023_05_07 < /home/ubuntu/NLPA-Submissions/nlpa_2023_05_07_07_00_am.pgdump
+#leave postgres shell
+vi nlpa/settings/config.py ( and change the database name to the above)
+
+run it !!!!
+
+# How to change year
+change the CURRENT_YEAR setting in config to the new Year
+use the django command 'update_year' to update all of the users (./manage.py update_year)
+
