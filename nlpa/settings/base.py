@@ -74,6 +74,8 @@ INSTALLED_APPS = [
 
     'payments.apps.PaymentsConfig',
     'entries.apps.EntriesConfig',
+
+    'multiselectfield',
 ]
 
 MIDDLEWARE = [

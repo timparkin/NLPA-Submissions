@@ -5,11 +5,11 @@ fetch("/config/")
   // Initialize Stripe.js
   const stripe = Stripe(data.publicKey);
 
-  // new
   // Event handler
   document.querySelector("#submitBtn").addEventListener("click", () => {
     // Get Checkout Session ID
-    fetch("/create-checkout-session/")
+    coupon = document.querySelector("#orderbookcoupon").checked;
+    fetch("/create-checkout-session?coupon="+coupon)
     .then((result) => { return result.json(); })
     .then((data) => {
       console.log(data);

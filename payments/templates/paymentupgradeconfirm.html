@@ -23,13 +23,8 @@
           <p>You have chosen the following upgrade options for an upgrade price of <strong class="lead text-primary fs-2">{{ request.session.upgrade_price }}</strong>:</p>
           <p class="lead">Number of additional Individual Images = <span class="lead text-primary fs-2">{{ request.session.number_of_additional_entries }}</span></p>
           <p class="lead">Number of additional Projects  = <span class="lead text-primary fs-2">{{ request.session.number_of_additional_portfolios }}</span></p>
-          {% if request.user.is_young_entrant %}
-          {% if request.session.youth_entry %}
-<p class="fw-light">This price includes the 70% discount for your youth entry status with your birthday on <span class="fw-bold">{{ request.user.date_of_birth }}</span>.
-  If you wish to confirm the use of the youth discount, please use the discount code <span class="fw-bold">YOUTH70</span> when making your payment on the next screen</p>
-          {% endif %}
-          {% endif %}
 
+          <input type="checkbox" name="orderbookcoupon" id="orderbookcoupon">
           <button class="button  btn btn-outline-primary " id="submitBtn">Purchase</button>
 
           <p class="mt-2 fw-light">

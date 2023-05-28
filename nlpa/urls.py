@@ -34,10 +34,7 @@ urlpatterns = [
     path('072348-datamining/nlpa_missing_raws.csv', views.missing_raws, name='missing_raws'),
     path('072348-datamining/nlpa_combined_users.csv', views.datamining_child_users, name='datamining_child_users'),
 
-
-
     path("socialmedia", views.socialmedia, name="socialmedia"),
-
 
     path('', include('payments.urls')),
     path('', include('entries.urls')),

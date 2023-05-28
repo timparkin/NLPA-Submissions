@@ -27,6 +27,8 @@ from nlpa.settings.config import entry_products, portfolio_products, ENTRIES_CLO
 
 from . import confirmation
 
+from multiselectfield import MultiSelectField
+
 class ValidateImagesModelFormset(BaseInlineFormSet):
     def clean(self):
         super().clean()
@@ -60,17 +62,21 @@ class ValidateRawsModelFormset(BaseInlineFormSet):
             if not f.cleaned_data['photo']:
                 raise forms.ValidationError("No image!")
 
-
-
-
-
-
 category_list = ['GS', 'IL', 'AD']
 entries_categories = (
         ('GS','Grand Scenic'),
         ('IL','Intimate Landscape'),
         ('AD','Abstract & Detail'),
-
+)
+award_list = ['CP','M','W','BW','N','E','A']
+entries_awards = (
+        ('CP','Common Places'),
+        ('M','Mountains'),
+        ('W','Water Worlds'),
+        ('BW','Black and White'),
+        ('N','Nightscape'),
+        ('E','Environmental'),
+        ('A','Aerial'),
 )
 
 
@@ -79,8 +85,6 @@ class ImageWidget(forms.widgets.ClearableFileInput):
 
 class FileWidget(forms.widgets.ClearableFileInput):
     template_name = 'django/forms/widgets/clearable_file_input.html'
-
-
 
 @login_required
 def get_entries(request):
@@ -104,7 +108,7 @@ def get_entries(request):
 
     EntryInlineFormSet = inlineformset_factory(User,
                             Entry,
-                            fields=('photo','filename', 'category','photo_size','photo_dimensions'),
+                            fields=('photo','filename','category','special_award','photo_size','photo_dimensions'),
 #                            formset=ValidateImagesModelFormset,
                             can_delete=True,
                             max_num=int(payment_plan['entries']),
@@ -118,6 +122,8 @@ def get_entries(request):
                                 })
 
     request.session['ENTRIES_CLOSED'] = ENTRIES_CLOSED
+
+
 
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
@@ -136,6 +142,7 @@ def get_entries(request):
                     'filename': name,
                     'user_email': request.user.email,
                     'category': f.category,
+                    'special_award': f.special_award,
                     'is_young_entrant': request.user.is_young_entrant
                     }
                 if hasattr(f.photo.storage,'custom'):
@@ -146,6 +153,8 @@ def get_entries(request):
                 f.photo_size = f.photo.size
                 f.filename = f.photo.name
                 f.year = CURRENT_YEAR
+
+
 
             form.save()
 
@@ -159,13 +168,8 @@ def get_entries(request):
 
         form = EntryInlineFormSet(instance=user, queryset=Entry.objects.filter( year=CURRENT_YEAR, category__in=category_list ))
 
+
     return render(request, 'entries.html', {'formset': form, 'ENTRIES_CLOSED': ENTRIES_CLOSED})
-
-
-
-
-
-
 
 class ProjectDescription(forms.Form):
     title = forms.CharField(required=False)
@@ -174,12 +178,6 @@ class ProjectDescription(forms.Form):
                 'cols': '90',
                 'maxlength': '1000',
             }),required=False)
-
-
-
-
-
-
 
 class GetPortfolios(LoginRequiredMixin, View):
     template_name = 'portfolios.html'
@@ -337,14 +335,11 @@ class GetPortfolios(LoginRequiredMixin, View):
 
         return HttpResponseRedirect('/portfolios/')
 
-
-
 #
 # First thing - get all the entries and portfolios including descriptions etc..
 # Build an email template showing all submitted images and categories extra_css
 #
 #
-
 class ConfirmationEmail(LoginRequiredMixin, View):
     template_name = 'confirmationemail.html'
 
@@ -550,7 +545,6 @@ class ConfirmationEmail(LoginRequiredMixin, View):
 
         return HttpResponseRedirect('/confirmationemail/')
 
-
 class PreviousYears(LoginRequiredMixin, View):
     template_name = 'previousyears.html'
     no_entries_template_name = 'no_entries.html'
@@ -749,7 +743,6 @@ class PreviousYears(LoginRequiredMixin, View):
 
 
         return render(request, self.template_name, self.get_context_data(**ctxt))
-
 
 @login_required
 def get_raws(request):

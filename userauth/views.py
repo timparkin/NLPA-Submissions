@@ -5,18 +5,14 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView, DeleteView
 
-
 # Create your views here.
 
 def profile_view(request):
     return render(request, 'account/profile.html')
 
-    
-
 class CustomUserUpdateView(UpdateView):
     model = CustomUser
     form_class = CustomUserUpdateForm
-
 
 class CustomUserDeleteView(DeleteView):
     model = CustomUser

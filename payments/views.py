@@ -11,12 +11,13 @@ import json
 from userauth.models import CustomUser as User
 from allauth.account.models import EmailAddress
 import logging
-from nlpa.settings.config import entry_products, portfolio_products, GOOGLEANALYTICS, ENTRIES_CLOSED
+from nlpa.settings.config import entry_products, portfolio_products, coupon_product, GOOGLEANALYTICS, ENTRIES_CLOSED, PROJECT_DIR, BASE_DIR, WOO_CONSUMER_KEY, WOO_CONSUMER_SECRET
+import random
+from woocommerce import API
 
 from . import welcome
 
 logger = logging.getLogger(__name__)
-
 
 class PurchasePageView(TemplateView):
     template_name = 'purchase.html'
@@ -28,7 +29,8 @@ def stripe_config(request):
         stripe_config = {'publicKey': settings.STRIPE_PUBLISHABLE_KEY}
         return JsonResponse(stripe_config, safe=False)
 
-#### CONFIRM CHOICES ##########################################
+
+# CONFIRM CHOICES ##########################################
 @login_required
 def payment_plan_confirm(request):
     request.session['total_price'] = \
@@ -42,14 +44,15 @@ def payment_plan_confirm(request):
 
     return render(request, 'paymentplanconfirm.html')
 
-#### CONFIRM CHOICES ##########################################
+
+# CONFIRM CHOICES ##########################################
 @login_required
 def payment_plan_confirm_youth(request):
     return render(request, 'paymentplanconfirm_youth.html')
 
+
 @login_required
 def payment_upgrade_confirm(request):
-
 
     if request.user.payment_plan is not None:
         payment_plan = json.loads(request.user.payment_plan)
@@ -82,14 +85,12 @@ def payment_upgrade_confirm(request):
 
     return render(request, 'paymentupgradeconfirm.html')
 
-
-
-
 #### CREATE CHECKOUT SESSIONS ##################################
 @csrf_exempt
 @login_required
 def create_checkout_session(request):
     if request.method == 'GET':
+        # PICK UP THE coupon GET PARAMETER AND ADD THE PRODUCT
         domain_url = settings.BASE_URL
         stripe.api_key = settings.STRIPE_SECRET_KEY
         try:
@@ -109,6 +110,16 @@ def create_checkout_session(request):
                     }
                 )
 
+            if request.GET.get('coupon') == 'true':
+                line_items.append(
+                    {
+                        'quantity': 1,
+                        'price': coupon_product['price_id']
+                    }
+                )
+            print(request.GET.get('coupon'))
+            request.session['coupon_product'] = request.GET.get('coupon') == 'true'
+
 
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=request.user.id if request.user.is_authenticated else None,
@@ -125,7 +136,6 @@ def create_checkout_session(request):
             return JsonResponse({'sessionId': checkout_session['id']})
         except Exception as e:
             return JsonResponse({'error': str(e)})
-
 
 @csrf_exempt
 @login_required
@@ -164,6 +174,16 @@ def create_checkout_session_upgrade(request):
                     }
                 )
 
+            if request.session['coupon_product'] is not True and request.GET.get('orderbookcoupon') == 'true':
+                line_items.append(
+                    {
+                        'quantity': 1,
+                        'price': coupon_product['price_id']
+                    }
+                )
+            if request.session['coupon_product'] is False:
+                request.session['coupon_product'] = request.GET.get('orderbookcoupon') == 'true'
+
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=request.user.id if request.user.is_authenticated else None,
                 success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
@@ -194,9 +214,6 @@ def cancelled(request):
 
     user.save()
     return render(request, 'cancelled.html')
-
-
-
 
 #### SUCCESS ##############################################
 @login_required
@@ -237,9 +254,20 @@ def success(request):
     }
 """
 
+    gtag_coupon_item = """
+        {
+          "id": "%(item_id)s",
+          "name": "%(item_desc)s",
+          "category": "coupon",
+          "quantity": 1,
+          "price": %(item_unit_price)s
+        }
+"""
+
     try:
         entry_item = entry_products[ str(request.session['number_of_entries']) ]
         portfolio_item = portfolio_products[ str(request.session['number_of_portfolios']) ]
+
     except KeyError as e:
 
         entry_item = entry_products[ str(request.session['entries']) ]
@@ -280,6 +308,16 @@ def success(request):
               } )
         price = price + portfolio_item['price']
 
+    if request.session['coupon_product']:
+        items.append( gtag_coupon_item % {
+              "item_id": coupon_product['product_id'],
+              "item_desc": coupon_product['name'],
+              "category": 'Coupon',
+              "quantity": 1,
+              "item_unit_price": coupon_product['price']/100
+              } )
+        price = price + portfolio_item['price']
+
     gtag_items = ','.join(items)
     gtag = gtag_body % { "email": request.user.email, "value": price/100, "items": gtag_items }
 
@@ -287,6 +325,33 @@ def success(request):
         request.session['gtag'] = gtag
     else:
         request.session['gtag'] = ''
+
+    coupon_code = None
+    print(request.session)
+    if request.session['coupon_product']:
+        print(WOO_CONSUMER_KEY,WOO_CONSUMER_SECRET)
+        wcapi = API(
+            url="https://naturallandscapeawards.com/",
+            consumer_key=WOO_CONSUMER_KEY,
+            consumer_secret=WOO_CONSUMER_SECRET,
+            wp_api=True,
+            version="wc/v3"
+        )
+
+        coupon_code = '%s%s%s' % (request.user.first_name, request.user.last_name, random.randint(1111, 9999))
+
+        data = {
+            "code": coupon_code,
+            "discount_type": "percent",
+            "amount": "50",
+            "individual_use": True,
+            "maximum_amount": "300.00",
+            "date_expires": "2024-01-32T23:59:59",
+            "usage_limit": "2",
+        }
+
+        result = wcapi.post("coupons", data).json()
+        print(result)
 
 
     request.user.payment_status='payment_pending %s'%datetime.datetime.now()
@@ -308,7 +373,8 @@ def success(request):
 
     user_dict = {
     'email': email,
-    'name': '%s %s'%(request.user.first_name,request.user.last_name)
+    'name': '%s %s'%(request.user.first_name,request.user.last_name),
+    'coupon_code': coupon_code,
     }
 
     welcome.send_email(user_dict)
@@ -316,7 +382,6 @@ def success(request):
     request.session['nextpage'] = 'entries'
 
     return render(request, 'success.html')
-
 
 @login_required
 def success_youth(request):

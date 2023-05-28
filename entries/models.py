@@ -7,6 +7,8 @@ from userauth.models import CustomUser
 
 from thumbnails.fields import ImageField
 
+from multiselectfield import MultiSelectField
+
 
 class Entry(models.Model):
 
@@ -15,9 +17,20 @@ class Entry(models.Model):
         intimate_landscapes = 'IL', _('Intimate Landscapes')
         abstracts_and_details = 'AD', _('Abstracts & Details')
 
+    class SpecialAward(models.TextChoices):
+        common_places = 'CP', _('Common Places')
+        mountains = 'M', _('Mountains')
+        water_worlds = 'W', _('Water Worlds')
+        black_and_white = 'BW', _('Black and White')
+        nightscape = 'N', _('Nightscape')
+        environmental = 'E', _('Environmental')
+        aerial = 'A', _('Aerial')
+
+
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
     category = models.CharField(verbose_name=_("Category"), max_length=128, choices=Categories.choices, default=Categories.grand_scenic, blank=True, null=True)
+    special_award = MultiSelectField(verbose_name=_("Special Award (<a href=\"https://naturallandscapeawards.com/categories#special_awards\" target=\"_blank\">more info</a>)"), max_length=256, choices=SpecialAward.choices, default='', blank=True, null=True)
     filename = models.CharField(verbose_name=_("Filename"), max_length=128, default='', blank=True, null=True)
     photo_size = models.CharField(verbose_name=_("Photo Size"), max_length=1024, default='', blank=True, null=True)
     photo_dimensions = models.CharField(verbose_name=_("Photo Dimensions"), max_length=1024, default='', blank=True, null=True)

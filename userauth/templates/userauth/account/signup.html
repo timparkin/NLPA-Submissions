@@ -21,21 +21,19 @@
     {% csrf_token %}
         <div class="row">
            <div class="col-lg-6 col-md-12">
+               {{ form.first_name | as_crispy_field }}
+           </div>
+           <div class="col-lg-6 col-md-12">
+               {{ form.last_name | as_crispy_field }}
+           </div>
+
+        </div>
+        <div class="row">
+           <div class="col-lg-6 col-md-12">
                {{ form.email | as_crispy_field }}
            </div>
            <div class="col-lg-6 col-md-12">
                {{ form.password1 | as_crispy_field }}
-           </div>
-        </div>
-        <div class="row">
-           <div class="col-lg-4 col-md-12">
-               {{ form.first_name | as_crispy_field }}
-           </div>
-           <div class="col-lg-4 col-md-12">
-               {{ form.last_name | as_crispy_field }}
-           </div>
-           <div class="col-lg-4 col-md-12">
-               {{ form.date_of_birth | as_crispy_field }}
            </div>
         </div>
         <div class="row  align-items-end">
