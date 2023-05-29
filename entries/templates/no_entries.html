@@ -15,9 +15,26 @@
 
 
 {% block extra_css %}
+<style>
+ul.hozlist {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
 
+.hozlist li {
+  float: left;
+}
+
+.hozlist li a {
+  display: block;
+  text-align: left;
+  padding: 16px;
+  text-decoration: none;
+}
+</style>
 {% endblock %}
-
 {% block extra_js %}
 
 
@@ -37,8 +54,12 @@
     </div>
     {% endif %}
 
-    <h2>View Previous Years Entries</h2>
+   <ul class="hozlist">
+        <li><a href="?year=2021">2021</a></li>
+        <li><a href="?year=2022">2022</a></li>
+    </ul>
 
+    <h2>View {{view_year}} Entries</h2>
 
     <div class="card-body p-0 overflow-hidden">
       <div class="row g-0">
