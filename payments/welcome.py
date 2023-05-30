@@ -30,7 +30,7 @@ from nlpa.settings.config import EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWOR
 
 def send_email(data):
 
-
+    print('trying to send email')
     # Define the source and target email address.
 
 
@@ -149,7 +149,7 @@ def send_email(data):
 
 
 
-
+    print('trying to send')
     # Create an smtplib.SMTP object to send the email.
     smtp = smtplib.SMTP()
     # Connect to the SMTP server.

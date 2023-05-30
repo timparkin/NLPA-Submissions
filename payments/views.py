@@ -45,15 +45,12 @@ def payment_plan_confirm(request):
     return render(request, 'paymentplanconfirm.html')
 
 
-# CONFIRM CHOICES ##########################################
-@login_required
-def payment_plan_confirm_youth(request):
-    return render(request, 'paymentplanconfirm_youth.html')
-
-
 @login_required
 def payment_upgrade_confirm(request):
 
+
+
+    print(request.user.coupon)
     if request.user.payment_plan is not None:
         payment_plan = json.loads(request.user.payment_plan)
     else:
@@ -81,6 +78,7 @@ def payment_upgrade_confirm(request):
     request.session['upgrade_price'] = '${:.0f}'.format( request.session['upgrade_price'] )
     request.session['total_entries'] = request.session['number_of_additional_entries'] + entries
     request.session['total_portfolios'] = request.session['number_of_additional_portfolios'] + portfolios
+    request.session['coupon'] = request.user.coupon
 
 
     return render(request, 'paymentupgradeconfirm.html')
@@ -141,6 +139,8 @@ def create_checkout_session(request):
 @login_required
 def create_checkout_session_upgrade(request):
     if request.method == 'GET':
+
+
         domain_url = settings.BASE_URL
         stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -174,15 +174,15 @@ def create_checkout_session_upgrade(request):
                     }
                 )
 
-            if request.session['coupon_product'] is not True and request.GET.get('orderbookcoupon') == 'true':
+            if request.GET.get('coupon') == 'true':
                 line_items.append(
                     {
                         'quantity': 1,
                         'price': coupon_product['price_id']
                     }
                 )
-            if request.session['coupon_product'] is False:
-                request.session['coupon_product'] = request.GET.get('orderbookcoupon') == 'true'
+            print(request.GET.get('coupon'))
+            request.session['coupon_product'] = request.GET.get('coupon') == 'true'
 
             checkout_session = stripe.checkout.Session.create(
                 client_reference_id=request.user.id if request.user.is_authenticated else None,
@@ -327,9 +327,9 @@ def success(request):
         request.session['gtag'] = ''
 
     coupon_code = None
-    print(request.session)
+
     if request.session['coupon_product']:
-        print(WOO_CONSUMER_KEY,WOO_CONSUMER_SECRET)
+
         wcapi = API(
             url="https://naturallandscapeawards.com/",
             consumer_key=WOO_CONSUMER_KEY,
@@ -351,7 +351,7 @@ def success(request):
         }
 
         result = wcapi.post("coupons", data).json()
-        print(result)
+
 
 
     request.user.payment_status='payment_pending %s'%datetime.datetime.now()
@@ -360,6 +360,7 @@ def success(request):
     if request.user.payment_upgrade_status is not None:
         if 'checkingout' in request.user.payment_upgrade_status or 'checkout.session.completed' in request.user.payment_upgrade_status:
             request.user.payment_plan = request.user.payment_upgrade_plan
+
 
     request.user.save()
 
@@ -380,6 +381,10 @@ def success(request):
     welcome.send_email(user_dict)
 
     request.session['nextpage'] = 'entries'
+
+    # How we know the
+    request.user.coupon = coupon_code
+    request.user.save()
 
     return render(request, 'success.html')
 
