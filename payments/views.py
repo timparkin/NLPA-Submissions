@@ -236,9 +236,9 @@ def success(request):
 
     gtag_entry_item = """
     {
-      "id": "%(item_id)s",
-      "name": "%(item_desc)s",
-      "category": "entry",
+      "item_id": "%(item_id)s",
+      "item_name": "%(item_desc)s",
+      "item_category": "entry",
       "quantity": 1,
       "price": %(item_unit_price)s
     }
@@ -246,9 +246,9 @@ def success(request):
 
     gtag_portfolio_item = """
     {
-      "id": "%(item_id)s",
-      "name": "%(item_desc)s",
-      "category": "portfolio",
+      "item_id": "%(item_id)s",
+      "item_name": "%(item_desc)s",
+      "item_category": "portfolio",
       "quantity": %(quantity)s,
       "price": %(item_unit_price)s
     }
@@ -256,9 +256,9 @@ def success(request):
 
     gtag_coupon_item = """
         {
-          "id": "%(item_id)s",
-          "name": "%(item_desc)s",
-          "category": "coupon",
+          "item_id": "%(item_id)s",
+          "item_name": "%(item_desc)s",
+          "item_category": "coupon",
           "quantity": 1,
           "price": %(item_unit_price)s
         }
