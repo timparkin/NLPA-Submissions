@@ -27,6 +27,8 @@ class CustomUser(AbstractUser):
     twitter = models.CharField(verbose_name=_("Twitter"), max_length=1024, blank=True, null=True, default='')
     Facebook = models.CharField(verbose_name=_("Facebook"), max_length=1024, blank=True, null=True, default='')
     facebook = models.CharField(verbose_name=_("Facebook"), max_length=1024, blank=True, null=True, default='')
+    social_media_type = models.CharField(verbose_name=_("Social Media Type"), max_length=1024, blank=True, null=True, default='')
+    social_media_link = models.CharField(verbose_name=_("Social Media Link"), max_length=1024, blank=True, null=True, default='')
     marketing_prefs = models.CharField(verbose_name=_("Marketing Preferences"), max_length=4096, blank=True, null=True)
     photo = models.ImageField(verbose_name=_("Photo"), upload_to='photos/', default='photos/default-user-avatar.png')
     website = models.CharField(verbose_name=_("Main Website"), max_length=1024, blank=True, null=True, default='')
