@@ -750,6 +750,8 @@ def missing_raws(request):
                 except ValueError as e:
                     eu5 = ''
 
+
+
                 user_entry = {
                   'entry_id':  entry.id,
                   'entry_category': entry.category,
@@ -758,6 +760,7 @@ def missing_raws(request):
                   'entry_url': entry.photo.url,
                   'entry_photo_dimensions': entry.photo_dimensions,
                   'entry_photo_size': entry.photo_size,
+                  'entry_special_award': json.dumps( entry.special_award ),
                   'in_second_round': entry.in_second_round,
                   'evidence_file_1': entry.evidence_file_1.name[5:],
                   'evidence_file_2': entry.evidence_file_2.name[5:],
