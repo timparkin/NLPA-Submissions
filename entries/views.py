@@ -174,9 +174,9 @@ def get_entries(request):
 class ProjectDescription(forms.Form):
     title = forms.CharField(required=False)
     description = forms.CharField(help_text="Please enter a description of your project", widget=forms.Textarea(attrs={
-                'rows': '5',
+                'rows': '7',
                 'cols': '90',
-                'maxlength': '1000',
+                'maxlength': '2000',
             }),required=False)
 
 class GetPortfolios(LoginRequiredMixin, View):
