@@ -22,7 +22,7 @@
 }
 
 .populated { display: inline; }
-.unpopulated { dusplay: inline; }
+.unpopulated { display: inline; }
 
 </style>
 {% endblock %}
@@ -62,7 +62,17 @@
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"></script>
 
 
+
+
+
+
 <form action="/secondround/" method="post" enctype="multipart/form-data" style="display:block;" id="entries-form">
+
+<h2>Public Information</h2>
+<p>Please add your details in here as you would like them shown should we share your photograph on social media or on our web page.</p>
+    {% csrf_token %}
+    {{ user_details|crispy }}
+<h2 style="padding-top:40px">Raw File Upload</h2>
     {% csrf_token %}
     {{ formset.management_form }}
     {{ formset.non_form_errors.as_ul }}

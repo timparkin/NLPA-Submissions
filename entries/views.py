@@ -744,9 +744,18 @@ class PreviousYears(LoginRequiredMixin, View):
 
         return render(request, self.template_name, self.get_context_data(**ctxt))
 
+
+class UserDetails(forms.Form):
+    display_name = forms.CharField(required=False)
+    location = forms.CharField(required=False)
+    facebook = forms.CharField(required=False)
+    instagram = forms.CharField(required=False)
+    website = forms.CharField(required=False)
+
+
 @login_required
 def get_raws(request):
-
+    ctxt = {}
 
     payment_status = request.user.payment_status
     if payment_status is None or ('checkout.session.completed' not in payment_status and 'payment_pending' not in payment_status):
@@ -794,6 +803,34 @@ def get_raws(request):
 
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
+
+        # Capture user details to make sure we have them for social media
+        user_details = UserDetails(request.POST)
+        if user_details.is_valid():
+
+            display_name = user_details.cleaned_data['display_name']
+            location = user_details.cleaned_data['location']
+            facebook = user_details.cleaned_data['facebook']
+            instagram = user_details.cleaned_data['instagram']
+            website = user_details.cleaned_data['website']
+
+            request.user.display_name = display_name
+            request.user.location = location
+            request.user.facebook = facebook
+            request.user.instagram = instagram
+            request.user.website = website
+
+            request.user.save()
+
+        else:
+            ctxt['user_details'] = UserDetails(initial={
+                'display_name': request.user.display_name,
+                'location': request.user.location,
+                'facebook': request.user.facebook,
+                'instagram': request.user.instagram,
+                'website': request.user.website,
+            })
+
 
         # create a form instance and populate it with data from the request:
         form = EntryInlineFormSet(request.POST, request.FILES, instance=user, queryset=Entry.objects.filter(year=CURRENT_YEAR, in_second_round=True))
@@ -851,5 +888,13 @@ def get_raws(request):
     # if a GET (or any other method) we'll create a blank form
     else:
         form = EntryInlineFormSet(instance=user, queryset=Entry.objects.filter(year=CURRENT_YEAR, in_second_round=True))
-
-    return render(request, 'secondround.html', {'formset': form, 'ENTRIES_CLOSED': ENTRIES_CLOSED})
+        # Set up the user details form
+        ctxt['user_details'] = UserDetails(initial={
+                'display_name': request.user.display_name,
+                'location': request.user.location,
+                'facebook': request.user.facebook,
+                'instagram': request.user.instagram,
+                'website': request.user.website,
+            })
+    ctxt.update({'formset': form, 'ENTRIES_CLOSED': ENTRIES_CLOSED})
+    return render(request, 'secondround.html', ctxt)

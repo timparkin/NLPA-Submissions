@@ -18,6 +18,7 @@ class CustomUser(AbstractUser):
     region = models.CharField(verbose_name=_("State/Region/County"), max_length=1024, blank=True, null=True)
     zip_code = models.CharField(verbose_name=_("Postal Code"), max_length=12, blank=True, null=True)
     country = CountryField(blank=True, null=True)
+    location = models.CharField(verbose_name=_("Location"), max_length=1024, blank=True, null=True)
 
     phone_regex = RegexValidator(regex=r"^\+(?:[0-9]●?){6,14}[0-9]$", message=_("Enter a valid international mobile phone number starting with +(country code)"))
     mobile_phone = models.CharField(validators=[phone_regex], verbose_name=_("Mobile phone"), max_length=17, blank=True, null=True)
