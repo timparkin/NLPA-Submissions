@@ -1,0 +1,23 @@
+sudo apt update
+sudo apt install python3-pip postgresql postgresql-contrib libpq-dev python3-dev
+sudo pip3 install virtualenv
+
+virtualenv nlpa
+source nlpa/bin/activate
+
+git clone https://github.com/timparkin/NLPA-Submissions.git
+cd NLPA-Submissions/nlpa/settings/
+vi config.py [add in the config from live]
+cd ../../
+pip install -r requirements.txt
+
+# NEXT STEPS - create database and 
+
+sudo -u postgres createuser --interactive  --pwprompt
+sudo -u postgres createdb nlpa
+
+# and
+
+./manage.py makemigrations
+./manage.py migrate
+./manage.py createsuperuser
