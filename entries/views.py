@@ -7,6 +7,7 @@ from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.decorators.csrf import csrf_exempt
 
+
 from django.forms.models import inlineformset_factory
 from django.utils.safestring import mark_safe
 
@@ -97,6 +98,7 @@ def get_entries(request):
         return HttpResponseRedirect('/paymentplan')
     if ENTRIES_CLOSED:
         return HttpResponseRedirect('/secondround')
+
     user = request.user
     if request.user.payment_plan is not None:
         payment_plan = json.loads(request.user.payment_plan)
@@ -752,7 +754,7 @@ class UserDetails(forms.Form):
     instagram = forms.CharField(required=False)
     website = forms.CharField(required=False)
 
-
+@csrf_exempt
 @login_required
 def get_raws(request):
     ctxt = {}

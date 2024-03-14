@@ -1,0 +1,5 @@
+ $16 for 1 image
+ $44 for 6 images
+ $66 for 12 images
+ $110 for 18 images
+ $33 for projects
