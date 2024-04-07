@@ -1,10 +1,11 @@
 from django.conf import settings
+from django.conf.urls import url
 from django.urls import include, path, re_path
 from django.contrib import admin
 from django.views import static
 
 from wagtail.admin import urls as wagtailadmin_urls
-from wagtail import urls as wagtail_urls
+from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
 from search import views as search_views
@@ -15,13 +16,12 @@ from entries import views as eviews
 urlpatterns = [
     path('', eviews.get_entries, name='entries'),
     path('faq/', views.FAQPageView.as_view(), name='faq'),
-    re_path(r'^.well-known/pki-validation/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/nlpa/static/pki-validation"}),
+    url(r'^.well-known/pki-validation/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/nlpa/static/pki-validation"}),
 
 
 
     path('admin/', include(wagtailadmin_urls)),
     path('documents/', include(wagtaildocs_urls)),
-    path("django-admin/", include('loginas.urls')),
     path('django-admin/', admin.site.urls),
     path('search/', search_views.search, name='search'),
 
@@ -40,12 +40,15 @@ urlpatterns = [
 
     path('accounts/', include('userauth.urls')),
     path('accounts/', include('allauth.urls')),
-    re_path(r'^assets/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/nlpa/static/public/assets"}),
-    re_path(r'^vendors/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/nlpa/static/public/vendors"}),
-    re_path(r'^apps/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/nlpa/static/public/apps"}),
+
+    url(r'^assets/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/nlpa/static/public/assets"}),
+    url(r'^vendors/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/nlpa/static/public/vendors"}),
+    url(r'^apps/(?P<path>.*)$', static.serve, {'document_root': settings.BASE_DIR + "/nlpa/static/public/apps"}),
+
 # urls.py
 
 ]
+urlpatterns += path("django-admin/", include('loginas.urls')),
 
 
 if settings.DEBUG:
@@ -55,8 +58,6 @@ if settings.DEBUG:
     # Serve static and media files from development server
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += staticfiles_urlpatterns()
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns = urlpatterns + [
 

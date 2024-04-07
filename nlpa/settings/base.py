@@ -15,9 +15,9 @@ import os
 from .config import *
 
 
-import django
-from django.utils.encoding import smart_str
-django.utils.encoding.smart_text = smart_str
+#import django
+#from django.utils.encoding import smart_str
+#django.utils.encoding.smart_text = smart_str
 
 
 SITE_ID = 1
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'wagtail.images',
     'wagtail.search',
     'wagtail.admin',
-    'wagtail',
+    'wagtail.core',
     'wagtail.contrib.modeladmin',
 
     'modelcluster',
@@ -160,7 +160,7 @@ STATICFILES_DIRS = [
 # STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 MEDIA_ROOT = '/data/www/nlpa'
 MEDIA_URL = '/media/'
