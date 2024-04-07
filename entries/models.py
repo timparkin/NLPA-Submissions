@@ -18,6 +18,8 @@ class Entry(models.Model):
         abstracts_and_details = 'AD', _('Abstracts & Details')
 
     class SpecialAward(models.TextChoices):
+        wildlife = 'EW', _('Environmental Wildlife')
+        creative = 'CI', _('Creative Icon')
         common_places = 'CP', _('Common Places')
         mountains = 'M', _('Mountains')
         water_worlds = 'W', _('Water Worlds')
