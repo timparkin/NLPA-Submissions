@@ -4,7 +4,7 @@ Hello {{name}},
 Thanks for entering the Natural Landscape Photography Awards (NLPA) — it’s great to have you onboard!
 
 A few things to note now that you've entered:
-* Entries close on July 31 and can be changed at any time between now and then! To learn more about key dates, check out this page. (https://naturallandscapeawards.com/key-dates/)
+* Entries close on May 31 and can be changed at any time between now and then! To learn more about key dates, check out this page. (https://naturallandscapeawards.com/key-dates/)
 * Once you upload your photos, there is no need to "submit" them in the system. If you can see thumbnails in the entry system, then you are all set! 
 * If you decide you want to enter more photographs or an additional project, fear not. You can upgrade your entry choice at anytime by logging in and choosing "upgrade."
 {% if coupon_code %}* Don't forget your coupon code for 50% off our book store until end of Jan 2024!  {{ coupon_code }}{%  endif %}

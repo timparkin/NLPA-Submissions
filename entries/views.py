@@ -90,8 +90,8 @@ class FileWidget(forms.widgets.ClearableFileInput):
 @login_required
 def get_entries(request):
 
-
-
+    for k,v in request.session.items():
+        print(k,v)
 
     payment_status = request.user.payment_status
     if payment_status is None or ('checkout.session.completed' not in payment_status and 'payment_pending' not in payment_status):
