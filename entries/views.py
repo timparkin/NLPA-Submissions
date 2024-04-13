@@ -30,6 +30,8 @@ from . import confirmation
 
 from multiselectfield import MultiSelectField
 
+import re
+
 class ValidateImagesModelFormset(BaseInlineFormSet):
     def clean(self):
         super().clean()
@@ -543,7 +545,11 @@ class ConfirmationEmail(LoginRequiredMixin, View):
             'entries': user.entry_set.filter( year=CURRENT_YEAR, category__in=category_list )
         }
 
-        confirmation.send_email(user_dict)
+        
+        try:
+            confirmation.send_email(user_dict)
+        except smtplib.SMTPNotSupportedError:
+            pass
 
         return HttpResponseRedirect('/confirmationemail/')
 
@@ -606,7 +612,7 @@ class PreviousYears(LoginRequiredMixin, View):
                 plantext += "%s project entries"%portfolios_plan
         print(user_year)
         if user_year.year == 2021:
-            prefix = 'https://r8a7z2p5.stackpathcdn.com/'
+            prefix = 'https://nlpa-website-bucket.s3.amazonaws.com/'
             category_set = ['GL', 'IA', 'N', 'A']
         else:
             prefix = 'https://submit.naturallandscapeawards.com/media/'
@@ -639,6 +645,9 @@ class PreviousYears(LoginRequiredMixin, View):
         entries_too_small = 0
         for entry in entries:
             print(entry.photo_dimensions)
+            #if user_year.year > 2021:
+                #entry.photo.name = re.sub(r'^entries', 'Xentries-%s'%str(user_year.year), entry.photo.name)
+
             if 'x' in entry.photo_dimensions:
                 wtext,htext = entry.photo_dimensions.split(' x ')
                 w = int(wtext)

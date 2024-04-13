@@ -150,6 +150,7 @@ def send_email(data):
     smtp = smtplib.SMTP()
     # Connect to the SMTP server.
     smtp.connect('smtp.mandrillapp.com',587)
+    smtp.starttls()
     # Login to the SMTP server with username and password.
     smtp.login('onlandscape', '5fsiQVBElAkYtbcbFmXx1g')
     # Send email with the smtp object sendmail method.

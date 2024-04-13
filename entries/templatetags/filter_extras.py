@@ -25,6 +25,12 @@ def limit_length_tooltip(value):
     else:
         return value
 
+@register.filter
+@stringfilter
+def strip_entries_prefix(value):
+    if value.startswith('entries/'):
+        value = value[8:]
+    return value
 
 @register.filter
 @stringfilter
@@ -49,7 +55,7 @@ def gravatar(email, size=40):
 @register.filter
 def s3toCDN(value):
     """changes s3 links to CDN links"""
-    return value.replace('https://nlpa-website-bucket.s3.amazonaws.com', 'https://r8a7z2p5.stackpathcdn.com')
+    return value.replace('https://nlpa-website-bucket.s3.amazonaws.com', 'https://nlpa-website-bucket.s3.amazonaws.com')
 
 @register.filter
 def decodestatus(value):

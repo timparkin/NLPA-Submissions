@@ -60,6 +60,21 @@ def send_email(data):
     msgRoot.attach(msgAlternative)
 
 
+    # THIS IS THE TEXT BLOCK
+    tdata =  {
+        'name': data['name'],
+        'email': data['email'],
+        'coupon_code': data['coupon_code'],
+        'subject': msgRoot['Subject'],
+        }
+
+    # Create a MIMEText object, this object contains the plain text content.
+    txt_email = open('%s/payments/welcome.txt'%BASE_DIR).read()
+    txt_email = Template(txt_email)
+
+    msgText = MIMEText(txt_email.render(**tdata))
+    # Attach the MIMEText object to the msgAlternative object.
+    msgAlternative.attach(msgText)
 
     # Create a MIMEText object to contains the email Html content. There is also an image in the Html content. The image cid is image1.
     #html_email = Template(open('payments/welcome.html').read())
@@ -94,20 +109,6 @@ def send_email(data):
 
     msgAlternative.attach(msgText)
 
-    tdata =  {
-        'name': data['name'],
-        'email': data['email'],
-        'coupon_code': data['coupon_code'],
-        'subject': msgRoot['Subject'],
-        }
-
-    # Create a MIMEText object, this object contains the plain text content.
-    txt_email = open('%s/payments/welcome.txt'%BASE_DIR).read()
-    txt_email = Template(txt_email)
-
-    msgText = MIMEText(txt_email.render(**tdata))
-    # Attach the MIMEText object to the msgAlternative object.
-    msgAlternative.attach(msgText)
 
 
     # ADDING EMBEDDED IMAGES!!!
@@ -154,6 +155,7 @@ def send_email(data):
     smtp = smtplib.SMTP()
     # Connect to the SMTP server.
     smtp.connect(EMAIL_HOST,EMAIL_PORT)
+    smtp.starttls()
     # Login to the SMTP server with username and password.
     smtp.login(EMAIL_HOST_USER , EMAIL_HOST_PASSWORD)
     # Send email with the smtp object sendmail method.

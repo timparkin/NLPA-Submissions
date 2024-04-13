@@ -84,10 +84,10 @@
         <p>Out of these images: </p>
         <ul>
           {%if entries_perfect > 0 %}
-          <li style="color: #003300">{{entries_perfect|isare}} the recommended size of 4000px on the long edge</li>
+          <li style="color: #003300">{{entries_perfect|isare}} the recommended size of 4000px on the long edge and hence perfect</li>
           {%endif%}
           {%if entries_acceptable > 0 %}
-          <li style="color: #d0730d">{{entries_acceptable|isare}} above 3000px on the long edge and hence acceptable</li>
+          <li style="color: #d0730d">{{entries_acceptable|isare}} above 3000px on the long edge. Near or exactly 4000px is recommended.</li>
           {%endif%}
           {%if entries_exceed_max > 0 %}
           <li style="color: #800000">{{entries_exceed_max|isare}} above the 4000px max size</li>

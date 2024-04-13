@@ -58,6 +58,7 @@ ul.hozlist {
     <ul class="hozlist">
         <li><a href="?year=2021">2021</a></li>
         <li><a href="?year=2022">2022</a></li>
+        <li><a href="?year=2023">2023</a></li>
     </ul>
 
     <h2>View {{view_year}} Entries</h2>
@@ -78,10 +79,16 @@ ul.hozlist {
       <div class="row">
         <div class="col-sm-3 col-md-2">
           <div class="position-relative h-sm-100">
-
-            <a class="d-block h-100" href="{{ prefix }}{{ entry.photo }}">
-              <img class="img-fluid  absolute-sm-centered" src="{{ prefix }}{{ entry.photo }}" alt="" />
+{% if view_year == 2021 %}
+            <a class="d-block h-100" href="{{ prefix }}{{entry.photo}}">
+              <img class="img-fluid  absolute-sm-centered" src="{{ prefix }}{{entry.photo}}" alt="" />
             </a>
+{% else %}
+            <a class="d-block h-100" href="{{ prefix }}/entries-{{view_year}}/{{entry.filename|strip_entries_prefix}}">
+              <img class="img-fluid  absolute-sm-centered" src="{{ prefix }}/entries-{{view_year}}/{{entry.filename|strip_entries_prefix}}" alt="" />
+            </a>
+
+{% endif %}
 
           </div>
         </div>
@@ -137,9 +144,16 @@ ul.hozlist {
     <div class="col-sm-3 col-md-2">
       <div class="position-relative h-sm-100">
 
-        <a class="d-block h-100" href="{{ prefix }}{{ entry.photo }}">
-          <img class="img-fluid  absolute-sm-centered" src="{{ prefix }}{{ entry.photo }}" alt="" />
-        </a>
+{% if view_year == 2021 %}
+            <a class="d-block h-100" href="{{ prefix }}{{entry.photo}}">
+              <img class="img-fluid  absolute-sm-centered" src="{{ prefix }}{{entry.photo}}" alt="" />
+            </a>
+{% else %}
+            <a class="d-block h-100" href="{{ prefix }}/entries-{{view_year}}/{{entry.filename}}">
+              <img class="img-fluid  absolute-sm-centered" src="{{ prefix }}/entries-{{view_year}}/{{entry.filename}}" alt="" />
+            </a>
+
+{% endif %}
 
       </div>
     </div>

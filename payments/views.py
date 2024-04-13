@@ -14,7 +14,7 @@ import logging
 from nlpa.settings.config import entry_products, portfolio_products, coupon_product, GOOGLEANALYTICS, ENTRIES_CLOSED, PROJECT_DIR, BASE_DIR, WOO_CONSUMER_KEY, WOO_CONSUMER_SECRET
 import random
 from woocommerce import API
-
+import smtplib
 from . import welcome
 
 logger = logging.getLogger(__name__)
@@ -72,10 +72,12 @@ def payment_upgrade_confirm(request):
         float(
             portfolio_products[ str(portfolios) ]['price'] )/100
 
-    request.session['upgrade_price'] = new_total - original_total
-    request.session['upgrade_price'] = '${:.0f}'.format( request.session['upgrade_price'] )
-    request.session['total_entries'] = request.session['number_of_additional_entries'] + entries
-    request.session['total_portfolios'] = request.session['number_of_additional_portfolios'] + portfolios
+    request.session['entries'] = str(payment_plan['entries'])
+    request.session['portfolios'] = str(payment_plan['portfolios'])
+
+    request.session['upgrade_price'] = '${:.0f}'.format( new_total - original_total )
+    request.session['total_entries'] = str(request.session['number_of_additional_entries'] + entries)
+    request.session['total_portfolios'] = str(request.session['number_of_additional_portfolios'] + portfolios)
     request.session['coupon'] = request.user.coupon
 
 
@@ -263,15 +265,28 @@ def success(request):
         }
 """
     sn = ''
-    
-    try:
-        number_of_entries = request.session['number_of_entries']
-        number_of_portfolios = request.session['number_of_portfolios']
-    except KeyError as e:
+  
+
+    if 'number_of_entries' in request.session:
+
+        if 'entries' in request.session and  request.session['entries'] > request.session['number_of_entries']:
+            number_of_entries = request.session['entries']
+        else:
+            number_of_entries = request.session['number_of_entries']
+    else:
         number_of_entries = request.session['entries']
+
+    if 'number_of_portfolios' in request.session:
+
+        if 'portfolios' in request.session and request.session['portfolios'] > request.session['number_of_portfolios']:
+            number_of_portfolios = request.session['portfolios']
+        else:
+            number_of_portfolios = request.session['number_of_portfolios']
+
+    else:
         number_of_portfolios = request.session['portfolios']
-    
-    
+
+ 
     
     if 'number_of_additional_entries' in request.session:
         addentries = True
@@ -373,8 +388,10 @@ def success(request):
     'coupon_code': coupon_code,
     }
 
-    welcome.send_email(user_dict)
-
+    try: 
+        welcome.send_email(user_dict)
+    except smtplib.SMTPNotSupportedError:
+        pass
     request.session['nextpage'] = 'entries'
     if addentries:
         request.session['htmlid'] = 'addentries_true'
