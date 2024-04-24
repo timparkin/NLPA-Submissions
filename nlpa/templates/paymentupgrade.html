@@ -144,12 +144,14 @@ var portfolio_price_dict = {
 
 var discount=1.0;
 
+zero = "#choice-zero .btn";
 one = "#choice-one .btn";
 six = "#choice-six .btn";
 twelve = "#choice-twelve .btn";
 eighteen = "#choice-eighteen .btn";
 
 vmap = {
+  0: zero,
   1: one,
   6: six,
   12: twelve,
@@ -269,7 +271,7 @@ $(document).ready(function(){
       set_entry_val(0);
       disable_entry(one);
     } else {
-      set_entry_val(6);
+      set_entry_val(1);
       enable_entry(one);
     }
     set_total();
