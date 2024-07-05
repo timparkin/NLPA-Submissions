@@ -759,8 +759,9 @@ class PreviousYears(LoginRequiredMixin, View):
 
 
 class UserDetails(forms.Form):
-    display_name = forms.CharField(required=False)
-    location = forms.CharField(required=False)
+    display_name = forms.CharField(label="Your name", max_length=1024, help_text="How you want your name to appear in social media or press releases")
+    location = forms.CharField(label="Residence", max_length=1024, help_text = "Where you live as it will appear on our social media and press releases (e.g. 'California, US' or 'Yorkshire, UK'")
+    bio = forms.CharField(label="Short Bio", max_length=4096, help_text = "A short profile of yourself as it will appear on our social media and press releases. One or two sentences please. Start with '<your_name> is ... '. e.g. 'Tim is ... ' or 'Tim has ... ' etc", widget=forms.Textarea(attrs={'rows':4}))
     facebook = forms.CharField(required=False)
     instagram = forms.CharField(required=False)
     website = forms.CharField(required=False)
@@ -826,12 +827,14 @@ def get_raws(request):
             facebook = user_details.cleaned_data['facebook']
             instagram = user_details.cleaned_data['instagram']
             website = user_details.cleaned_data['website']
+            bio = user_details.cleaned_data['bio']
 
             request.user.display_name = display_name
             request.user.location = location
             request.user.facebook = facebook
             request.user.instagram = instagram
             request.user.website = website
+            request.user.bio = bio
 
             request.user.save()
 
@@ -842,6 +845,7 @@ def get_raws(request):
                 'facebook': request.user.facebook,
                 'instagram': request.user.instagram,
                 'website': request.user.website,
+                'bio': request.user.bio,
             })
 
 
@@ -908,6 +912,7 @@ def get_raws(request):
                 'facebook': request.user.facebook,
                 'instagram': request.user.instagram,
                 'website': request.user.website,
+                'bio': request.user.bio,
             })
     ctxt.update({'formset': form, 'ENTRIES_CLOSED': ENTRIES_CLOSED})
     return render(request, 'secondround.html', ctxt)
