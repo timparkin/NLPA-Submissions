@@ -85,6 +85,10 @@ ul.hozlist {
             <a class="d-block h-100" href="{{ prefix }}{{entry.photo}}">
               <img class="img-fluid  absolute-sm-centered" src="{{ prefix }}{{entry.photo}}" alt="" />
             </a>
+{% elif view_year == 2023 %}
+            <a class="d-block h-100" href="{{ prefix }}/entries-{{view_year}}/{{entry.photo|strip_entries_prefix}}">
+              <img class="img-fluid  absolute-sm-centered" src="{{ prefix }}/entries-{{view_year}}/{{entry.photo|strip_entries_prefix}}" alt="" />
+            </a>
 {% else %}
             <a class="d-block h-100" href="{{ prefix }}/entries-{{view_year}}/{{entry.filename|strip_entries_prefix}}">
               <img class="img-fluid  absolute-sm-centered" src="{{ prefix }}/entries-{{view_year}}/{{entry.filename|strip_entries_prefix}}" alt="" />
@@ -149,6 +153,10 @@ ul.hozlist {
 {% if view_year == 2021 %}
             <a class="d-block h-100" href="{{ prefix }}{{entry.photo}}">
               <img class="img-fluid  absolute-sm-centered" src="{{ prefix }}{{entry.photo}}" alt="" />
+            </a>
+{% elif view_year == 2023 %}
+            <a class="d-block h-100" href="{{ prefix }}/entries-{{view_year}}/{{entry.photo}}">
+              <img class="img-fluid  absolute-sm-centered" src="{{ prefix }}/entries-{{view_year}}/{{entry.photo}}" alt="" />
             </a>
 {% else %}
             <a class="d-block h-100" href="{{ prefix }}/entries-{{view_year}}/{{entry.filename}}">
