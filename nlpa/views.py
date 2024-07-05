@@ -18,7 +18,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django_thumbor import generate_url
 from mailchimp3 import MailChimp
 from .data import  *
-from nlpa.settings.config import ENTRIES_CLOSED
+from nlpa.settings.config import ENTRIES_CLOSED, SECOND_ROUND_OPEN
 from nlpa.settings.base import MEDIA_ROOT
 
 from django.core.files.storage import FileSystemStorage
@@ -79,25 +79,22 @@ def get_paymentplan(request):
             request.session['youth_entry'] = form.cleaned_data['youth_entry']
 
             # redirect to a new URL:
-            if request.user.is_young_entrant =='True':
-                return HttpResponseRedirect('/paymentplanconfirm_youth/')
-            else:
-                return HttpResponseRedirect('/paymentplanconfirm/')
+            return HttpResponseRedirect('/paymentplanconfirm/')
     # if a GET (or any other method) we'll create a blank form
     else:
         form = PaymentPlanForm()
 
 
-    if request.user.is_young_entrant == 'True':
-        return render(request, 'paymentplan_youth.html', {'form': form})
+
+    if ENTRIES_CLOSED:
+        return render(request, 'paymentsclosed.html', {'form': form})
     else:
         return render(request, 'paymentplan.html', {'form': form})
-
 
 @login_required
 def get_paymentupgrade(request):
 
-    if ENTRIES_CLOSED:
+    if SECOND_ROUND_OPEN:
         return HttpResponseRedirect('/secondround')
 
 
@@ -166,8 +163,10 @@ def get_paymentupgrade(request):
                 'number_of_portfolios': portfolios,
                 'youth_entry': is_young_entrant,
                 })
-
-    return render(request, 'paymentupgrade.html', {'form': form})
+    if ENTRIES_CLOSED:
+        return render(request, 'paymentsclosed.html', {'form': form})
+    else:
+        return render(request, 'paymentupgrade.html', {'form': form})
 
 def get_text_dimensions(text_string, font):
     # https://stackoverflow.com/a/46220683/9263761
@@ -424,9 +423,9 @@ def datamining_child(request):
     db_users = clean_db_users(User.objects.all())
 
     # GET MAILCHIMP USERS
-    mailchimp_api_key = settings.MAILCHIMP_API_KEY
-    client = MailChimp(mc_api=mailchimp_api_key,mc_user='naturallandscapeawards')
-    mc_users = clean_mc_users(client.lists.members.all('06156c9627',get_all=True, fields="members.email_address,members.id,members.tags"))
+    #mailchimp_api_key = settings.MAILCHIMP_API_KEY
+    #client = MailChimp(mc_api=mailchimp_api_key,mc_user='naturallandscapeawards')
+    #mc_users = clean_mc_users(client.lists.members.all('06156c9627',get_all=True, fields="members.email_address,members.id,members.tags"))
 
 
     # STRIPE SESSION USERS
@@ -436,12 +435,6 @@ def datamining_child(request):
     # STRIPE CUSTOMERS
     sc_users = clean_sc_users(stripe.Customer.list(limit=100))
 
-
-    for email, mc_user in mc_users.items():
-        if email in  db_users:
-            db_users[email].update(mc_user)
-        else:
-            db_users[email] = mc_user
 
     for email, ss_user in ss_users.items():
         if email in db_users:
@@ -498,7 +491,7 @@ def datamining_child_entries(request):
     # GET MAILCHIMP USERS
     mailchimp_api_key = settings.MAILCHIMP_API_KEY
     client = MailChimp(mc_api=mailchimp_api_key,mc_user='naturallandscapeawards')
-    mc_users = clean_mc_users(client.lists.members.all('06156c9627',get_all=True, fields="members.email_address,members.id,members.tags"))
+    #mc_users = clean_mc_users(client.lists.members.all('06156c9627',get_all=True, fields="members.email_address,members.id,members.tags"))
 
 
     # STRIPE SESSION USERS
@@ -509,11 +502,11 @@ def datamining_child_entries(request):
     sc_users = clean_sc_users(stripe.Customer.list(limit=100))
 
 
-    for email, mc_user in mc_users.items():
-        if email in  db_users:
-            db_users[email].update(mc_user)
-        else:
-            db_users[email] = mc_user
+#    for email, mc_user in mc_users.items():
+#        if email in  db_users:
+#            db_users[email].update(mc_user)
+#        else:
+#            db_users[email] = mc_user
 
     for email, ss_user in ss_users.items():
         if email in db_users:
@@ -675,7 +668,7 @@ def missing_raws(request):
     # GET MAILCHIMP USERS
     mailchimp_api_key = settings.MAILCHIMP_API_KEY
     client = MailChimp(mc_api=mailchimp_api_key,mc_user='naturallandscapeawards')
-    mc_users = clean_mc_users(client.lists.members.all('06156c9627',get_all=True, fields="members.email_address,members.id,members.tags"))
+    #mc_users = clean_mc_users(client.lists.members.all('06156c9627',get_all=True, fields="members.email_address,members.id,members.tags"))
 
 
     # STRIPE SESSION USERS
@@ -686,11 +679,11 @@ def missing_raws(request):
     sc_users = clean_sc_users(stripe.Customer.list(limit=100))
 
 
-    for email, mc_user in mc_users.items():
-        if email in  db_users:
-            db_users[email].update(mc_user)
-        else:
-            db_users[email] = mc_user
+    #for email, mc_user in mc_users.items():
+    #    if email in  db_users:
+    #        db_users[email].update(mc_user)
+    #    else:
+    #        db_users[email] = mc_user
 
     for email, ss_user in ss_users.items():
         if email in db_users:
