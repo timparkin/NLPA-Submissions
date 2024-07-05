@@ -153,6 +153,10 @@ vi nlpa/settings/config.py ( and change the database name to the above)
 
 run it !!!!
 
+
+# Don't forget to makemigrations and migrate because of new categories
+./manage makemigrations; 
+./manage migrate;
 # How to change year
 change the CURRENT_YEAR setting in config to the new Year
 use the django command 'update_year' to update all of the users (./manage.py update_year)
