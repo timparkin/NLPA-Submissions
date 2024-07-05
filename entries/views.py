@@ -24,7 +24,7 @@ from django.db.models import Q
 
 from django.core.exceptions import ValidationError
 from django.core.files.images import get_image_dimensions
-from nlpa.settings.config import entry_products, portfolio_products, ENTRIES_CLOSED, CURRENT_YEAR
+from nlpa.settings.config import entry_products, portfolio_products, ENTRIES_CLOSED, UPLOADS_CLOSED, CURRENT_YEAR
 
 from . import confirmation
 
@@ -98,7 +98,7 @@ def get_entries(request):
     payment_status = request.user.payment_status
     if payment_status is None or ('checkout.session.completed' not in payment_status and 'payment_pending' not in payment_status):
         return HttpResponseRedirect('/paymentplan')
-    if ENTRIES_CLOSED:
+    if UPLOADS_CLOSED:
         return HttpResponseRedirect('/secondround')
 
     user = request.user
@@ -126,6 +126,7 @@ def get_entries(request):
                                 })
 
     request.session['ENTRIES_CLOSED'] = ENTRIES_CLOSED
+    request.session['UPLOADS_CLOSED'] = UPLOADS_CLOSED
 
 
 
@@ -173,7 +174,7 @@ def get_entries(request):
         form = EntryInlineFormSet(instance=user, queryset=Entry.objects.filter( year=CURRENT_YEAR, category__in=category_list ))
 
 
-    return render(request, 'entries.html', {'formset': form, 'ENTRIES_CLOSED': ENTRIES_CLOSED})
+    return render(request, 'entries.html', {'formset': form, 'ENTRIES_CLOSED': ENTRIES_CLOSED, 'UPLOADS_CLOSED': UPLOADS_CLOSED})
 
 class ProjectDescription(forms.Form):
     title = forms.CharField(required=False)
@@ -215,7 +216,7 @@ class GetPortfolios(LoginRequiredMixin, View):
         payment_status = request.user.payment_status
         if payment_status is None or ('checkout.session.completed' not in payment_status and 'payment_pending' not in payment_status):
             return HttpResponseRedirect('/paymentplan')
-        if ENTRIES_CLOSED:
+        if UPLOADS_CLOSED:
             return HttpResponseRedirect('/secondround')
 
         ctxt['portfolio1'] = EntryInlineFormSet(prefix='1',instance=request.user, queryset=Entry.objects.filter(year=CURRENT_YEAR, category='P1'))
@@ -225,6 +226,7 @@ class GetPortfolios(LoginRequiredMixin, View):
         ctxt['description_form2'] = ProjectDescription(prefix='2',initial={'title': request.user.project_title_two,'description': request.user.project_description_two})
         ctxt['payment_plan_portfolios'] = int(json.loads(self.request.user.payment_plan)['portfolios'])
         ctxt['ENTRIES_CLOSED'] = ENTRIES_CLOSED
+        ctxt['UPLOADS_CLOSED'] = UPLOADS_CLOSED
 
         return render(request, self.template_name, self.get_context_data(**ctxt))
 
@@ -247,7 +249,7 @@ class GetPortfolios(LoginRequiredMixin, View):
                                     'photo':ImageWidget,
                                     })
 
-        if ENTRIES_CLOSED:
+        if UPLOADS_CLOSED:
             return HttpResponseRedirect('/secondround')
 
 
