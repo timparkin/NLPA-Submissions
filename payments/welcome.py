@@ -152,7 +152,7 @@ def send_email(data):
 
     print('trying to send')
     # Create an smtplib.SMTP object to send the email.
-    smtp = smtplib.SMTP()
+    smtp = smtplib.SMTP(EMAIL_HOST)
     # Connect to the SMTP server.
     smtp.connect(EMAIL_HOST,EMAIL_PORT)
     smtp.starttls()

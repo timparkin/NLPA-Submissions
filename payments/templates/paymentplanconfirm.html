@@ -25,27 +25,26 @@
           <p>You have chosen the following entry options for a total of <strong class="lead text-primary fs-2">{{ request.session.total_price }}</strong>:</p>
           <p class="lead">Number of Individual Images = <span class="lead text-primary fs-2">{{ request.session.number_of_entries }}</span></p>
           <p class="lead">Number of Projects = <span class="lead text-primary fs-2">{{ request.session.number_of_portfolios }}</span></p>
-          <p><strong style="color: #900">You can enter your promotion code on the next page (see "Add Promotion Code")</strong></p>
 
             <div class="row g-0">
               <div class="col-12 mb-3">
                 <div class="row justify-content-center justify-content-sm-between border border-dark rounded p-3">
-                    <p><strong>For entrants this year, we wanted to provide you with the exclusive opportunity to obtain our Volume Two and Volume Three books at a significant discount, so we are offering you a limited opportunity to purchase a 50% off coupon that will be good through 2024 that can be used on any of our books, including the pre-order of the Year Four book! </strong></p>
-                    <p><strong>For $22 you can get a 50% discount coupon</strong> for any or all of our available books (including the pre-order of the Year Four book when that becomes available!). <strong>Save up to $110 on our <a style="text-decoration: underline" href="https://naturallandscapeawards.com/product-category/fine-art-photography-books/">retail prices</a>!*</strong> We'll include the code in your confirmation email.</p>
+                    <p><strong>For $22 you can get a 50% discount coupon</strong> for any or all of our available books (including the pre-order of the Year Four Five when that becomes available!). <strong>Save up to $118 on our <a style="text-decoration: underline" href="https://naturallandscapeawards.com/product-category/fine-art-photography-books/">retail prices</a>!*</strong> We'll include the code in your confirmation email.</p>
 
-                    <img src="/static/imgs/bundle-one-two-three-onwhite.jpg" style="width:300px; margin-left:auto; margin-right: auto; padding-bottom: 20px">
+                    <img src="/static/imgs/book-bundles.jpg?v=1" style="width:400px; margin-left:auto; margin-right: auto; padding-bottom: 20px">
 
                     <p style="text-align: center"><input type="checkbox" name="orderbookcoupon" id="orderbookcoupon" style="outline:0;height: 20px; width:20px; margin-left:auto; margin-right: auto;">&nbsp;Yes! I would love to purchase a <strong>50% discount coupon for $22</strong>  </p>
 
-                    <p class="mt-2 fw-light" style="text-align: center">* approx $110 saved on 3 books, $55 saved on 2 books. $20 saved on 1 book</p>
+                    <p class="mt-2 fw-light" style="text-align: center">* approx $118 saved on 4 books, $83 on 3 books and $48 saved on 2 books</p>
 
                 </div>
               </div>
             </div>
 
+          <p><strong style="color: #900">Promotion code? Enter on the next page</strong></p>
           <button class="button  btn btn-outline-primary " id="submitBtn">Purchase</button>
 
-          <p class="mt-2 fw-light">
+          <p class="mt-2">
           The plan you have chosen includes
 
           {% if request.session.number_of_entries != '0' %}

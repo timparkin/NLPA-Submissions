@@ -10,16 +10,21 @@
 
 {% block extra_js %}
 <script src="/assets/js/flatpickr.js"></script>
+<script src="https://www.google.com/recaptcha/api.js"></script>
 {% endblock %}
 
 {% block card-body %}
 
 <h3>{% trans "Sign Up" %}</h3>
 <p>... OR, if you already have an account, please log in <a href="/accounts/login" style="text-decoration: underline">here</a></p>
-<p>Please be aware that ENTRIES HAVE CLOSED and you will not be able to purchase an entry until next year</p>
+<!--<p>Please be aware that ENTRIES HAVE CLOSED and you will not be able to purchase an entry until next year</p>-->
 <br>
-
-<form method="POST" action="{% url 'account_signup' %}" class="needs-validation row g-3" novalidate>
+ <script>
+   function onSubmit(token) {
+     document.getElementById("register").submit();
+   }
+ </script>
+<form id="register" method="POST" action="{% url 'account_signup' %}" class="needs-validation row g-3" novalidate>
     {% csrf_token %}
         <div class="row">
            <div class="col-lg-6 col-md-12">
@@ -61,7 +66,8 @@
         </div>
 
 
-    <button type="submit" class="btn btn-outline-primary mt-4 w-50 mx-auto" id="signupbutton">{% trans "Sign Up" %}</button>
+    <button type="submit" class="g-recaptcha btn btn-outline-primary mt-4 w-50 mx-auto" id="signupbutton" data-sitekey="6LfUYxgrAAAAAPmnDyIGCqMbVjhPof6imGg7FIfa" data-callback='onSubmit' data-action='submit'>Submit</button>
+    <!-- <button type="submit" class="g-recaptcha btn btn-outline-primary mt-4 w-50 mx-auto" id="signupbutton">Submit</button> -->
 </form>
 
 

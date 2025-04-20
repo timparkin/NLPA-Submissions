@@ -15,9 +15,9 @@ import os
 from .config import *
 
 
-#import django
-#from django.utils.encoding import smart_str
-#django.utils.encoding.smart_text = smart_str
+import django
+from django.utils.encoding import smart_str
+django.utils.encoding.smart_text = smart_str
 
 
 SITE_ID = 1
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'wagtail.images',
     'wagtail.search',
     'wagtail.admin',
-    'wagtail.core',
+    'wagtail',
     'wagtail.contrib.modeladmin',
 
     'modelcluster',

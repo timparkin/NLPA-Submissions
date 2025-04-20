@@ -38,11 +38,40 @@
     </div>
     {% endif %}
  <h2>Single Images</h2>
-<p>You can upload/replace images up until the 31st May. You do not need to upload all your entries at once. Files will be automatically renamed for anonymity after final submission. Titles are not required. Remember to select a category. Use the update button to store any changes.</p>
-<p>If you're having trouble uploading all the images at once, please try one at a time</p>
+<!--
+<p>You can upload/replace images up until the 31st May. You do not need to upload all your entries at once. Files will be automatically renamed for anonymity after final submission. Titles are not required. Remember to select a category.</p>
+<p><strong>Use the update button at the bottom of the form to submit your uploads/changes!!</strong></p>
+<p><strong>If you're having trouble uploading all the images at once, please try one at a time!</strong></p>
+<p><strong>Please note there are no captions on single images, only on the project description</strong></p>
 <p>Don't forget, we highly recommend using the maximum 4000px on the long side for your images although a minimum of 3000px is acceptable. Please note that the entry jpgs will be used in the book if successful.</p>
-<p>Check the <a href="https://naturallandscapeawards.com/terms-and-conditions/">Terms and Conditions</a> and <a href="https://naturallandscapeawards.com/rules/">Rules</a>.</p>
+<p>Check the <a href="https://naturallandscapeawards.com/terms-and-conditions/" target="_blank"><strong>Terms and Conditions</strong></a> and <a href="https://naturallandscapeawards.com/rules/" target="_blank"><strong>Rules</strong></a>.</p>
 <p>If you would like a summary of your entry status, please visit <a href="/confirmationemail/">Entry Checkup page</a></p>
+<a href="" target="_blank">Submission Requirements</a>
+-->
+
+<p>You can upload/replace images up until the <strong>31st May</strong>.</p>
+
+<p>Check the <strong><a href="https://naturallandscapeawards.com/terms-and-conditions/" target="_blank">Terms and Conditions</a></strong> and <strong><a href="https://naturallandscapeawards.com/rules/" target="_blank">Rules</a></strong>.</p>
+
+<p><strong>Submission recommendations:</strong></p>
+
+<ul>
+<li>You do not need to upload all your entries at once.</li>
+
+<li>Files will be automatically renamed for anonymity after the deadline.</li>
+
+<li>Image titles and image captions are not required.</li>
+
+<li>Remember to select a category.</li>
+</ul>
+
+<p>Use the <strong>update button at the bottom of the form</strong> to submit your uploads/changes.</p>
+
+<p>Problems uploading? Try one image at a time by pressing the Update button every time you add an image.</p>
+
+<p>Summary of Entries: <strong><a href="/confirmationemail/">Entry Checkup page</a></strong>.</p>
+
+
 {% load filter_extras %}
 
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"></script>
@@ -115,7 +144,8 @@
         {{  field.choices }}
     {% elif field.name == 'special_award' %}
         {{ field.errors }}
-        {{ field  | as_crispy_field }}
+        <label for="" class="">Special Award (<a href="https://naturallandscapeawards.com/categories#special_awards" target="_blank">more info</a>)</label>
+        {{ field }}
     {% else %}
         {{ field.errors }}
         {{ field | as_crispy_field }}

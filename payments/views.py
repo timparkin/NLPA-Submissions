@@ -127,6 +127,7 @@ def create_checkout_session(request):
                 mode='payment',
                 line_items=line_items,
                 allow_promotion_codes=True,
+                payment_intent_data={'statement_descriptor_suffix': 'ENTRY','description': 'ENTRY'},
             )
             request.user.payment_plan = json.dumps( {'entries': request.session['number_of_entries'], 'portfolios': request.session['number_of_portfolios'] })
             request.user.payment_status = 'checkingout %s'%datetime.datetime.now()
@@ -193,6 +194,7 @@ def create_checkout_session_upgrade(request):
             mode='payment',
             line_items=line_items,
             allow_promotion_codes=True,
+            payment_intent_data={'statement_descriptor_suffix': 'ENTRY','description': 'ENTRY'},
         )
         request.user.payment_upgrade_plan = json.dumps( {'entries': request.session['total_entries'], 'portfolios': request.session['total_portfolios'] })
         request.user.payment_upgrade_status = 'checkingout %s'%datetime.datetime.now()
@@ -349,7 +351,8 @@ def success(request):
             consumer_key=WOO_CONSUMER_KEY,
             consumer_secret=WOO_CONSUMER_SECRET,
             wp_api=True,
-            version="wc/v3"
+            version="wc/v3",
+            timeout=20
         )
     
         coupon_code = '%s%s%s' % (request.user.first_name, request.user.last_name, random.randint(1111, 9999))

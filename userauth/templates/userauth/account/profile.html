@@ -6,6 +6,7 @@
 
 
 {% block card-body %}
+<h2>{{ request.user.first_name|default:'' }} {{ request.user.last_name|default:'' }}</h2>
 <h3>{% trans "Profile" %}</h3>
 
     <div class="container">

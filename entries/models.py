@@ -13,20 +13,19 @@ from multiselectfield import MultiSelectField
 class Entry(models.Model):
 
     class Categories(models.TextChoices):
-        grand_scenic = 'GS', _('Grand Scenic')
-        intimate_landscapes = 'IL', _('Intimate Landscapes')
-        abstracts_and_details = 'AD', _('Abstracts & Details')
+        grand_scenic = 'GS', _('Grand Landscape')
+        intimate_landscapes = 'IL', _('Intimate Landscape')
+        abstracts_and_details = 'AD', _('Abstracts Landscape')
 
     class SpecialAward(models.TextChoices):
-        wildlife = 'EW', _('Environmental Wildlife')
-        creative = 'CI', _('Creative Icon')
-        common_places = 'CP', _('Common Places')
+        tropical_landscapes = 'TL', _('Tropical Landscapes')
+        woodlands = 'WL', _('Woodlands')
+        rocks_and_geology = 'RG', _('Rocks and Geology')
         mountains = 'M', _('Mountains')
-        water_worlds = 'W', _('Water Worlds')
-        black_and_white = 'BW', _('Black and White')
-        nightscape = 'N', _('Nightscape')
-        environmental = 'E', _('Environmental')
-        aerial = 'A', _('Aerial')
+        frozen_worlds = 'FW', _('Frozen Worlds')
+        desert_landscapes = 'DL', _('Desert Landscapes')
+        backyard = 'YB', _('In Your Backyard')
+        seascapes = 'S', _('Seascapes')
 
 
 

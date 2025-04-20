@@ -720,8 +720,10 @@ def missing_raws(request):
     users_entries = []
     for user in db_user_list:
         if 'entry_objects' in user:
-
+            
             for entry in user['entry_objects']:
+                if entry.category is None:
+                    continue
                 try:
                     eu1 = entry.evidence_file_1.url
                 except ValueError as e:
@@ -769,34 +771,34 @@ def missing_raws(request):
                 }
                 user_entry.update(user)
                 users_entries.append(user_entry)
-        else:
-            user_entry = {
-              'entry_id':  '',
-              'entry_category': '',
-              'entry_datetime': '',
-              'entry_filename': '',
-              'entry_url': '',
-              'entry_photo_dimensions': '',
-              'entry_photo_size': '',
-              'entry_photo_size': '',
-              'entry_photo_size': '',
-              'entry_photo_size': '',
-              'entry_special_award': '',
-              'in_second_round': '',
-              'evidence_file_1': '',
-              'evidence_file_2': '',
-              'evidence_file_3': '',
-              'evidence_file_4': '',
-              'evidence_file_5': '',
-              'evidence_url_1': '',
-              'evidence_url_2': '',
-              'evidence_url_3': '',
-              'evidence_url_4': '',
-              'evidence_url_5': '',
-
-            }
-            user_entry.update(user)
-            users_entries.append(user_entry)
+#        else:
+#            user_entry = {
+#              'entry_id':  '',
+#              'entry_category': '',
+#              'entry_datetime': '',
+#              'entry_filename': '',
+#              'entry_url': '',
+#              'entry_photo_dimensions': '',
+#              'entry_photo_size': '',
+#              'entry_photo_size': '',
+#              'entry_photo_size': '',
+#              'entry_photo_size': '',
+#              'entry_special_award': '',
+#              'in_second_round': '',
+#              'evidence_file_1': '',
+#              'evidence_file_2': '',
+#              'evidence_file_3': '',
+#              'evidence_file_4': '',
+#              'evidence_file_5': '',
+#              'evidence_url_1': '',
+#              'evidence_url_2': '',
+#              'evidence_url_3': '',
+#              'evidence_url_4': '',
+#              'evidence_url_5': '',
+#
+#            }
+#            user_entry.update(user)
+#            users_entries.append(user_entry)
 
 
     # return render(request, 'datamining_csv.html', {'db_user_list': db_user_list, 'db_users': db_users, 'mc_users': mc_users, 'ss_users': ss_users, 'sc_users': sc_users, 'sessions': sessions })

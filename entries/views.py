@@ -97,7 +97,10 @@ def get_entries(request):
 
     payment_status = request.user.payment_status
     if payment_status is None or ('checkout.session.completed' not in payment_status and 'payment_pending' not in payment_status):
-        return HttpResponseRedirect('/paymentplan')
+        if ENTRIES_CLOSED:
+            return HttpResponseRedirect('/accounts/profile')
+        else:
+            return HttpResponseRedirect('/paymentplan')
     if UPLOADS_CLOSED:
         return HttpResponseRedirect('/secondround')
 
@@ -761,7 +764,7 @@ class PreviousYears(LoginRequiredMixin, View):
 class UserDetails(forms.Form):
     display_name = forms.CharField(label="Your name", max_length=1024, help_text="How you want your name to appear in social media or press releases")
     location = forms.CharField(label="Residence", max_length=1024, help_text = "Where you live as it will appear on our social media and press releases (e.g. 'California, US' or 'Yorkshire, UK'")
-    bio = forms.CharField(label="Short Bio", max_length=4096, help_text = "A short profile of yourself as it will appear on our social media and press releases. One or two sentences please. Start with '<your_name> is ... '. e.g. 'Tim is ... ' or 'Tim has ... ' etc", widget=forms.Textarea(attrs={'rows':4}))
+    bio = forms.CharField(label="Short Bio", max_length=4096, help_text = "A short profile of yourself as it will appear on our social media and press releases. One or two sentences please. Start with '<your_name> is ... '. e.g. 'Tim is ... ' or 'Tim has ... ' etc", widget=forms.Textarea(attrs={'rows':4}), required=False)
     facebook = forms.CharField(required=False)
     instagram = forms.CharField(required=False)
     website = forms.CharField(required=False)

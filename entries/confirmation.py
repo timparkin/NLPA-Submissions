@@ -16,6 +16,8 @@ import glob
 
 from jinja2 import Template
 
+from nlpa.settings.config import EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_PORT, PROJECT_DIR, BASE_DIR
+
 
 # Files Needed
 #  - cert-email-template.html
@@ -147,12 +149,12 @@ def send_email(data):
 
 
     # Create an smtplib.SMTP object to send the email.
-    smtp = smtplib.SMTP()
+    smtp = smtplib.SMTP(EMAIL_HOST)
     # Connect to the SMTP server.
-    smtp.connect('smtp.mandrillapp.com',587)
+    smtp.connect(EMAIL_HOST,EMAIL_PORT)
     smtp.starttls()
     # Login to the SMTP server with username and password.
-    smtp.login('onlandscape', '5fsiQVBElAkYtbcbFmXx1g')
+    smtp.login(EMAIL_HOST_USER , EMAIL_HOST_PASSWORD)
     # Send email with the smtp object sendmail method.
 
     smtp.sendmail(strFrom, strTo, msgRoot.as_string())
