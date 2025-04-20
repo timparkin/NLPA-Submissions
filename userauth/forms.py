@@ -12,6 +12,10 @@ from dateutil.relativedelta import relativedelta
 import locale
 import logging
 
+from urllib.parse import urlencode
+from urllib.request import urlopen
+import json
+
 logger = logging.getLogger('django')
 
 # Source: https://en.wikipedia.org/wiki/February_29
@@ -92,6 +96,24 @@ class SignupForm(forms.Form):
         fields=('username','first_name','last_name','email','date_of_birth','password1')
 
     def signup(self, request, user):
+
+
+        URIReCaptcha = 'https://www.google.com/recaptcha/api/siteverify'
+        recaptchaResponse = request.POST.get('g-recaptcha-response', None)
+        private_recaptcha = '6LfUYxgrAAAAAHaKp6gTM9_qRDjNRiKCyIraufXv'
+        params = urlencode({
+            'secret': private_recaptcha,
+            'response': recaptchaResponse,
+        })
+
+        # print params
+        data = urlopen(URIReCaptcha, params.encode('utf-8')).read()
+        result = json.loads(data)
+        success = result.get('success', None)
+
+        if success != True:
+            return
+
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.date_of_birth = self.cleaned_data['date_of_birth']
