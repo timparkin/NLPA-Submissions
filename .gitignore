@@ -4,6 +4,18 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# GENERAL
+*.swp
+*.swo
+NLPA.png
+finals_expo*
+*SENSITIVE*
+nlpa/c.txt
+update_raw_status_ADDHACKS.py
+extra_second_round.txt
+nlpa_second_round_entries-FIXED.csv
+second_round_raw_requests.csv
+
 # C extensions
 *.so
 
