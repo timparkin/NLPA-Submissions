@@ -22,6 +22,7 @@ urlpatterns = [
 
     path('admin/', include(wagtailadmin_urls)),
     path('documents/', include(wagtaildocs_urls)),
+    path('django-admin/', include('loginas.urls')),
     path('django-admin/', admin.site.urls),
     path('search/', search_views.search, name='search'),
 
@@ -48,7 +49,7 @@ urlpatterns = [
 # urls.py
 
 ]
-urlpatterns += path("django-admin/", include('loginas.urls')),
+#urlpatterns += path("django-admin/", include('loginas.urls')),
 
 
 if settings.DEBUG:
